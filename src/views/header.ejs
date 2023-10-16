@@ -1,5 +1,7 @@
-<div class="menu">
-    <img src="" alt="Valérie Gervais">
+<div class="navbar">
+    <img src="./img/png/logo.png" alt="Valérie Gervais" width="240px">
+    <img id='modal-button' src="./img/svg/panier.svg" width='24px'
+         alt="panier">
     <nav>
         <ul>
             <li hx-target="main"
@@ -37,17 +39,14 @@
                 hx-swap="show:window:top"
                 hx-push-url="/blog">Blog
             </li>
-            <li hx-target="main"
-                hx-get="/data_temoignages"
-                hx-swap="show:window:top"
-                hx-push-url="/temoignages">Témoignages
-            </li>
-            <li hx-target="main"
-                hx-get="/data_contact"
-                hx-swap="show:window:top"
-                hx-push-url="/contact">Contact
-            </li>
         </ul>
     </nav>
-    <img src="" alt="panier">
 </div>
+<dialog class="modal" id="modal">
+        <p class="panier-title">Panier</p>
+<!--    <div class="modal-header between">-->
+<!--        <button class="red-button">&times;</button>-->
+<!--    </div>-->
+    <div class="modal-body">Votre panier est vide
+    </div>
+</dialog>
