@@ -1,82 +1,43 @@
 const asyncHandler = require("express-async-handler");
+const validPages = require("../utils/validPages");
 
-// filter to prevent Directory Traversal attacks
-const validPages = [
-  "/",
-  "blog",
-  "contact",
-  "excel",
-  "outlook",
-  "panier",
-  "powerpoint",
-  "service",
-  "word",
-];
+// helper function to create handlers
+function createHandler(handlerFunction) {
+  return asyncHandler(async (req, res) => handlerFunction(req, res));
+}
 
-// GET INDEX
-const index = asyncHandler(async (req, res) => getLayout(req, res));
-const data_index = asyncHandler(async (req, res) => getData(req, res));
-// GET BLOG
-const blog = asyncHandler(async (req, res) => getLayout(req, res));
-const data_blog = asyncHandler(async (req, res) => getData(req, res));
-// GET CONTACT
-const contact = asyncHandler(async (req, res) => getLayout(req, res));
-const data_contact = asyncHandler(async (req, res) => getData(req, res));
-// GET EXCEL
-const excel = asyncHandler(async (req, res) => getLayout(req, res));
-const data_excel = asyncHandler(async (req, res) => getData(req, res));
-// GET OUTLOOK
-const outlook = asyncHandler(async (req, res) => getLayout(req, res));
-const data_outlook = asyncHandler(async (req, res) => getData(req, res));
-// GET PANIER
-const panier = asyncHandler(async (req, res) => getLayout(req, res));
-const data_panier = asyncHandler(async (req, res) => getData(req, res));
-// GET POWERPOINT
-const powerpoint = asyncHandler(async (req, res) => getLayout(req, res));
-const data_powerpoint = asyncHandler(async (req, res) => getData(req, res));
-// GET SERVICE
-const service = asyncHandler(async (req, res) => getLayout(req, res));
-const data_service = asyncHandler(async (req, res) => getData(req, res));
-// GET WORD
-const word = asyncHandler(async (req, res) => getLayout(req, res));
-const data_word = asyncHandler(async (req, res) => getData(req, res));
-
-// helper functions
+// handler for full page renders
 function getLayout(req, res) {
-  const content = req.url;
-  if (validPages.includes(content)) {
-    res.render("layout", { main: "index" });
+  const request = req.url;
+  const page = validPages.find((page) => page.path === request);
+  if (page) {
+    res.render("layout", { main: page.file });
   } else {
     res.render("layout", { main: "not_found" });
   }
 }
 
+// handler for data injected into layout using AJAX calls
 function getData(req, res) {
-  const content = req.url;
-  if (validPages.includes(content)) {
-    res.render("index");
+  const request = req.url;
+  const page = validPages.find((page) => page.path === request);
+  if (page) {
+    res.render(page.file);
   } else {
     res.render("not_found");
   }
 }
 
+// generate all the handlers based on validPages array
+const routeHandlers = validPages.reduce((handlers, page) => {
+  handlers[page.path] = page.full
+    ? createHandler(getLayout)
+    : createHandler(getData);
+  return handlers;
+}, {});
+
 module.exports = {
-  data_index,
-  index,
-  blog,
-  data_blog,
-  contact,
-  data_contact,
-  excel,
-  data_excel,
-  outlook,
-  data_outlook,
-  panier,
-  data_panier,
-  powerpoint,
-  data_powerpoint,
-  service,
-  data_service,
-  word,
-  data_word,
+  routeHandlers,
 };
+
+// path: src/handlers/get.js
