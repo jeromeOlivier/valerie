@@ -1,38 +1,18 @@
 <!DOCTYPE html>
 <html lang='fr-CA'>
-    <head>
-        <%- include('head.ejs') %>
-        <title>Valérie Gervais</title>
-    </head>
-    <body>
-        <header>
-            <%- include('header.ejs') %>
-        </header>
-        <main>
-            <% if (content === 'service') { %>
-                <%- include('service.ejs') %>
-            <% } else if (content === 'word') { %>
-                <%- include('word.ejs') %>
-            <% } else if (content === 'excel') { %>
-                <%- include('excel.ejs') %>
-            <% } else if (content === 'powerpoint') { %>
-                <%- include('powerpoint.ejs') %>
-            <% } else if (content === 'outlook') { %>
-                <%- include('outlook.ejs') %>
-            <% } else if (content === 'blog') { %>
-                <%- include('blog.ejs') %>
-            <% } else if (content === 'temoignages') { %>
-                <%- include('temoignages.ejs') %>
-            <% } else if (content === 'contact') { %>
-                <%- include('contact.ejs') %>
-            <% } else if (content === 'panier') { %>
-                <%- include('panier.ejs') %>
-            <% } else { %>
-                <%- include('accueil.ejs') %>
-            <% } %>
-        </main>
-        <footer>
-            <%- include('footer.ejs') %>
-        </footer>
-    </body>
+<head>
+    <%- include('head.ejs') %>
+    <title>Valérie Gervais</title>
+</head>
+<body>
+<header>
+    <%- include('header.ejs') %>
+</header>
+<main>
+    <%- include(main + '.ejs') %>
+</main>
+<footer>
+    <%- include('footer.ejs') %>
+</footer>
+</body>
 </html>

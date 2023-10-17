@@ -58,6 +58,7 @@ modal.addEventListener("click", (event) => {
 let resizeTimer;
 const logo = document.querySelector(".logo");
 const nav = document.querySelector("nav");
+const navItems = document.querySelectorAll("nav > li");
 
 // Click events for navigation
 logo.addEventListener("click", function () {
@@ -68,6 +69,16 @@ logo.addEventListener("click", function () {
     nav.classList.remove("slide-out");
     nav.classList.add("slide-in");
   }
+});
+
+// Adds a click event for navigation
+navItems.forEach((item) => {
+  item.addEventListener("click", function () {
+    if (nav.classList.contains("slide-in")) {
+      nav.classList.remove("slide-in");
+      nav.classList.add("slide-out");
+    }
+  });
 });
 
 // Adds a resize event for navigation

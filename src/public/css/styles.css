@@ -47,6 +47,9 @@
     --transluscent_white        : #FFFFFFB8;
     --txt                       : #595959;
     --white                     : #FFFFFF;
+    --font-bold                 : iBold, Arial, sans-serif;
+    --font-regular              : iReg, Arial, sans-serif;
+    --font-semibold             : iSemi, Arial, sans-serif;
     --off-white                 : #EAEAEA;
 }
 
@@ -88,7 +91,7 @@
 * {
     box-sizing  : border-box;
     color       : var(--txt);
-    font-family : iReg, Arial, sans-serif;
+    font-family : var(--font-regular);
     font-size   : 1rem;
     font-style  : normal;
     font-weight : 400;
@@ -120,8 +123,7 @@ main {
 
 /* typography */
 h1, h2, h3, h4, h5, h6 {
-    font-family : iBold, Arial, sans-serif;
-    font-style  : normal;
+    font-family : var(--font-bold);
     font-weight : 700;
     transition  : 1s ease;
 }
@@ -148,27 +150,26 @@ h4 {
 
 p, q, label, cite {
     display    : inline-block;
-    font-style : normal;
 }
 
 label {
-    font-family : iBold, "Arial Black", sans-serif;
+    font-family : var(--font-bold);
 }
 
 cite {
-    font-family : iBold, Arial, sans-serif;
+    font-family : var(--font-bold);
     margin-left : 2rem;
 }
 
 nav > ul > li {
-    font-family     : iSemi, Arial, sans-serif;
+    font-family     : var(--font-semibold);
     font-style      : normal;
     font-weight     : 700;
     text-decoration : none;
 }
 
 .panier-title {
-    font-family : iBold, Arial, sans-serif;
+    font-family : var(--font-bold);
     font-size   : 1.25rem;
     font-style  : normal;
     font-weight : 700;
@@ -243,9 +244,9 @@ nav > img { z-index : 30; }
         right       : 0;
         top         : 0;
         transform   : translate(5%, 100%);
+        transition  : transform .5s ease;
         width       : 100vw;
         z-index     : 5;
-        transition : transform .5s ease;
     }
 
     .menu {
@@ -306,7 +307,7 @@ button {
     color               : var(--white);
     cursor              : pointer;
     display             : flex;
-    font-family         : iSemi, Arial, sans-serif;
+    font-family         : var(--font-semibold);
     justify-content     : center;
     padding             : .7rem 1.2rem;
     transition-duration : 500ms;
@@ -364,17 +365,17 @@ button > svg { margin-left : .5rem; }
     transition       : .5s ease;
 }
 
-input, textarea {
-    border        : var(--txt);
-    border-radius : 0.5rem;
-    color         : var(--txt);
-    display       : block;
-    font-family   : rRegular, sans-serif;
-    font-size     : 1rem;
-    margin-top    : .5rem;
-    padding       : .75rem 1rem;
-    width         : 100%;
-}
+/*input, textarea {*/
+/*    border        : var(--txt);*/
+/*    border-radius : 0.5rem;*/
+/*    color         : var(--txt);*/
+/*    display       : block;*/
+/*    font-family   : rRegular, sans-serif;*/
+/*    font-size     : 1rem;*/
+/*    margin-top    : .5rem;*/
+/*    padding       : .75rem 1rem;*/
+/*    width         : 100%;*/
+/*}*/
 
 input:focus, textarea:focus {
     outline : none;
@@ -571,19 +572,19 @@ textarea {
     text-align : center;
 }
 
-.hero-h1 {
-    font-family : rBoldItalic, sans-serif;
-    font-size   : clamp(1.5rem, 4vmax, 5rem);
-    font-style  : italic;
-    font-weight : 700;
-}
+/*.hero-h1 {*/
+/*    font-family : rBoldItalic, sans-serif;*/
+/*    font-size   : clamp(1.5rem, 4vmax, 5rem);*/
+/*    font-style  : italic;*/
+/*    font-weight : 700;*/
+/*}*/
 
-.hero-h2 {
-    font-family : rBold, sans-serif;
-    font-size   : clamp(1rem, 2vmax, 3rem);
-    font-style  : normal;
-    font-weight : 700;
-}
+/*.hero-h2 {*/
+/*    font-family : rBold, sans-serif;*/
+/*    font-size   : clamp(1rem, 2vmax, 3rem);*/
+/*    font-style  : normal;*/
+/*    font-weight : 700;*/
+/*}*/
 
 .wave {
     height  : auto;
