@@ -61,7 +61,7 @@
     --header                    : rgba(255, 255, 255, 0.7);
     --menu                      : #FFFFFF;
     --stroke                    : 0.0625rem;
-    --txt                       : #595959;
+    --txt                       : #505050;
     --white                     : #FFFFFF;
     --font-bold                 : iBold, Arial, sans-serif;
     --stroke-double             : 0.125rem;
@@ -73,7 +73,7 @@
     --powerpoint-stoke          : #793C27;
     --word-stoke                : #1D1F3E;
     --font-thin                 : iThin, Arial, sans-serif;
-    --off-white                 : #EAEAEA;
+    --off-white                 : #F5F5F5;
 }
 
 /* margins */
@@ -100,6 +100,16 @@
 /* paddings */
 .p0 { padding : 0; }
 
+.p1 { padding : 1rem; }
+
+.p2 { padding : 2rem; }
+
+.p3 { padding : 3rem; }
+
+.p4 { padding : 4rem; }
+
+.p5 { padding : 5rem; }
+
 .pt1 { padding-top : 1rem; }
 
 .pt2 { padding-top : 2rem; }
@@ -124,7 +134,7 @@
 }
 
 body {
-    background-color : var(--white);
+    background-color : var(--off-white);
     display          : flex;
     flex-direction   : column;
     height           : 100vh;
@@ -181,12 +191,12 @@ label {
 
 cite {
     font-family : var(--font-semibold);
-    margin-top: 1rem;
+    margin-top  : 1rem;
 }
 
 nav > ul > li {
     color           : var(--black);
-    font-family     : var(--font-semibold);
+    /*font-family     : var(--font-semibold);*/
     font-style      : normal;
     font-weight     : 700;
     text-decoration : none;
@@ -340,7 +350,8 @@ button {
     color               : var(--white);
     cursor              : pointer;
     display             : flex;
-    font-family         : var(--font-semibold);
+    font-family         : var(--font-regular);
+    font-size           : 1.05rem;
     justify-content     : center;
     padding             : .7rem 1.2rem;
     transition-duration : 500ms;
@@ -440,6 +451,10 @@ textarea {
     width          : 100vw;
 }
 
+.round-corner {
+    border-radius : 0.5rem;
+}
+
 /* INDEX PAGE */
 .hero-container {
     align-items     : center;
@@ -456,8 +471,12 @@ textarea {
     background : var(--g_main);
 }
 
+.white-background {
+    background : var(--off-white);
+}
+
 .hero-h1, .hero-h2 {
-    color          : var(--white);
+    color          : var(--off-white);
     text-align     : center;
     text-transform : uppercase;
 }
@@ -504,20 +523,50 @@ textarea {
     color : var(--btn_blue_stoke);
 }
 
+@keyframes scroll {
+    to { transform : translateX(calc(-50% - 2.5rem)); }
+}
+
+.scroller {
+    background : var(--white);
+    overflow   : hidden;
+    width      : 100vw;
+}
+
+.scroller__inner {
+    display       : flex;
+    gap           : 5rem;
+    list-style    : none;
+    padding-block : 1rem;
+    width         : fit-content;
+}
+
+.scroller__inner[data-animated="true"] {
+    animation : scroll 40s linear infinite;
+    flex-wrap : nowrap;
+    width     : fit-content;
+}
+
+.scroller__inner:hover { animation-play-state : paused; }
+
+.scroller__inner > li > img {
+    height : 50px;
+}
+
 .book-grid {
     align-items : stretch;
     display     : grid;
-    gap         : 3rem;
+    gap         : 3vmax;
     grid        : auto auto / repeat(2, 1fr);
 }
 
 .book-grid > div {
-    background     : var(--off-white);
+    background     : var(--white);
     border-radius  : 0.5rem;
     display        : flex;
     flex-direction : column;
     gap            : 1rem;
-    padding        : .5rem 2rem 2rem;
+    padding        : .5rem 4rem 2rem;
 }
 
 .word-cover { border : solid var(--stroke) var(--word-stoke); }
@@ -550,12 +599,10 @@ textarea {
     width     : 90%;
 }
 
-/*footer a {*/
-/*    color           : var(--black);*/
-/*    display         : inline-block;*/
-/*    margin-top      : 4px;*/
-/*    text-decoration : none;*/
-/*}*/
+hr {
+    border-color : var(--off-white);
+    width        : 100vw;
+}
 
 .social-icons {
     display         : flex;
