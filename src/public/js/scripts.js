@@ -28,7 +28,7 @@ const handleHeader = () => {
   }
 };
 
-// Adds event listeners for load and resize
+// Binds event listeners for load and resize to handleHeader function.
 window.addEventListener("load", handleHeader);
 window.addEventListener("resize", handleHeader);
 
@@ -58,7 +58,7 @@ modal.addEventListener("click", (event) => {
 let resizeTimer;
 const logo = document.querySelector(".logo");
 const nav = document.querySelector("nav");
-const navItems = document.querySelectorAll("nav > li");
+const navItems = document.querySelectorAll(".menu > li");
 
 // Click events for navigation
 logo.addEventListener("click", function () {
