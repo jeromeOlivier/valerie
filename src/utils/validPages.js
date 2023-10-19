@@ -1,8 +1,10 @@
 // Array of valid pages.
 // path: the url path.
 // file: the content to be rendered.
-// full: a boolean that determines whether the file is rendered as a full
-// page. if false, the file will be injected into the layout.
+// full: a boolean that determines how the content should be rendered. if
+// false, the content of the page's main element will be swapped with the
+// new content. if true, the file will be injected into layout and a full
+// page render will be executed.
 module.exports = [
   { path: "/", file: "data_index", full: true },
   { path: "/data_index", file: "data_index", full: false },
@@ -18,6 +20,8 @@ module.exports = [
   { path: "/data_outlook", file: "data_outlook", full: false },
   { path: "/panier", file: "data_panier", full: true },
   { path: "/data_panier", file: "data_panier", full: false },
+  { path: "/politique", file: "data_politique", full: true },
+  { path: "/data_politique", file: "data_politique", full: false },
   { path: "/powerpoint", file: "data_powerpoint", full: true },
   { path: "/data_powerpoint", file: "data_powerpoint", full: false },
   { path: "/service", file: "data_service", full: true },

@@ -2,13 +2,25 @@
     <div>
         <hr>
     </div>
-    <div class="container mt5">
-        <button class="main-button">Contactez moi</button>
+    <div class="container mt5 flex-row-space-between">
+        <div>
+            <a class="block link" hx-target="main"
+               hx-get="/data_contact"
+               hx-swap="show:window:top"
+               hx-push-url="/contact">Contactez moi</a>
+            <a class="block link mt1" hx-target="main"
+               hx-get="/data_politique"
+               hx-swap="show:window:top"
+               hx-push-url="/politique">Politique de confidentialité</a>
+        </div>
+        <div>
+            <img src="./img/svg/linkedin.svg" alt="linkedin" width="58px"
+                 class="link">
+        </div>
     </div>
-</div>
-<div class="full-width blue-background">
     <div class="container center">
-
+        <p class="mt2 mb2" id='copyright'>&copy;<%= new Date().getFullYear() %>
+            Valérie Gervais</p>
     </div>
 </div>
 

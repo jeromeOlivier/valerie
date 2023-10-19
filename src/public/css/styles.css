@@ -358,6 +358,12 @@ button {
     width               : fit-content;
 }
 
+a {
+    color           : var(--btn_blue_main);
+    cursor          : pointer;
+    text-decoration : none;
+}
+
 .close-button {
     background    : none;
     border        : 0;
@@ -430,6 +436,11 @@ textarea {
     resize   : vertical;
 }
 
+.link {
+    text-decoration : none;
+    cursor: pointer;
+}
+
 /* layout */
 .center {
     display        : flex;
@@ -453,6 +464,10 @@ textarea {
 
 .round-corner {
     border-radius : 0.5rem;
+}
+
+.block {
+    display: block;
 }
 
 /* INDEX PAGE */
@@ -582,16 +597,10 @@ textarea {
 }
 
 /* footer */
-.footer-wave > svg {
-    stroke-width : var(--stroke);
-}
-
-.footer-elements {
-    display               : grid;
-    gap                   : 1rem;
-    grid-template-columns : 1fr;
-    grid-template-rows    : repeat(3, auto);
-    justify-items         : center;
+.flex-row-space-between {
+    display               : flex;
+    flex-direction        : row;
+    justify-content: space-between;
 }
 
 .footer-elements > * {
