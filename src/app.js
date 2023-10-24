@@ -13,13 +13,6 @@ const db = require("./utils/database");
 // initialize express app
 const app = express();
 
-async function getCustomers() {
-  const [rows] = await db.query("SELECT * FROM customers");
-  return rows;
-}
-
-async function logCustomers()
-
 // set view engine
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");

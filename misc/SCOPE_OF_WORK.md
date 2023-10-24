@@ -80,3 +80,7 @@ Mrs. Gervais, visiting her site through the admin portal, can do any of the foll
    4. view an order history (order id, email, date, order items and total).
       1. if order is for a pdf, included is customer name and email
       2. if order is for a paper copy, included is customer name, email and address as well as delivery status
+
+### technology
+
+caching with NodeCache: once an update is made to the site via the admin portal, the cache for that page is updated to reduce calls to the database.
