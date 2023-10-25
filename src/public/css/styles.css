@@ -700,7 +700,7 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 .head-shot {
     border        : solid var(--stroke) var(--btn_blue_stoke);
     border-radius : 50%;
-    width         : clamp(11.25rem, 35vmax, 20rem);
+    height        : 38.197vh;
 }
 
 .head-shot-caption {
