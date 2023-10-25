@@ -768,12 +768,23 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 
 .book-grid > div {
     background     : var(--white);
-    border-radius  : 0.5rem;
+    border-radius  : 0.68rem;
     display        : flex;
     flex-direction : column;
     gap            : 1rem;
-    padding        : .5rem 4rem 2rem;
+    padding        : 1.5rem 2rem;
 }
+
+.book-grid > div > h3 {
+    margin-top: 0;
+}
+
+@media (max-width : 480px) {
+    .book-grid > div {
+        padding : 1.5rem 1rem;
+    }
+}
+
 
 .word-cover {
     background : var(--word-stoke);
