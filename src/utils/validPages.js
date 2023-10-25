@@ -1,4 +1,4 @@
-// Array of valid pages.
+// Array of valid pages, otherwise known as a "whitelist".
 // path: the url path.
 // file: the content to be rendered.
 // full: a boolean that determines how the content should be rendered. if

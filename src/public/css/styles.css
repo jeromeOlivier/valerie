@@ -612,6 +612,13 @@ table#format-specs {
     height : 61.803vh;
 }
 
+@media (max-aspect-ratio : 9/16) {
+    .book-cover {
+        width: 90vw;
+height: auto;
+    }
+}
+
 .img-fade {
     opacity : 0;
     -webkit-transition: all 1s ease-in-out;
@@ -694,7 +701,7 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 }
 
 .hero-h2 {
-    font-size : clamp(1rem, 3vw, 1.5rem);
+    font-size : clamp(.9rem, 3vw, 1.5rem);
 }
 
 .head-shot {
