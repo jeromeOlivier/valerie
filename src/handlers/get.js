@@ -38,36 +38,9 @@ const data_service = asyncHandler(async(req, res) => {
   getStaticData(req, res, validPages);
 });
 
-// DYNAMIC: GET WORD
+// GET WORD, EXCEL, POWERPOINT, OUTLOOK
 const book = asyncHandler(async(req, res) => {
   getBook(req, res, validPages);
-});
-// const data_word = asyncHandler(async(req, res) => {
-//   getBook(req, res, validPages);
-// });
-
-// DYNAMIC: GET EXCEL
-const excel = asyncHandler(async(req, res) => {
-  getBook(req, res, validPages);
-});
-const data_excel = asyncHandler(async(req, res) => {
-  getStaticData(req, res, validPages);
-});
-
-// DYNAMIC: GET POWERPOINT
-const powerpoint = asyncHandler(async(req, res) => {
-  getBook(req, res, validPages);
-});
-const data_powerpoint = asyncHandler(async(req, res) => {
-  getStaticData(req, res, validPages);
-});
-
-// DYNAMIC: GET OUTLOOK
-const outlook = asyncHandler(async(req, res) => {
-  getBook(req, res, validPages);
-});
-const data_outlook = asyncHandler(async(req, res) => {
-  getStaticData(req, res, validPages);
 });
 
 // DYNAMIC: GET BLOG
