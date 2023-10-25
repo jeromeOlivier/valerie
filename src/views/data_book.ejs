@@ -12,49 +12,33 @@
             <input class="radio-button" type="radio" name="format"
                    value="Papier" id="Papier">
             <label class="radio-label" for="Papier">Format Papier</label>
-            <table id="format-specs">
-                <tr>
-                    <td>Titre</td>
-                    <td><%= book.title; %></td>
-                </tr>
-                <tr>
-                    <td>Date de publication</td>
-                    <td>
-                        <%
-                        let pub_date = new Date(book_format.pub_date);
-                        let month_names = [
-                            'Janvier', 'Février', 'Mars', 'Avril', 'Mai',
-                            'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre',
-                            'Novembre', 'Décembre'
-                        ];
-                        %>
-                        <%= `${ pub_date.getDate() } ${ month_names[pub_date.getMonth()] } ${ pub_date.getFullYear() }`; %></td>
-                </tr>
-                <tr>
-                    <td>Format</td>
-                    <td>PDF <%= book_format.name; %></td>
-                </tr>
-                <tr>
-                    <td>Taille</td>
-                    <td><%= book_format.size; %></td>
-                </tr>
-                <tr>
-                    <td>Nombre de pages</td>
-                    <td><%= book_format.pages; %></td>
-                </tr>
-                <tr>
-                    <td>Langue</td>
-                    <td><%= book_format.language; %></td>
-                </tr>
-                <tr>
-                    <td>Disponible</td>
-                    <td><%= book_format.market; %></td>
-                </tr>
-                <tr>
-                    <td>Prix</td>
-                    <td><%= book_format.price; %> $ CAD</td>
-                </tr>
-            </table>
+            <div id="format-specs">
+                <div>Titre</div>
+                <div><%= book.title; %></div>
+                <div>Date de publication</div>
+                <div>
+                    <%
+                    let pub_date = new Date(book_format.pub_date);
+                    let month_names = [
+                        'Janvier', 'Février', 'Mars', 'Avril', 'Mai',
+                        'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre',
+                        'Novembre', 'Décembre'
+                    ];
+                    %>
+                    <%= `${ pub_date.getDate() } ${ month_names[pub_date.getMonth()] } ${ pub_date.getFullYear() }`; %></div>
+                <div>Format</div>
+                <div>PDF <%= book_format.name; %></div>
+                <div>Taille</div>
+                <div><%= book_format.size; %></div>
+                <div>Nombre de pages</div>
+                <div><%= book_format.pages; %></div>
+                <div>Langue</div>
+                <div><%= book_format.language; %></div>
+                <div>Disponible</div>
+                <div><%= book_format.market; %></div>
+                <div>Prix</div>
+                <div><%= book_format.price; %> $ CAD</div>
+            </div>
             <div class="center mt3">
                 <button class="orange-button">Ajouter au panier</button>
             </div>
@@ -65,13 +49,13 @@
                 <p><%= paragraph; %></p><br><br>
             <% }); %>
         </div>
-        <% if (book.workbook_desc) {%>
+        <% if (book.workbook_desc) { %>
             <h2 class="mt3 mb1">Manuels par niveaux</h2>
             <div>
                 <% book.workbook_desc.split('\\n').forEach((paragraph) => { %>
                     <p><%= paragraph; %></p><br><br>
                 <% }); %>
             </div>
-        <%}%>
+        <% } %>
     </div>
 </div>

@@ -526,6 +526,27 @@ textarea {
     width           : 100vw;
 }
 
+@supports (width: 100dvw) and (height: 100dvh) {
+    .full-width-container {
+        align-items     : center;
+        display         : flex;
+        flex-direction  : column;
+        justify-content : flex-start;
+        width           : 100dvw;
+    }
+
+    .full-page-container {
+        align-items     : center;
+        display         : flex;
+        flex-direction  : column;
+        height          : 100dvh;
+        justify-content : flex-start;
+        margin          : 0;
+        padding         : 0;
+        width           : 100dvw;
+    }
+}
+
 .content-container {
     max-width  : 960px;
     position   : relative;
@@ -551,23 +572,23 @@ textarea {
 }
 
 .long-text {
-    column-count: 2;
-    column-gap: 4rem;
+    column-count : 2;
+    column-gap   : 4rem;
 }
 
 .long-text p {
-    display: inline;
+    display : inline;
 }
 
 .long-text > p > br {
-    margin-bottom: 5rem;
-    display: block;
+    display       : block;
+    margin-bottom : 5rem;
 }
 
-@media (max-width: 960px){
+@media (max-width : 960px) {
     .long-text {
-        column-count: 1;
-        column-gap: 0;
+        column-count : 1;
+        column-gap   : 0;
     }
 }
 
@@ -582,16 +603,16 @@ textarea {
 }
 
 div.blue-background > div {
-    margin-top: 5rem;
-    padding: 4rem;
-    margin-bottom: 5rem;
+    margin-bottom : 5rem;
+    margin-top    : 5rem;
+    padding       : 4rem;
 }
 
-@media (max-width: 960px){
+@media (max-width : 960px) {
     div.blue-background > div {
-        margin-top: 3rem;
-        margin-bottom: 2rem;
-        padding: 2rem;
+        margin-bottom : 2rem;
+        margin-top    : 3rem;
+        padding       : 2rem;
     }
 }
 
@@ -601,10 +622,26 @@ div.blue-background > div {
 
 .inline-block { display : inline-block; }
 
-table#format-specs {
-    border-spacing: 2rem 1rem;
-    table-layout: auto;
-    width: 25rem;
+/*table#format-specs > tbody {*/
+/*    border-spacing : 0 1rem;*/
+/*    max-width      : 25rem;*/
+/*    table-layout   : auto;*/
+/*}*/
+
+/*@media (max-width : 480px) {*/
+/*    table#format-specs > tbody {*/
+/*        width : 100%;*/
+/*        max-width: 100%;*/
+
+/*    }*/
+/*}*/
+
+div#format-specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /*width: 100%;*/
+    max-width: 25rem;
+    gap: 1rem 2rem;
 }
 
 /* general styles */
@@ -614,21 +651,21 @@ table#format-specs {
 
 @media (max-aspect-ratio : 9/16) {
     .book-cover {
-        width: 90vw;
-height: auto;
+        height : auto;
+        width  : 80vw;
     }
 }
 
 .img-fade {
-    opacity : 0;
-    -webkit-transition: all 1s ease-in-out;
-    -moz-transition: all 1s ease-in-out;
-    -o-transition: all 1s ease-in-out;
-    transition: all 1s ease-in-out;
+    opacity            : 0;
+    -moz-transition    : all 1s ease-in-out;
+    -o-transition      : all 1s ease-in-out;
+    -webkit-transition : all 1s ease-in-out;
+    transition         : all 1s ease-in-out;
 }
 
 .img-fade.loaded {
-    opacity: 1;
+    opacity : 1;
 }
 
 /* backgrounds */
@@ -783,7 +820,7 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 }
 
 .book-grid > div > h3 {
-    margin-top: 0;
+    margin-top : 0;
 }
 
 @media (max-width : 480px) {
@@ -800,17 +837,17 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 
 .excel-cover {
     background : var(--excel-stoke);
-    border : solid var(--stroke) var(--excel-stoke);
+    border     : solid var(--stroke) var(--excel-stoke);
 }
 
 .power-cover {
     background : var(--power-stoke);
-    border : solid var(--stroke) var(--power-stoke);
+    border     : solid var(--stroke) var(--power-stoke);
 }
 
 .outlook-cover {
     background : var(--outlook-stoke);
-    border : solid var(--stroke) var(--outlook-stoke);
+    border     : solid var(--stroke) var(--outlook-stoke);
 }
 
 .book-grid > div > p { margin-bottom : auto; }
