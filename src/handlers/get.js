@@ -39,12 +39,12 @@ const data_service = asyncHandler(async(req, res) => {
 });
 
 // DYNAMIC: GET WORD
-const word = asyncHandler(async(req, res) => {
+const book = asyncHandler(async(req, res) => {
   getBook(req, res, validPages);
 });
-const data_word = asyncHandler(async(req, res) => {
-  getBookData(req, res, validPages);
-});
+// const data_word = asyncHandler(async(req, res) => {
+//   getBook(req, res, validPages);
+// });
 
 // DYNAMIC: GET EXCEL
 const excel = asyncHandler(async(req, res) => {
@@ -128,7 +128,7 @@ async function getBook(req, res, validPages) {
       const page = validPages.find((page) => page.path === req.url);
       // if page is invalid or page does not contain the book attribute...
       if (!page?.book) throw new Error("Page not found");
-
+      console.log(page.full);
       // get the book and format the id for pdf (the default format)
       const getBook = db.query(`SELECT *
                                 FROM books
@@ -164,24 +164,31 @@ async function getBook(req, res, validPages) {
                                            FROM workbooks
                                            WHERE book_id = '${ book.id }';`);
       console.log(workbooks);
-      const getWorkbookPreviews = getWorkbooks.map((workbook) => {
-        db.query(`SELECT *
-                         FROM book_formats
-                         WHERE book_id = '${ workbook.id }'
-                           AND format = '${ format.id }';`);
-      });
-      const [workbookPreviews] = await Promise.all(getWorkbookPreviews);
-      console.log(workbookPreviews);
+      // const getWorkbookPreviews = getWorkbooks.map((workbook) => {
+      //   db.query(`SELECT *
+      //                    FROM book_formats
+      //                    WHERE book_id = '${ workbook.id }'
+      //                      AND format = '${ format.id }';`);
+      // });
+      // const [workbookPreviews] = await Promise.all(getWorkbookPreviews);
+      // console.log(workbookPreviews);
 
       // disconnect from the database
       db.disconnect;
 
-      // render the layout
-      res.render("layout", {
-        main: "data_book",
-        book: book,
-        book_format: book_format,
-      });
+      // render the data_book with or without layout
+      if (page.full) {
+        res.render("layout", {
+          main: "data_book",
+          book: book,
+          book_format: book_format,
+        });
+      } else {
+        res.render("data_book", {
+          book: book,
+          book_format: book_format,
+        });
+      }
     } catch (err) {
       res.status(500).send(`Internal Server Error`);
     }
@@ -199,18 +206,11 @@ module.exports = {
   data_blog,
   contact,
   data_contact,
-  excel,
-  data_excel,
-  outlook,
-  data_outlook,
   panier,
   data_panier,
-  powerpoint,
-  data_powerpoint,
+  book,
   service,
   data_service,
-  word,
-  data_word,
 };
 
 // path: src/handlers/get.js

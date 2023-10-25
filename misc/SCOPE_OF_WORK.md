@@ -16,7 +16,7 @@ Users: visiting her site can do any of the following:
 2. on the service page:
      1. learn about Mrs. Gervais's teaching, private mentoring and document formatting services
      2. fill out a form with a pulldown menu for the subject field (teaching, mentoring, document formatting)
-3. on the product pages (word, excel, powerpoint, outlook):
+3. on the product pages (word, excel, book, outlook):
      1. read more detailed information about each manual
      2. select between the pdf and paper versions of the manuals and add them to the shopping basket (info is saved in a cookie)
      3. see a preview of each manual
