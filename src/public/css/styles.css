@@ -556,11 +556,12 @@ textarea {
 }
 
 .long-text p {
-    display: inline;  /* Add this line */
+    display: inline;
 }
 
 .long-text > p > br {
-    margin-bottom: 1rem;
+    margin-bottom: 5rem;
+    display: block;
 }
 
 @media (max-width: 960px){
@@ -594,8 +595,16 @@ table#format-specs {
 
 /* general styles */
 .book-cover {
-    /*max-width : 61.803vw;*/
     height : 61.803vh;
+    opacity: 0;
+    -webkit-transition: all 1s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+}
+
+.book-cover.loaded {
+    opacity: 1;
 }
 
 /* backgrounds */

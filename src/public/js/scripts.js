@@ -107,23 +107,45 @@ window.addEventListener("resize", function () {
 });
 
 // Check if the user has set their system to use reduced motion
-const scroller = () => {
-  const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
-  const scroller = document.querySelector(".scroller__inner");
-
-  if (scroller && !prefersReducedMotion) {
-    scroller.setAttribute("data-animated", "true");
-    const items = Array.from(scroller.children);
-    items.forEach((item) => {
-      const duplicate = item.cloneNode(true);
-      duplicate.setAttribute("aria-hidden", "true");
-      scroller.appendChild(duplicate);
-    });
-  }
-};
+// const scroller = () => {
+//   const prefersReducedMotion = window.matchMedia(
+//     "(prefers-reduced-motion: reduce)",
+//   ).matches;
+//   const scroller = document.querySelector(".scroller__inner");
+//
+//   if (scroller && !prefersReducedMotion) {
+//     scroller.setAttribute("data-animated", "true");
+//     const items = Array.from(scroller.children);
+//     items.forEach((item) => {
+//       const duplicate = item.cloneNode(true);
+//       duplicate.setAttribute("aria-hidden", "true");
+//       scroller.appendChild(duplicate);
+//     });
+//   }
+// };
 
 // initialize the scroller on page load and after each htmx swap
-scroller();
-document.body.addEventListener("htmx:afterSwap", scroller);
+// scroller();
+// document.body.addEventListener("htmx:afterSwap", scroller);
+
+// add 'loaded' class to book-covers on load
+document.body.addEventListener('htmx:afterSwap', function() {
+    const bookCovers = document.querySelectorAll(".book-cover");
+    bookCovers.forEach((cover) => {
+      if (cover.complete) {
+        cover.classList.add("loaded");
+      } else {
+        cover.onload = function() { this.classList.add("loaded"); }
+      }
+    });
+});
+
+// add 'loaded' class to book-covers on load
+const bookCovers = document.querySelectorAll(".book-cover");
+bookCovers.forEach((cover) => {
+  if (cover.complete) {
+    cover.classList.add("loaded");
+  } else {
+    cover.onload = function() { this.classList.add("loaded"); }
+  }
+});

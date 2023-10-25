@@ -62,14 +62,14 @@
         <h2 class="mt3 mb1">À propos</h2>
         <div class="long-text">
             <% book.description.split('\\n').forEach((paragraph) => { %>
-                <p><%= paragraph; %><br></p>
+                <p><%= paragraph; %></p><br><br>
             <% }); %>
         </div>
         <% if (book.workbook_desc) {%>
             <h2 class="mt3 mb1">Manuels par niveaux</h2>
             <div>
                 <% book.workbook_desc.split('\\n').forEach((paragraph) => { %>
-                    <p><%= paragraph; %><br></p>
+                    <p><%= paragraph; %></p><br><br>
                 <% }); %>
             </div>
         <%}%>
