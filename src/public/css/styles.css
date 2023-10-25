@@ -596,14 +596,17 @@ table#format-specs {
 /* general styles */
 .book-cover {
     height : 61.803vh;
-    opacity: 0;
+}
+
+.img-fade {
+    opacity : 0;
     -webkit-transition: all 1s ease-in-out;
     -moz-transition: all 1s ease-in-out;
     -o-transition: all 1s ease-in-out;
     transition: all 1s ease-in-out;
 }
 
-.book-cover.loaded {
+.img-fade.loaded {
     opacity: 1;
 }
 
@@ -743,6 +746,12 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
     grid        : auto auto / repeat(2, 1fr);
 }
 
+@media (max-width : 960px) {
+    .book-grid {
+        grid : auto auto / 1fr;
+    }
+}
+
 .book-grid > div {
     background     : var(--white);
     border-radius  : 0.5rem;
@@ -751,6 +760,8 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
     gap            : 1rem;
     padding        : .5rem 4rem 2rem;
 }
+
+
 
 .word-cover {
     background : var(--word-stoke);
