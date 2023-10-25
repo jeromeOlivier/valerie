@@ -39,9 +39,7 @@ const data_service = asyncHandler(async(req, res) => {
 });
 
 // GET WORD, EXCEL, POWERPOINT, OUTLOOK
-const book = asyncHandler(async(req, res) => {
-  getBook(req, res, validPages);
-});
+const book = asyncHandler(async(req, res) => getBook(req, res, validPages));
 
 // DYNAMIC: GET BLOG
 const blog = asyncHandler(async(req, res) => {

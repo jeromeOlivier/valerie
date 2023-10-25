@@ -1,7 +1,6 @@
 // purpose: main entry point for the application
 // external dependencies
 const express = require("express");
-const bodyParser = require("body-parser");
 const helmet = require("helmet");
 require("dotenv").config();
 const path = require("path");
@@ -29,8 +28,8 @@ app.use(
     },
   }),
 );
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
