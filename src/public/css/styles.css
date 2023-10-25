@@ -581,6 +581,20 @@ textarea {
     border-radius : 0.5rem;
 }
 
+div.blue-background > div {
+    margin-top: 5rem;
+    padding: 4rem;
+    margin-bottom: 5rem;
+}
+
+@media (max-width: 960px){
+    div.blue-background > div {
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+        padding: 2rem;
+    }
+}
+
 .block { display : block; }
 
 .inline { display : inline; }
@@ -760,8 +774,6 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
     gap            : 1rem;
     padding        : .5rem 4rem 2rem;
 }
-
-
 
 .word-cover {
     background : var(--word-stoke);
