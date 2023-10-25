@@ -14,82 +14,83 @@ const validPages = require("../utils/validPages");
  */
 const db = require("../utils/database");
 
-// GET INDEX
-const index = asyncHandler(async (req, res) =>
-  getStaticLayout(req, res, validPages),
-);
-const data_index = asyncHandler(async (req, res) =>
-  getStaticData(req, res, validPages),
-);
-// GET BLOG
-const blog = asyncHandler(async (req, res) => {
-  const [contact] = await db.query("SELECT * FROM customers");
-  await res.render("layout", { main: "data_blog", contact: contact });
-});
-const data_blog = asyncHandler(async (req, res) =>
-  getBlogData(req, res, validPages),
-);
-// GET CONTACT
-const contact = asyncHandler(async (req, res) =>
-  getStaticLayout(req, res, validPages),
-);
-const data_contact = asyncHandler(async (req, res) =>
-  getStaticData(req, res, validPages),
-);
-// GET EXCEL
-const excel = asyncHandler(async (req, res) =>
-  getStaticLayout(req, res, validPages),
-);
-const data_excel = asyncHandler(async (req, res) =>
-  getStaticData(req, res, validPages),
-);
-// GET OUTLOOK
-const outlook = asyncHandler(async (req, res, validPages) => {
-  const [customers] = db.query("SELECT * FROM customers");
-  console.log(customers);
-  getStaticLayout(req, res);
-});
-const data_outlook = asyncHandler(async (req, res) =>
-  getStaticData(req, res, validPages),
-);
-// GET PANIER
-const panier = asyncHandler(async (req, res) =>
-  getStaticLayout(req, res, validPages),
-);
-const data_panier = asyncHandler(async (req, res) =>
-  getStaticData(req, res, validPages),
-);
-// GET POWERPOINT
-const powerpoint = asyncHandler(async (req, res) =>
-  getStaticLayout(req, res, validPages),
-);
-const data_powerpoint = asyncHandler(async (req, res) =>
-  getStaticData(req, res, validPages),
-);
-// GET SERVICE
-const service = asyncHandler(async (req, res) =>
-  getStaticLayout(req, res, validPages),
-);
-const data_service = asyncHandler(async (req, res) =>
-  getStaticData(req, res, validPages),
-);
-// GET WORD
-const word = asyncHandler(async (req, res) => {
-  console.log("hello");
+// STATIC: GET INDEX
+const index = asyncHandler(async(req, res) => {
   getStaticLayout(req, res, validPages);
 });
-const data_word = asyncHandler(async (req, res) =>
-  getStaticData(req, res, validPages),
-);
+const data_index = asyncHandler(async(req, res) => {
+  getStaticData(req, res, validPages);
+});
 
-// helper functions
+// STATIC: GET CONTACT
+const contact = asyncHandler(async(req, res) => {
+  getStaticLayout(req, res, validPages);
+});
+const data_contact = asyncHandler(async(req, res) => {
+  getStaticData(req, res, validPages);
+});
+
+// STATIC: GET SERVICE
+const service = asyncHandler(async(req, res) => {
+  getStaticLayout(req, res, validPages);
+});
+const data_service = asyncHandler(async(req, res) => {
+  getStaticData(req, res, validPages);
+});
+
+// DYNAMIC: GET WORD
+const word = asyncHandler(async(req, res) => {
+  getBook(req, res, validPages);
+});
+const data_word = asyncHandler(async(req, res) => {
+  getBookData(req, res, validPages);
+});
+
+// DYNAMIC: GET EXCEL
+const excel = asyncHandler(async(req, res) => {
+  getBook(req, res, validPages);
+});
+const data_excel = asyncHandler(async(req, res) => {
+  getStaticData(req, res, validPages);
+});
+
+// DYNAMIC: GET POWERPOINT
+const powerpoint = asyncHandler(async(req, res) => {
+  getBook(req, res, validPages);
+});
+const data_powerpoint = asyncHandler(async(req, res) => {
+  getStaticData(req, res, validPages);
+});
+
+// DYNAMIC: GET OUTLOOK
+const outlook = asyncHandler(async(req, res) => {
+  getBook(req, res, validPages);
+});
+const data_outlook = asyncHandler(async(req, res) => {
+  getStaticData(req, res, validPages);
+});
+
+// DYNAMIC: GET BLOG
+const blog = asyncHandler(async(req, res) => {
+  await res.render("layout", { main: "data_blog", contact: contact });
+});
+const data_blog = asyncHandler(async(req, res) => {
+  getBlogData(req, res, validPages);
+});
+
+// DYNAMIC: GET PANIER
+const panier = asyncHandler(async(req, res) => {
+  getStaticLayout(req, res, validPages);
+});
+const data_panier = asyncHandler(async(req, res) => {
+  getStaticData(req, res, validPages);
+});
+
 // handler for full page renders
 async function getStaticLayout(req, res, validPages) {
-  console.log(req.url);
   try {
     if (req && typeof req.url === "string") {
       const page = validPages.find((page) => page.path === req.url);
-      console.log(page);
       if (page) {
         await res.render("layout", { main: page.file });
       } else {
@@ -99,7 +100,6 @@ async function getStaticLayout(req, res, validPages) {
       throw new Error("Invalid Request");
     }
   } catch (err) {
-    console.error(err);
     res.status(500).send("Layout render error");
   }
 }
@@ -108,22 +108,89 @@ async function getStaticLayout(req, res, validPages) {
 async function getStaticData(req, res, validPages) {
   try {
     if (req && typeof req.url === "string") {
-      const page = validPages.find((page) => page.path === request);
-      if (page) {
-        await res.render(page.file);
+      const valid = validPages.find((page) => page.path === req.url);
+      if (valid) {
+        res.render(valid.file);
       } else {
-        await res.render("not_found");
+        res.render("not_found");
       }
     } else {
       throw new Error("Invalid Request URL");
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Data injection error");
+    res.status(500).send("Internal Server Error");
   }
 }
 
-function getBookLayout(req, res, validPages) {}
+async function getBook(req, res, validPages) {
+  if (req && typeof req.url === "string") {
+    try {
+      const page = validPages.find((page) => page.path === req.url);
+      // if page is invalid or page does not contain the book attribute...
+      if (!page?.book) throw new Error("Page not found");
+
+      // get the book and format the id for pdf (the default format)
+      const getBook = db.query(`SELECT *
+                                FROM books
+                                WHERE title = '${ page.book }';`);
+      const getFormatId = db.query(`SELECT id
+                                    FROM formats
+                                    WHERE name = 'pdf';`);
+      const [[[book]], [[format]]] = await Promise.all([getBook, getFormatId]);
+      if (!book) throw new Error("Book not found");
+
+      // get the data for the format table
+      const [[book_format]] =
+        await db.query(`SELECT *
+                        FROM book_formats
+                        WHERE book_id = '${ book.id }'
+                          AND format = '${ format.id }';`);
+
+      // get the value for language and market
+      const getLanguage = db.query(`SELECT name
+                                    FROM languages
+                                    WHERE id = '${ book_format.language }';`);
+      const getMarket = db.query(`SELECT name
+                                  FROM market_coverage
+                                  WHERE id = '${ book_format.market }';`);
+      const [[[language]], [[market]]] = await Promise.all([getLanguage, getMarket]);
+      if (!language || !market) throw new Error("Language or market not found");
+
+      // set the language and market values
+      book_format.language = language?.name;
+      book_format.market = market?.name;
+
+      const [workbooks] = await db.query(`SELECT *
+                                           FROM workbooks
+                                           WHERE book_id = '${ book.id }';`);
+      console.log(workbooks);
+      const getWorkbookPreviews = getWorkbooks.map((workbook) => {
+        db.query(`SELECT *
+                         FROM book_formats
+                         WHERE book_id = '${ workbook.id }'
+                           AND format = '${ format.id }';`);
+      });
+      const [workbookPreviews] = await Promise.all(getWorkbookPreviews);
+      console.log(workbookPreviews);
+
+      // disconnect from the database
+      db.disconnect;
+
+      // render the layout
+      res.render("layout", {
+        main: "data_book",
+        book: book,
+        book_format: book_format,
+      });
+    } catch (err) {
+      res.status(500).send(`Internal Server Error`);
+    }
+  } else {
+    console.log("Database query failed");
+  }
+}
+
+async function getBookData(req, res, validPages) {}
 
 module.exports = {
   data_index,

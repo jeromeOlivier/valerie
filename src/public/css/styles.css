@@ -58,7 +58,7 @@
     --g_excel                   : linear-gradient(137.51deg, #237045 0.86%, #17766F 43.85%, #98438A 100%);
     --g_main                    : linear-gradient(137.51deg, #1D375B 1.4%, #12ADAD 99.12%);
     --g_outlook                 : linear-gradient(137.51deg, #987A3C 0%, #218567 70.8%, #21689E 100%);
-    --g_powerpoint              : linear-gradient(137.51deg, #BE3435 20.72%, #708743 64.63%, #00AC96 100%);
+    --g_power                   : linear-gradient(137.51deg, #BE3435 20.72%, #708743 64.63%, #00AC96 100%);
     --g_word                    : linear-gradient(137.51deg, #263C51 1.65%, #23486C 12.05%, #C95D7C 64.6%, #E38C6F 90.47%, #ECB86A 99.38%);
     --grey                      : #CCCCCC;
     --header                    : rgba(255, 255, 255, 0.7);
@@ -73,7 +73,7 @@
     --font-semibold             : iSemi, Arial, sans-serif;
     --excel-stoke               : #014328;
     --outlook-stoke             : #0D3C66;
-    --powerpoint-stoke          : #793C27;
+    --power-stoke               : #793C27;
     --word-stoke                : #1D1F3E;
     --font-thin                 : iThin, Arial, sans-serif;
     --off-white                 : #F5F5F5;
@@ -550,6 +550,26 @@ textarea {
     height : 100vh;
 }
 
+.long-text {
+    column-count: 2;
+    column-gap: 4rem;
+}
+
+.long-text p {
+    display: inline;  /* Add this line */
+}
+
+.long-text > p > br {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 960px){
+    .long-text {
+        column-count: 1;
+        column-gap: 0;
+    }
+}
+
 .center {
     display        : flex;
     flex-direction : column;
@@ -560,8 +580,16 @@ textarea {
     border-radius : 0.5rem;
 }
 
-.block {
-    display : block;
+.block { display : block; }
+
+.inline { display : inline; }
+
+.inline-block { display : inline-block; }
+
+table#format-specs {
+    border-spacing: 2rem 1rem;
+    table-layout: auto;
+    width: 25rem;
 }
 
 /* general styles */
@@ -605,8 +633,8 @@ textarea {
     width      : 100%;
 }
 
-.powerpoint-background:before {
-    background : var(--g_powerpoint);
+.power-background:before {
+    background : var(--g_power);
     content    : "";
     height     : calc(61.803% + var(--header-height));
     left       : 0;
@@ -720,11 +748,20 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
     border     : solid var(--stroke) var(--word-stoke);
 }
 
-.excel-cover { border : solid var(--stroke) var(--excel-stoke); }
+.excel-cover {
+    background : var(--excel-stoke);
+    border : solid var(--stroke) var(--excel-stoke);
+}
 
-.powerpoint-cover { border : solid var(--stroke) var(--powerpoint-stoke); }
+.power-cover {
+    background : var(--power-stoke);
+    border : solid var(--stroke) var(--power-stoke);
+}
 
-.outlook-cover { border : solid var(--stroke) var(--outlook-stoke); }
+.outlook-cover {
+    background : var(--outlook-stoke);
+    border : solid var(--stroke) var(--outlook-stoke);
+}
 
 .book-grid > div > p { margin-bottom : auto; }
 
