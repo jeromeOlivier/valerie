@@ -617,7 +617,7 @@ div.blue-background > div {
 
 div#format-specs {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 4fr 5fr;
     /*width: 100%;*/
     max-width: 25rem;
     gap: 1rem 2rem;

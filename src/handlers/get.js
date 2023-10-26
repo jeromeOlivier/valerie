@@ -1,9 +1,21 @@
+// Description: This file contains the handlers for GET requests.
+/**
+ * @description The express module.
+ * @type {expressAsyncHandler | (<P=ParamsDictionary, ResBody=any, ReqBody=any, ReqQuery=Query>(handler: (...args:
+ *   Parameters<e.RequestHandler<P, ResBody, ReqBody, ReqQuery>>) => (void | Promise<void>)) => e.RequestHandler<P,
+ *   ResBody, ReqBody, ReqQuery>)}
+ */
 const asyncHandler = require("express-async-handler");
 /**
  * @description array of valid pages
  * @type {[]}
  */
 const validPages = require("../utils/validPages");
+/**
+ * @description The validFormats variable book format.
+ * @type {Set<string>}
+ */
+const validFormats = require("../utils/validFormats");
 /**
  * @description The `db` variable represents the database utility.
  *
@@ -14,7 +26,7 @@ const validPages = require("../utils/validPages");
  */
 const db = require("../utils/database");
 
-// STATIC: GET INDEX
+// GET INDEX
 const index = asyncHandler(async(req, res) => {
   getStaticLayout(req, res, validPages);
 });
@@ -22,7 +34,7 @@ const data_index = asyncHandler(async(req, res) => {
   getStaticData(req, res, validPages);
 });
 
-// STATIC: GET CONTACT
+// GET CONTACT
 const contact = asyncHandler(async(req, res) => {
   getStaticLayout(req, res, validPages);
 });
@@ -30,7 +42,7 @@ const data_contact = asyncHandler(async(req, res) => {
   getStaticData(req, res, validPages);
 });
 
-// STATIC: GET SERVICE
+// GET SERVICE
 const service = asyncHandler(async(req, res) => {
   getStaticLayout(req, res, validPages);
 });
@@ -41,7 +53,7 @@ const data_service = asyncHandler(async(req, res) => {
 // GET WORD, EXCEL, POWERPOINT, OUTLOOK
 const book = asyncHandler(async(req, res) => getBook(req, res, validPages));
 
-// DYNAMIC: GET BLOG
+// GET BLOG
 const blog = asyncHandler(async(req, res) => {
   await res.render("layout", { main: "data_blog", contact: contact });
 });
@@ -49,13 +61,16 @@ const data_blog = asyncHandler(async(req, res) => {
   getBlogData(req, res, validPages);
 });
 
-// DYNAMIC: GET PANIER
+// GET PANIER
 const panier = asyncHandler(async(req, res) => {
   getStaticLayout(req, res, validPages);
 });
 const data_panier = asyncHandler(async(req, res) => {
   getStaticData(req, res, validPages);
 });
+
+// GET BOOK FORMAT
+const data_format = asyncHandler(async(req, res) => getFormat(req, res, validPages));
 
 // handler for full page renders
 async function getStaticLayout(req, res, validPages) {
@@ -130,10 +145,11 @@ async function getBook(req, res, validPages) {
       // set the language and market values
       book_format.language = language?.name;
       book_format.market = market?.name;
+      book_format.name = "pdf";
 
       const [workbooks] = await db.query(`SELECT *
-                                           FROM workbooks
-                                           WHERE book_id = '${ book.id }';`);
+                                          FROM workbooks
+                                          WHERE book_id = '${ book.id }';`);
       console.log(workbooks);
       // const getWorkbookPreviews = getWorkbooks.map((workbook) => {
       //   db.query(`SELECT *
@@ -168,7 +184,46 @@ async function getBook(req, res, validPages) {
   }
 }
 
-async function getBookData(req, res, validPages) {}
+async function getFormat(req, res, validPages) {
+  if (req && typeof req.url === "string") {
+    try {
+      // validate the query parameters
+      const isValidBook = validFormats.has(req.params.title);
+      const isValidFormat = validFormats.has(req.params.name);
+      if (!isValidBook || !isValidFormat) throw new Error("Invalid book or format");
+
+      // get the book and format ids
+      const getBookId = db.query(`SELECT id FROM books WHERE title = '${ req.params.title }';`);
+      const getFormatId = db.query(`SELECT id FROM formats WHERE name = '${ req.params.name }';`);
+      const [[[book]], [[format]]] = await Promise.all([getBookId, getFormatId]);
+      if (!book || !format) throw new Error("Book or format not found");
+
+      // get the book format data
+      const [[bookFormat]] = await db.query(
+        `SELECT * FROM book_formats
+         WHERE book_id = '${ book.id }'
+           AND format = '${ format.id }';`,
+      );
+      if (!bookFormat) throw new Error("Book format not found");
+      // get the language and market values
+      const getLanguage = db.query(`SELECT name FROM languages WHERE id = '${ bookFormat.language }';`);
+      const getMarket = db.query(`SELECT name FROM market_coverage WHERE id = '${ bookFormat.market }';`);
+      const [[[language]], [[market]]] = await Promise.all([getLanguage, getMarket]);
+      if (!language || !market) throw new Error("Language or market not found");
+      // disconnect from the database
+      db.disconnect;
+
+      // set the language and market values
+      bookFormat.language = language?.name;
+      bookFormat.market = market?.name;
+      bookFormat.name = req.params.name;
+      console.log(bookFormat);
+      res.render("data_format", { book_format: bookFormat , book: { title: req.params.title } });
+    } catch (err) {
+      res.status(500).send(`Internal Server Error`);
+    }
+  }
+}
 
 module.exports = {
   data_index,
@@ -182,6 +237,7 @@ module.exports = {
   book,
   service,
   data_service,
+  data_format,
 };
 
 // path: src/handlers/get.js
