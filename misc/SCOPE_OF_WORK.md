@@ -21,7 +21,7 @@ Users: visiting her site can do any of the following:
      2. select between the pdf and paper versions of the manuals and add them to the shopping basket (info is saved in a cookie)
      3. see a preview of each manual
      4. learn about the different workbooks available for **Word** and **Excel**
-     5. fill out a form to get in touch with Mrs. Gervais regarding the aforementioned workbooks (not availbable for purchase on the site)
+     5. fill out a form to get in touch with Mrs. Gervais regarding the aforementioned workbooks (not available for purchase on the site)
 
 4. on the blog page:
      1. view a list and preview of Mrs. Gervais's blog posts

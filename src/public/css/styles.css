@@ -258,6 +258,16 @@ nav > ul > li {
     color : var(--white);
 }
 
+.bold {
+    font-family : var(--font-bold);
+    font-weight : 700;
+}
+
+.semi-bold {
+    font-family : var(--font-semibold);
+    font-weight : 600;
+}
+
 /* images */
 .img { display : block; }
 
@@ -581,14 +591,14 @@ textarea {
     border-radius : 0.5rem;
 }
 
-div.blue-background > div {
+.temoignages {
     margin-bottom : 5rem;
     margin-top    : 5rem;
     padding       : 4rem;
 }
 
 @media (max-width : 960px) {
-    div.blue-background > div {
+    .temoignages {
         margin-bottom : 2rem;
         margin-top    : 3rem;
         padding       : 2rem;

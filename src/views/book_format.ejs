@@ -1,47 +1,49 @@
-<input class="radio-button" type="radio" name="format"
-       value="PDF" id="PDF"
-       hx-get="/book/<%= book_format.title %>/format/pdf"
-       hx-trigger="click" hx-target="#book-format"
-       hx-swap="innerHTML"
-        <% book_format.name === 'pdf' ? 'checked' : '' %>
->
-<label class="radio-label" for="PDF">Format PDF</label>
-<input class="radio-button" type="radio" name="format"
-       value="Papier" id="Papier"
-       hx-get="/book/<%= book.title %>/format/papier"
-       hx-trigger="click" hx-target="#book-format"
-       hx-swap="innerHTML"
-        <% book_format.name === 'papier' ? 'checked' : '' %>
->
-<label class="radio-label" for="Papier">Format Papier</label>
-<div id="format-specs" class="mt1">
-    <div>Titre</div>
-    <div><%= book.title; %></div>
-    <div>Date de publication</div>
-    <div>
-        <%
-        let pub_date = new Date(book_format.pub_date);
-        let month_names = [
-            'Janvier', 'Février', 'Mars', 'Avril', 'Mai',
-            'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre',
-            'Novembre', 'Décembre'
-        ];
-        %>
-        <%= `${ pub_date.getDate() } ${ month_names[pub_date.getMonth()] } ${ pub_date.getFullYear() }`; %></div>
-    <div>Format</div>
-    <div><%= book_format.name; %></div>
-    <div>Taille</div>
-    <div><%= book_format.size; %></div>
-    <div>Nombre de pages</div>
-    <div><%= book_format.pages; %></div>
-    <div>Langue</div>
-    <div><%= book_format.language; %></div>
-    <div>Disponible</div>
-    <div><%= book_format.market; %></div>
-    <div>Prix</div>
-    <div><%= book_format.price; %> $ CAD</div>
-</div>
-<div class="center mt3">
-    <button class="orange-button">Ajouter au panier</button>
-</div>
-<!-- path: /views/book_format.ejs -->
+<form id="book-format" class="center mt3">
+    <input class="radio-button" type="radio" name="format"
+           value="PDF" id="PDF"
+           hx-get="/<%= book_format.title.toLowerCase() %>/format/pdf"
+           hx-trigger="click" hx-target="#book-format"
+           hx-swap="outerHTML"
+            <% if (book_format.name.toLowerCase() === 'pdf') { %>checked<% } %>
+    >
+    <label class="radio-label" for="PDF">Format PDF</label>
+    <input class="radio-button" type="radio" name="format"
+           value="Papier" id="Papier"
+           hx-get="/<%= book_format.title.toLowerCase() %>/format/papier"
+           hx-trigger="click" hx-target="#book-format"
+           hx-swap="outerHTML"
+            <% if (book_format.name.toLowerCase() === 'papier') { %>checked<% } %>
+    >
+    <label class="radio-label" for="Papier">Format Papier</label>
+    <div id="format-specs" class="mt1">
+        <div class="semi-bold">Titre</div>
+        <div><%= book_format.title; %></div>
+        <div class="semi-bold">Date de publication</div>
+        <div>
+            <%
+            let pub_date = new Date(book_format.pub_date);
+            let month_names = [
+                'Janvier', 'Février', 'Mars', 'Avril', 'Mai',
+                'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre',
+                'Novembre', 'Décembre'
+            ];
+            %>
+            <%= `${ pub_date.getDate() } ${ month_names[pub_date.getMonth()] } ${ pub_date.getFullYear() }`; %></div>
+        <div class="semi-bold">Format</div>
+        <div><%= book_format.name; %></div>
+        <div class="semi-bold">Taille</div>
+        <div><%= book_format.size; %></div>
+        <div class="semi-bold">Nombre de pages</div>
+        <div><%= book_format.pages; %></div>
+        <div class="semi-bold">Langue</div>
+        <div><%= book_format.language; %></div>
+        <div class="semi-bold">Disponible</div>
+        <div><%= book_format.market; %></div>
+        <div class="semi-bold">Prix</div>
+        <div><%= book_format.price; %> $ CAD</div>
+    </div>
+    <div class="center mt3">
+        <button class="orange-button">Ajouter au panier</button>
+    </div>
+</form>
+    <!-- path: /views/book_format.ejs -->

@@ -5,9 +5,7 @@
             <img src="./img/svg/<%= book.image; %>" alt="couverture du manuel"
                  class="book-cover img-fade <%= book.border; %> >">
         </div>
-        <form id="book-format" class="center mt3">
-            <%- include('book_format.ejs') %>
-        </form>
+        <%- include('book_format.ejs') %>
         <h2 class="mt3 mb1">À propos</h2>
         <div class="long-text">
             <% book.description.split('\\n').forEach((paragraph) => { %>
