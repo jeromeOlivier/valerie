@@ -70,7 +70,7 @@ const data_panier = asyncHandler(async(req, res) => {
 });
 
 // GET BOOK FORMAT
-const data_format = asyncHandler(async(req, res) => getFormat(req, res, validPages));
+const book_format = asyncHandler(async(req, res) => getBookFormat(req, res, validPages));
 
 // handler for full page renders
 async function getStaticLayout(req, res, validPages) {
@@ -111,46 +111,22 @@ async function getStaticData(req, res, validPages) {
 async function getBook(req, res, validPages) {
   if (req && typeof req.url === "string") {
     try {
+      // validate the query parameters over the whitelist to prevent injection
       const page = validPages.find((page) => page.path === req.url);
       // if page is invalid or page does not contain the book attribute...
       if (!page?.book) throw new Error("Page not found");
-      console.log(page.full);
+
+      // book pages default to pdf format when loading
+      req.params.name = "pdf";
+
       // get the book and format the id for pdf (the default format)
-      const getBook = db.query(`SELECT *
-                                FROM books
-                                WHERE title = '${ page.book }';`);
-      const getFormatId = db.query(`SELECT id
-                                    FROM formats
-                                    WHERE name = 'pdf';`);
-      const [[[book]], [[format]]] = await Promise.all([getBook, getFormatId]);
+      const [[book]] = await db.query(`SELECT * FROM books WHERE title = '${ page.book }';`);
       if (!book) throw new Error("Book not found");
 
-      // get the data for the format table
-      const [[book_format]] =
-        await db.query(`SELECT *
-                        FROM book_formats
-                        WHERE book_id = '${ book.id }'
-                          AND format = '${ format.id }';`);
+      // get book format data
+      const book_format = await getBookFormat(req, res, validPages);
 
-      // get the value for language and market
-      const getLanguage = db.query(`SELECT name
-                                    FROM languages
-                                    WHERE id = '${ book_format.language }';`);
-      const getMarket = db.query(`SELECT name
-                                  FROM market_coverage
-                                  WHERE id = '${ book_format.market }';`);
-      const [[[language]], [[market]]] = await Promise.all([getLanguage, getMarket]);
-      if (!language || !market) throw new Error("Language or market not found");
-
-      // set the language and market values
-      book_format.language = language?.name;
-      book_format.market = market?.name;
-      book_format.name = "pdf";
-
-      const [workbooks] = await db.query(`SELECT *
-                                          FROM workbooks
-                                          WHERE book_id = '${ book.id }';`);
-      console.log(workbooks);
+      // const [workbooks] = await db.query(`SELECT * FROM workbooks WHERE book_id = '${ book.id }';`);
       // const getWorkbookPreviews = getWorkbooks.map((workbook) => {
       //   db.query(`SELECT *
       //                    FROM book_formats
@@ -165,16 +141,9 @@ async function getBook(req, res, validPages) {
 
       // render the data_book with or without layout
       if (page.full) {
-        res.render("layout", {
-          main: "data_book",
-          book: book,
-          book_format: book_format,
-        });
+        res.render("layout", { main: "book", book, book_format });
       } else {
-        res.render("data_book", {
-          book: book,
-          book_format: book_format,
-        });
+        res.render("book", { book, book_format });
       }
     } catch (err) {
       res.status(500).send(`Internal Server Error`);
@@ -184,7 +153,7 @@ async function getBook(req, res, validPages) {
   }
 }
 
-async function getFormat(req, res, validPages) {
+async function getBookFormat(req, res, validPages) {
   if (req && typeof req.url === "string") {
     try {
       // validate the query parameters
@@ -199,28 +168,33 @@ async function getFormat(req, res, validPages) {
       if (!book || !format) throw new Error("Book or format not found");
 
       // get the book format data
-      const [[bookFormat]] = await db.query(
-        `SELECT * FROM book_formats
+      const [[book_format]] = await db.query(
+        `SELECT *
+         FROM book_formats
          WHERE book_id = '${ book.id }'
            AND format = '${ format.id }';`,
       );
-      if (!bookFormat) throw new Error("Book format not found");
+      if (!book_format) throw new Error("Book format not found");
+
       // get the language and market values
-      const getLanguage = db.query(`SELECT name FROM languages WHERE id = '${ bookFormat.language }';`);
-      const getMarket = db.query(`SELECT name FROM market_coverage WHERE id = '${ bookFormat.market }';`);
+      const getLanguage = db.query(`SELECT name FROM languages WHERE id = '${ book_format.language }';`);
+      const getMarket = db.query(`SELECT name FROM market_coverage WHERE id = '${ book_format.market }';`);
       const [[[language]], [[market]]] = await Promise.all([getLanguage, getMarket]);
       if (!language || !market) throw new Error("Language or market not found");
+
       // disconnect from the database
       db.disconnect;
 
-      // set the language and market values
-      bookFormat.language = language?.name;
-      bookFormat.market = market?.name;
-      bookFormat.name = req.params.name;
-      console.log(bookFormat);
-      res.render("data_format", { book_format: bookFormat , book: { title: req.params.title } });
+      // set the language, market, and title values to book_format
+      book_format.language = language?.name;
+      book_format.market = market?.name;
+      book_format.name = req.params.name;
+      book_format.title = req.params.title;
+
+      // return book_format
+      return book_format;
     } catch (err) {
-      res.status(500).send(`Internal Server Error`);
+      throw new Error(`Book format not found: ${ err }`);
     }
   }
 }
@@ -237,7 +211,7 @@ module.exports = {
   book,
   service,
   data_service,
-  data_format,
+  book_format,
 };
 
 // path: src/handlers/get.js
