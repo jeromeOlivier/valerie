@@ -465,13 +465,11 @@ button.orange-button:hover { background : var(--btn_orange_main_hover); }
 
 button > svg { margin-left : .5rem; }
 
-.radio-button { display : none; }
+/*.radio-button { display : none; }*/
 
-.radio-label {
+#tabs > button, #tabs > div > button {
     align-items     : center;
-    background      : var(--btn_radio_unchecked);
-    border          : solid var(--stroke-double) var(--btn_blue_stoke);
-    border-radius   : .5rem;
+    border-radius   : .66rem;
     color           : var(--white);
     cursor          : pointer;
     display         : flex;
@@ -480,11 +478,16 @@ button > svg { margin-left : .5rem; }
     height          : 2rem;
     justify-content : center;
     margin-bottom   : 1rem;
-    padding         : 1.2rem 1.2rem;
+    padding         : 1.5rem 1.2rem;
     width           : fit-content;
 }
 
-.radio-button:checked + .radio-label {
+#tabs > button.blue {
+    background      : var(--btn_radio_unchecked);
+    border          : solid var(--stroke-double) var(--btn_blue_stoke);
+}
+
+#tabs > button.blue.selected {
     background : var(--btn_radio_checked);
 }
 
