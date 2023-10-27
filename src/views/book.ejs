@@ -5,14 +5,19 @@
             <img src="./img/svg/<%= book.image; %>" alt="couverture du manuel"
                  class="book-cover img-fade <%= book.border; %> >">
         </div>
-        <div id="tabs" class="center mt3" hx-target="#tabs" hx-swap="innerHTML">
-            <%- include('book_format.ejs') %>
-        </div>
-        <h2 class="mt3 mb1">À propos</h2>
+        <h2 class="mt3 mb1">À propos du manuel <%= book.title %></h2>
         <div class="long-text">
             <% book.description.split('\\n').forEach((paragraph) => { %>
                 <p><%= paragraph; %></p><br><br>
             <% }); %>
+        </div>
+        <h2 class="mt3 mb1">Acheter le maintenant</h2>
+        <p style="color: red;">The textbooks are available as a downloadable PDF or physical copy. After making
+            your purchase, a link to download the PDF will be sent to you via email. Physical copies are shipped via
+            Canada Post and only available within Canada.</p>
+        <p style="color: red;">Please choose your version below:</p>
+        <div id="tabs" class="center mt3" hx-target="#tabs" hx-swap="innerHTML">
+            <%- include('book_format.ejs') %>
         </div>
         <% if (book.workbook_desc) { %>
             <h2 class="mt3 mb1">Manuels par niveaux</h2>

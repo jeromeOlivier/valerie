@@ -17,7 +17,7 @@
 <div id="format-specs" class="p2">
     <div class="semi-bold">Titre</div>
     <div><%= book_format.title; %></div>
-    <div class="semi-bold">Date de publication</div>
+    <div class="semi-bold">Date&nbsp;de&nbsp;publication</div>
     <div>
         <%
         let pub_date = new Date(book_format.pub_date);
@@ -29,19 +29,24 @@
         %>
         <%= `${ pub_date.getDate() } ${ month_names[pub_date.getMonth()] } ${ pub_date.getFullYear() }`; %></div>
     <div class="semi-bold">Format</div>
-    <div><%= book_format.name; %></div>
+    <div>
+        <% if (book_format.name === 'pdf') { %>
+            <%= book_format.name; %> téléchargeable
+        <% } else { %> <%= book_format.name; %>
+        <% } %>
+    </div>
     <div class="semi-bold">Taille</div>
     <div><%= book_format.size; %></div>
-    <div class="semi-bold">Nombre de pages</div>
+    <div class="semi-bold">Nombre&nbsp;de&nbsp;pages</div>
     <div><%= book_format.pages; %></div>
     <div class="semi-bold">Langue</div>
     <div><%= book_format.language; %></div>
     <div class="semi-bold">Disponible</div>
     <div><%= book_format.market; %></div>
     <div class="semi-bold">Prix</div>
-    <div><%= book_format.price; %> $ CAD</div>
-<div class="center mt3 double-column">
-    <button class="orange-button">Ajouter au panier</button>
-</div>
+    <div class="bold"><%= book_format.price; %> $ CAD</div>
+    <div class="center mt1 double-column">
+        <button class="orange-button">Ajouter au panier</button>
+    </div>
 </div>
 <!-- path: /views/book_format.ejs -->
