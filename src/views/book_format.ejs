@@ -1,12 +1,20 @@
-<button class="blue <% if (book_format.name.toLowerCase() === 'pdf') { %>selected<% } %>"
-        hx-get="/<%= book_format.title.toLowerCase() %>/format/pdf"
->Format PDF
-</button>
-<button class="blue <% if (book_format.name.toLowerCase() === 'papier') { %>selected<% } %>"
-        hx-get="/<%= book_format.title.toLowerCase() %>/format/papier"
->Format Papier
-</button>
-<div id="format-specs" class="mt1">
+<div id="format-tabs">
+    <button
+    <% if (book_format.name.toLowerCase() === 'pdf') { %> class="blue selected cursor"
+    <% }
+    else { %> class="blue" hx-get="/<%= book_format.title.toLowerCase() %>/format/pdf"%>
+            <% } %>
+    >Format PDF
+    </button>
+    <button
+    <% if (book_format.name.toLowerCase() === 'papier') { %> class="blue selected cursor"
+    <% }
+    else { %> class="blue" hx-get="/<%= book_format.title.toLowerCase() %>/format/papier"%>
+            <% } %>
+    >Format Papier
+    </button>
+</div>
+<div id="format-specs" class="p2">
     <div class="semi-bold">Titre</div>
     <div><%= book_format.title; %></div>
     <div class="semi-bold">Date de publication</div>
@@ -32,8 +40,8 @@
     <div><%= book_format.market; %></div>
     <div class="semi-bold">Prix</div>
     <div><%= book_format.price; %> $ CAD</div>
-</div>
-<div class="center mt3">
+<div class="center mt3 double-column">
     <button class="orange-button">Ajouter au panier</button>
+</div>
 </div>
 <!-- path: /views/book_format.ejs -->

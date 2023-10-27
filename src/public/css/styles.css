@@ -467,31 +467,46 @@ button > svg { margin-left : .5rem; }
 
 /*.radio-button { display : none; }*/
 
-#tabs > button, #tabs > div > button {
+#tabs > div > button, #tabs > div > div > button {
     align-items     : center;
     border-radius   : .66rem;
     color           : var(--white);
-    cursor          : pointer;
-    display         : flex;
+    display         : inline-flex;
     font-family     : var(--font-semibold);
     font-size       : 1.05rem;
     height          : 2rem;
     justify-content : center;
-    margin-bottom   : 1rem;
+    margin          : 0;
     padding         : 1.5rem 1.2rem;
     width           : fit-content;
 }
 
-#tabs > button.blue {
-    background      : var(--btn_radio_unchecked);
-    border          : solid var(--stroke-double) var(--btn_blue_stoke);
+#tabs > #format-tabs > button {
+    color       : var(--txt);
+    background : var(--grey);
+    border     : solid var(--stroke-double) var(--txt);
+    border-radius   : .66rem .66rem 0 0;
+    z-index:1;
+    position: relative;
 }
 
-#tabs > button.blue.selected {
-    background : var(--btn_radio_checked);
+#tabs > #format-tabs > button.selected {
+
+    background : var(--off-white);
+    border-bottom: solid var(--stroke-double) var(--off-white);
 }
+
+.double-column {
+  grid-column: span 2;
+}
+
+/*#tabs > #format-tabs {*/
+/*    border-bottom: solid var(--stroke-double) var(--txt);*/
+/*}*/
 
 .pointer { cursor : pointer; }
+
+.cursor { cursor : default; }
 
 input, textarea {
     border        : var(--txt);
@@ -629,11 +644,13 @@ textarea {
 /*}*/
 
 div#format-specs {
-    display: grid;
-    grid-template-columns: 4fr 5fr;
+    display               : grid;
+    gap                   : 1rem 2rem;
     /*width: 100%;*/
-    max-width: 25rem;
-    gap: 1rem 2rem;
+    grid-template-columns : 4fr 5fr;
+    max-width             : 25rem;
+    outline: solid var(--stroke-double) var(--txt);
+    border-radius: .66rem;
 }
 
 /* general styles */
