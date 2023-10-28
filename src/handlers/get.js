@@ -123,7 +123,9 @@ async function getBook(req, res, validUrls, validFormats) {
       if (!selection?.title) throw new Error("Book not found");
 
       // get the book and format the id for pdf (the default format)
-      const [[book]] = await db.query(`SELECT * FROM books WHERE title = '${ selection.title }';`);
+      const [[book]] = await db.query(`
+          SELECT * FROM books WHERE title = '${ selection.title }';
+      `);
       db.disconnect;
       console.log("book:", book);
       if (book.length === 0) throw new Error("Book not found");
@@ -133,19 +135,9 @@ async function getBook(req, res, validUrls, validFormats) {
       const format = "pdf";
       const book_format = await getBookFormat(title, format, validFormats);
 
-      if (book.workbook_desc) {
-        const [workbooks] = await db.query(
-          `SELECT b.id AS b_id, b.title AS book, wb.id AS wb_id, wb.title AS workbook, wp.description, wp.path, wp.level
-           FROM books b
-                    JOIN workbooks wb ON wb.book_id = b.id
-                    JOIN workbook_previews wp ON wb.id = wp.workbook_id
-           WHERE b.title = '${ book.title }'
-           ORDER BY b.id, wb.id, wp.path + '.';`);
-        console.log("workbooks:", workbooks);
-        db.disconnect;
-      }
+      if (book.workbook_desc) book.workbooks = await getWorkbooks(title);
 
-      console.log("final book_format:", book_format, "final book:", book);
+      console.log("book_format:", book_format, "book:", book, "workbooks:", book.workbooks[0].content[0]);
 
       // render the data_book with or without layout
       if (selection.full) {
@@ -162,13 +154,9 @@ async function getBook(req, res, validUrls, validFormats) {
 }
 
 async function getBookFormat(title, format, validFormats) {
-  console.log("inside getBookFormat");
-
   // validate the query parameters
   const isValidTitle = validFormats.has(title);
   const isValidFormat = validFormats.has(format);
-  console.log("isValidTitle:", isValidTitle);
-  console.log("isValidFormat:", isValidFormat);
   const capitalizedTitle = title[0].toUpperCase() + title.slice(1);
   if (!isValidTitle || !isValidFormat) throw new Error(
     `Votre recherche n'est pas valide. Cette action, incluant votre address IP, a été enregistrée et sera examinée d'ici peux. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter l'équipe de support.`);
@@ -192,11 +180,54 @@ async function getBookFormat(title, format, validFormats) {
         AND f.name = '${ format }';
   `);
   if (!book_format) throw new Error("Book format not found");
-  console.log("format:", book_format);
-
   db.disconnect;
 
   return book_format;
+}
+
+async function getWorkbooks(title) {
+  // get the workbooks for the book
+  const [query] = await db.query(
+    `SELECT wb.title       AS title,
+            wb.seq_order   AS sequence,
+            wp.description AS description,
+            wp.path        AS path,
+            wp.level       AS level
+     FROM books b
+              JOIN workbooks wb ON wb.book_id = b.id
+              JOIN workbook_previews wp ON wb.id = wp.workbook_id
+     WHERE b.title = '${ title }'
+     ORDER BY b.id, sequence, path + '.';`);
+  db.disconnect;
+
+  // group the workbooks by title, add the description and level to the content array
+  // and sort the content array by path
+  const result = query.reduce((accumulator, current) => {
+    // find an object in accumulator array having the same title as the current object
+    let obj = accumulator.find(item => item.title === current.title);
+
+    if (!obj) {
+      // if such an object does not exist in accumulator yet, create one
+      obj = {
+        title: current.title,
+        content: [],
+      };
+      // and push it to the accumulator
+      accumulator.push(obj);
+    }
+
+    // push the description to the content array of the found (or just created) object
+    obj.content.push({
+      description: current.description,
+      level: current.level,
+    });
+
+    // sort the content array by path
+    obj.content.sort((a, b) => a.path - b.path);
+
+    return accumulator;
+  }, []);
+  return result;
 }
 
 module.exports = {
