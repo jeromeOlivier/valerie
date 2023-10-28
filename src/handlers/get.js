@@ -74,7 +74,6 @@ const book_format = asyncHandler(async(req, res) => {
   const title = req.params.title;
   const format = req.params.format;
   const result = await getBookFormat(title, format, validFormats);
-  console.log("result:", result);
   res.render("book_format", { book_format: result });
 });
 
@@ -114,6 +113,7 @@ async function getStaticData(req, res, validPages) {
   }
 }
 
+// fetch book data
 async function getBook(req, res, validUrls, validFormats) {
   if (req && typeof req.url === "string") {
     try {
@@ -124,6 +124,7 @@ async function getBook(req, res, validUrls, validFormats) {
 
       // get the book and format the id for pdf (the default format)
       const [[book]] = await db.query(`SELECT * FROM books WHERE title = '${ selection.title }';`);
+      db.disconnect;
       console.log("book:", book);
       if (book.length === 0) throw new Error("Book not found");
 
@@ -131,20 +132,20 @@ async function getBook(req, res, validUrls, validFormats) {
       const title = book.title.toLowerCase();
       const format = "pdf";
       const book_format = await getBookFormat(title, format, validFormats);
-      console.log("book format:", book_format);
 
-      // const [workbooks] = await db.query(`SELECT * FROM workbooks WHERE book_id = '${ book.id }';`);
-      // const getWorkbookPreviews = getWorkbooks.map((workbook) => {
-      //   db.query(`SELECT *
-      //                    FROM book_formats
-      //                    WHERE book_id = '${ workbook.id }'
-      //                      AND format = '${ format.id }';`);
-      // });
-      // const [workbookPreviews] = await Promise.all(getWorkbookPreviews);
-      // console.log(workbookPreviews);
+      if (book.workbook_desc) {
+        const [workbooks] = await db.query(
+          `SELECT b.id AS b_id, b.title AS book, wb.id AS wb_id, wb.title AS workbook, wp.description, wp.path, wp.level
+           FROM books b
+                    JOIN workbooks wb ON wb.book_id = b.id
+                    JOIN workbook_previews wp ON wb.id = wp.workbook_id
+           WHERE b.title = '${ book.title }'
+           ORDER BY b.id, wb.id, wp.path + '.';`);
+        console.log("workbooks:", workbooks);
+        db.disconnect;
+      }
 
-      // disconnect from the database
-      db.disconnect;
+      console.log("final book_format:", book_format, "final book:", book);
 
       // render the data_book with or without layout
       if (selection.full) {
@@ -161,54 +162,41 @@ async function getBook(req, res, validUrls, validFormats) {
 }
 
 async function getBookFormat(title, format, validFormats) {
-  console.log("title:", title);
-  console.log("format:", format);
-  try {
-    console.log("inside try");
-    // validate the query parameters
-    const isValidTitle = validFormats.has(title);
-    console.log("isValidTtle:", isValidTitle);
-    const isValidFormat = validFormats.has(format);
-    console.log("isValidFormat:", isValidFormat);
+  console.log("inside getBookFormat");
 
-    // if (!isValidTitle) throw new Error("Invalid request");
+  // validate the query parameters
+  const isValidTitle = validFormats.has(title);
+  const isValidFormat = validFormats.has(format);
+  console.log("isValidTitle:", isValidTitle);
+  console.log("isValidFormat:", isValidFormat);
+  const capitalizedTitle = title[0].toUpperCase() + title.slice(1);
+  if (!isValidTitle || !isValidFormat) throw new Error(
+    `Votre recherche n'est pas valide. Cette action, incluant votre address IP, a été enregistrée et sera examinée d'ici peux. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter l'équipe de support.`);
 
-    // get the book and format ids
-    const getBookId = db.query(`SELECT id FROM books WHERE title = '${ title }';`);
-    const getFormatId = db.query(`SELECT id FROM formats WHERE name = '${ format }';`);
-    const [[[book_id]], [[format_id]]] = await Promise.all([getBookId, getFormatId]);
-    if (!book_id) throw new Error("Book id not found");
-    if (!format_id) throw new Error("Format id not found");
+  // get the book format data
+  const [[book_format]] = await db.query(`
+      SELECT b.title     AS title,
+             bf.pub_date AS date,
+             f.name      AS type,
+             bf.size     AS size,
+             bf.pages    AS pages,
+             l.name      AS language,
+             m.name      AS market,
+             bf.price    AS price
+      FROM book_formats bf
+               JOIN books b ON bf.book_id = b.id
+               JOIN formats f ON f.id = bf.format
+               JOIN languages l ON l.id = bf.language
+               JOIN market_coverage m ON m.id = bf.market
+      WHERE b.title = '${ capitalizedTitle }'
+        AND f.name = '${ format }';
+  `);
+  if (!book_format) throw new Error("Book format not found");
+  console.log("format:", book_format);
 
-    // get the book format data
-    const [[book_format]] = await db.query(
-      `SELECT * FROM book_formats WHERE book_id = '${ book_id.id }' AND format = '${ format_id.id }';`,
-    );
-    if (!book_format) throw new Error("Book format not found");
-    console.log("book_format:", book_format);
+  db.disconnect;
 
-    // get the language and market values
-    const getLanguage = db.query(`SELECT name FROM languages WHERE id = '${ book_format.language }';`);
-    const getMarket = db.query(`SELECT name FROM market_coverage WHERE id = '${ book_format.market }';`);
-    const [[[language]], [[market]]] = await Promise.all([getLanguage, getMarket]);
-    console.log("language:", language);
-    console.log("market:", market);
-    if (!language || !market) throw new Error("Language or market not found");
-
-    // disconnect from the database
-    db.disconnect;
-
-    // set the language, market, and title values to book_format
-    book_format.language = language?.name;
-    book_format.market = market?.name;
-    book_format.name = format;
-    book_format.title = title[0].toUpperCase() + title.slice(1);
-
-    // return book_format
-    return book_format;
-  } catch (err) {
-    throw new Error(`Book format not found: ${ err }`);
-  }
+  return book_format;
 }
 
 module.exports = {

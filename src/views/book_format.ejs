@@ -1,13 +1,13 @@
 <div id="format-tabs">
     <button
-    <% if (book_format.name.toLowerCase() === 'pdf') { %> class="blue selected cursor"
+    <% if (book_format.type.toLowerCase() === 'pdf') { %> class="blue selected cursor"
     <% }
     else { %> class="blue" hx-get="/<%= book_format.title.toLowerCase() %>/format/pdf"%>
             <% } %>
     >Format PDF
     </button>
     <button
-    <% if (book_format.name.toLowerCase() === 'papier') { %> class="blue selected cursor"
+    <% if (book_format.type.toLowerCase() === 'papier') { %> class="blue selected cursor"
     <% }
     else { %> class="blue" hx-get="/<%= book_format.title.toLowerCase() %>/format/papier"%>
             <% } %>
@@ -20,19 +20,19 @@
     <div class="semi-bold">Date&nbsp;de&nbsp;publication</div>
     <div>
         <%
-        let pub_date = new Date(book_format.pub_date);
+        let date = new Date(book_format.date);
         let month_names = [
-            'Janvier', 'Février', 'Mars', 'Avril', 'Mai',
-            'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre',
-            'Novembre', 'Décembre'
+            'janv', 'févr', 'mars', 'avr', 'mai',
+            'juin', 'juil', 'août', 'sept', 'oct',
+            'nov', 'déc'
         ];
         %>
-        <%= `${ pub_date.getDate() } ${ month_names[pub_date.getMonth()] } ${ pub_date.getFullYear() }`; %></div>
+        <%= `${ date.getDate() } ${ month_names[date.getMonth()] } ${ date.getFullYear() }`; %></div>
     <div class="semi-bold">Format</div>
     <div>
-        <% if (book_format.name === 'pdf') { %>
-            <%= book_format.name; %> téléchargeable
-        <% } else { %> <%= book_format.name; %>
+        <% if (book_format.type === 'pdf') { %>
+            <%= book_format.type; %> téléchargeable
+        <% } else { %> <%= book_format.type; %>
         <% } %>
     </div>
     <div class="semi-bold">Taille</div>
