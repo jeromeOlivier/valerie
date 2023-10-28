@@ -135,9 +135,11 @@ async function getBook(req, res, validUrls, validFormats) {
       const format = "pdf";
       const book_format = await getBookFormat(title, format, validFormats);
 
-      if (book.workbook_desc) book.workbooks = await getWorkbooks(title);
-
-      console.log("book_format:", book_format, "book:", book, "workbooks:", book.workbooks[0].content[0]);
+      if (book.workbook_desc) {
+        book.workbooks = await getWorkbooks(title);
+      } else {
+        book.workbooks = [];
+      }
 
       // render the data_book with or without layout
       if (selection.full) {
