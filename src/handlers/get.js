@@ -55,7 +55,7 @@ const book = asyncHandler(async(req, res) => getBook(req, res, validUrls, validF
 
 // GET BLOG
 const blog = asyncHandler(async(req, res) => {
-  await res.render("layout", { main: "data_blog", contact: contact });
+  await res.render("layout", { main: "blog", contact: contact });
 });
 const data_blog = asyncHandler(async(req, res) => {
   getBlogData(req, res, validUrls);
@@ -127,7 +127,6 @@ async function getBook(req, res, validUrls, validFormats) {
           SELECT * FROM books WHERE title = '${ selection.title }';
       `);
       db.disconnect;
-      console.log("book:", book);
       if (book.length === 0) throw new Error("Book not found");
 
       // get format. book page load initially defaults to pdf
@@ -140,6 +139,7 @@ async function getBook(req, res, validUrls, validFormats) {
       } else {
         book.workbooks = [];
       }
+      console.log("book:", book);
 
       // render the data_book with or without layout
       if (selection.full) {

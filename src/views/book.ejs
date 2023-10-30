@@ -4,6 +4,8 @@
             <h1 class="white mb1"><%= book.title; %></h1>
             <img src="./img/svg/<%= book.image; %>" alt="couverture du manuel"
                  class="book-cover img-fade <%= book.border; %> >">
+            <img src="./img/svg/preview.svg" alt="aperçu du manuel"
+                 class="img-fade preview">
         </div>
         <h2 class="mt3 mb1">À propos du manuel <%= book.title %></h2>
         <div class="long-text">
@@ -29,7 +31,19 @@
                     <p><%= paragraph; %></p><br><br>
                 <% }); %>
             </div>
-        <% } %>
+        <div>
+<!-- add html entity for bullet points -->
+            <% book.workbooks.forEach(workbook => { %>
+                <h3 class="mt2"><%= workbook.title %></h3>
+                <% workbook.content.forEach(item => {
+                if (item.level === 1) { %>
+                    <div class="section">&#8901; <%= item.description %></div>
+                <% } else { %>
+                    <div class="subsection">&#10513; <%= item.description %></div>
+                <% } %>
+                <% }) %>
+            <% })} %>
+        </div>
     </div>
 </div>
 <!--path: /views/book.ejs-->
