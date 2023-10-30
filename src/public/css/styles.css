@@ -192,7 +192,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family    : var(--font-semibold);
     font-weight    : 400;
     text-transform : uppercase;
-    transition     : 1s ease;
+    /*transition     : 1s ease;*/
 }
 
 h1 {
@@ -269,23 +269,24 @@ nav > ul > li {
 }
 
 .section {
-    font-family : var(--font-lite);
-    font-size   : 1rem;
-    font-style  : normal;
-    font-weight : 700;
-    padding-left: 1rem;
-    margin: .5rem 0 .125rem;
-
-}
-
-.subsection {
     font-family  : var(--font-lite);
     font-size    : 1rem;
     font-style   : normal;
     font-weight  : 700;
-    padding-left : 3rem;
-    margin-bottom: .125rem;
+    margin       : .5rem 0 .125rem;
+    padding-left : 1rem;
+
 }
+
+.subsection {
+    font-family   : var(--font-lite);
+    font-size     : 1rem;
+    font-style    : normal;
+    font-weight   : 700;
+    margin-bottom : .125rem;
+    padding-left  : 3rem;
+}
+
 /* images */
 .img { display : block; }
 
@@ -299,7 +300,7 @@ nav > ul > li {
 }
 
 /* behaviors */
-.no-transition { transition : none; }
+html { scroll-behavior : smooth; }
 
 /* header */
 header {
@@ -495,27 +496,28 @@ button > svg { margin-left : .5rem; }
     height          : 2rem;
     justify-content : center;
     margin          : 0;
-    padding         : 1.5rem 1.2rem;
+    padding         : 1.2rem 1.2rem;
     width           : fit-content;
 }
 
 #tabs > #format-tabs > button {
-    color       : var(--txt);
-    background : var(--grey);
-    border     : solid var(--stroke-double) var(--txt);
-    border-radius   : .66rem .66rem 0 0;
-    z-index:1;
-    position: relative;
+    background    : var(--grey);
+    border        : solid var(--stroke-double) var(--txt);
+    border-radius : .66rem .66rem 0 0;
+    color         : var(--txt);
+    position      : relative;
+    z-index       : 1;
 }
 
 #tabs > #format-tabs > button.selected {
 
-    background : var(--off-white);
-    border-bottom: solid var(--stroke-double) var(--off-white);
+    background    : var(--off-white);
+    border-bottom : solid var(--stroke-double) var(--off-white);
+    z-index: 3;
 }
 
 .double-column {
-  grid-column: span 2;
+    grid-column : span 2;
 }
 
 /*#tabs > #format-tabs {*/
@@ -662,20 +664,43 @@ textarea {
 /*}*/
 
 div#format-specs {
+    background-color: var(--off-white);
+    border-radius         : .66rem;
     display               : grid;
-    gap                   : 1rem 2rem;
+    z-index: 2;
     /*width: 100%;*/
+    gap                   : 1rem 2rem;
     grid-template-columns : 4fr 5fr;
     max-width             : 25rem;
-    outline: solid var(--stroke-double) var(--txt);
-    border-radius: .66rem;
+    outline               : solid var(--stroke-double) var(--txt);
 }
 
 /* general styles */
-.main-cover {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(4, auto);
+.main-book-container {
+    display: inline-block;
+    position: relative;
+}
+
+.main-book-container > .book-cover {
+    display: block;
+}
+
+.main-book-container > .preview {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    z-index: 1;
+    transition: transform 0.125s ease-in-out;
+}
+
+.main-book-container > .preview:hover {
+    transition: transform 0.125s ease-in-out;
+    transform: scale(1.1);
+}
+
+.main-book-container > .preview:active {
+    transition: none;
+    transform: scale(1);
 }
 
 .book-cover {
@@ -686,6 +711,16 @@ div#format-specs {
     height : 10vh;
 }
 
+.hidden {
+    transform: translateY(-92px);
+    transition: transform 0.25s ease-in-out;
+}
+
+.reveal {
+    transform: translateY(0);
+    transition: transform 0.25s ease-in-out;
+}
+
 @media (max-aspect-ratio : 9/16) {
     .book-cover {
         height : auto;
@@ -693,16 +728,16 @@ div#format-specs {
     }
 
     .preview {
-    height : 10vh;
-}
+        height : 10vh;
+    }
 }
 
 .img-fade {
     opacity            : 0;
-    -moz-transition    : all 1s ease-in-out;
-    -o-transition      : all 1s ease-in-out;
-    -webkit-transition : all 1s ease-in-out;
-    transition         : all 1s ease-in-out;
+    -moz-transition    : opacity 1s ease-in-out;
+    -o-transition      : opacity 1s ease-in-out;
+    -webkit-transition : opacity 1s ease-in-out;
+    transition         : opacity 1s ease-in-out;
 }
 
 .img-fade.loaded {
@@ -775,7 +810,7 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
     font-size    : clamp(1.5rem, 4vw, 2.25rem);
     font-weight  : 700;
     margin-block : 0;
-    transition   : 1s ease;
+    /*transition   : 1s ease;*/
 }
 
 .hero-h2 {

@@ -1,11 +1,13 @@
 <div class="full-width-container <%= book.background; %>">
-    <div class="content-container mt3">
-        <div class="center mt5">
-            <h1 class="white mb1"><%= book.title; %></h1>
-            <img src="./img/svg/<%= book.image; %>" alt="couverture du manuel"
-                 class="book-cover img-fade <%= book.border; %> >">
-            <img src="./img/svg/preview.svg" alt="aperçu du manuel"
-                 class="img-fade preview">
+    <div class="content-container mt5">
+        <div class="center">
+            <h1 class="white"><%= book.title; %></h1>
+            <div class="main-book-container">
+                <img src="./img/svg/<%= book.image; %>" alt="couverture du manuel"
+                     class="book-cover img-fade <%= book.border; %> >">
+                <img src="./img/svg/preview.svg" alt="aperçu du manuel"
+                     class="preview img-fade">
+            </div>
         </div>
         <h2 class="mt3 mb1">À propos du manuel <%= book.title %></h2>
         <div class="long-text">
@@ -21,29 +23,39 @@
         <div id="tabs" class="center mt3" hx-target="#tabs" hx-swap="innerHTML">
             <%- include('book_format.ejs') %>
         </div>
-        <div class="center mt3">
-            <img src="./img/svg/poste_canada.svg" alt="logo de Poste Canada" width="240px">
-        </div>
         <% if (book.workbook_desc) { %>
             <h2 class="mt3 mb1">Manuels par niveaux</h2>
             <div>
                 <% book.workbook_desc.split('\\n').forEach((paragraph) => { %>
-                    <p><%= paragraph; %></p><br><br>
+                    <p><%- paragraph; %></p><br><br>
                 <% }); %>
             </div>
-        <div>
-<!-- add html entity for bullet points -->
-            <% book.workbooks.forEach(workbook => { %>
-                <h3 class="mt2"><%= workbook.title %></h3>
-                <% workbook.content.forEach(item => {
-                if (item.level === 1) { %>
-                    <div class="section">&#8901; <%= item.description %></div>
-                <% } else { %>
-                    <div class="subsection">&#10513; <%= item.description %></div>
-                <% } %>
+            <div>
+                <!-- add html entity for bullet points -->
+                <% book.workbooks.forEach(workbook => { %>
+                    <h3 class="mt2"><%= workbook.title %></h3>
+                    <% workbook.content.forEach(item => {
+                    if (item.level === 1) { %>
+                        <div class="section">&#8901; <%= item.description %></div>
+                    <% } else { %>
+                        <div class="subsection">&#10513; <%= item.description %></div>
+                    <% } %>
+                    <% }) %>
                 <% }) %>
-            <% })} %>
-        </div>
+            </div>
+        <% } %>
+        <div id="contact"></div>
+        <h2 class="mb1 mt5">Contactez-moi</h2>
+        <p style="color: red">For more information, feel free to contact me using the form below</p>
+        <form class="mb4">
+            <label for="courriel" class="block mt2 mb1">Courriel</label>
+            <input id="courriel" type="email" class="grey-border" placeholder="mon@couriel.com" />
+            <label for="subject" class="block mt2 mb1">Sujet</label>
+            <input id="subject" type="text" class="grey-border" required value="Manuel <%= book.title%>" />
+            <label for="message" class="block mt2 mb1">Message</label>
+            <textarea id="message" rows="10" class="grey-border" required></textarea>
+            <button class="main-button mt2">Envoyer</button>
+        </form>
     </div>
 </div>
 <!--path: /views/book.ejs-->

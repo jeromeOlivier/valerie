@@ -1,15 +1,15 @@
 <div id="format-tabs">
     <button
-    <% if (book_format.type.toLowerCase() === 'pdf') { %> class="blue selected cursor"
+    <% if (book_format.type.toLowerCase() === "pdf") { %> class="blue selected cursor"
     <% }
-    else { %> class="blue" hx-get="/<%= book_format.title.toLowerCase() %>/format/pdf"%>
+    else { %> class="blue" hx-get="/<%= book_format.title.toLowerCase() ;%>/format/pdf"%>
             <% } %>
     >Format PDF
     </button>
     <button
-    <% if (book_format.type.toLowerCase() === 'papier') { %> class="blue selected cursor"
+    <% if (book_format.type.toLowerCase() === "papier") { %> class="blue selected cursor"
     <% }
-    else { %> class="blue" hx-get="/<%= book_format.title.toLowerCase() %>/format/papier"%>
+    else { %> class="blue" hx-get="/<%= book_format.title.toLowerCase() ;%>/format/papier"%>
             <% } %>
     >Format Papier
     </button>
@@ -29,24 +29,31 @@
         %>
         <%= `${ date.getDate() } ${ month_names[date.getMonth()] } ${ date.getFullYear() }`; %></div>
     <div class="semi-bold">Format</div>
-    <div>
+    <div id="format-type" class="bold">
         <% if (book_format.type === 'pdf') { %>
             <%= book_format.type; %> téléchargeable
         <% } else { %> <%= book_format.type; %>
         <% } %>
     </div>
     <div class="semi-bold">Taille</div>
-    <div><%= book_format.size; %></div>
+    <div class="bold"><%= book_format.size; %></div>
     <div class="semi-bold">Nombre&nbsp;de&nbsp;pages</div>
     <div><%= book_format.pages; %></div>
     <div class="semi-bold">Langue</div>
     <div><%= book_format.language; %></div>
     <div class="semi-bold">Disponible</div>
-    <div><%= book_format.market; %></div>
+    <div class="bold"><%= book_format.market; %></div>
     <div class="semi-bold">Prix</div>
     <div class="bold"><%= book_format.price; %> $ CAD</div>
     <div class="center mt1 double-column">
         <button class="orange-button">Ajouter au panier</button>
     </div>
+</div>
+<div class="center mt1">
+    <img id="post-logo" src="./img/svg/poste_canada.svg" alt="logo de Poste Canada" width="180px"
+    <% if (book_format.type === 'pdf') { %> class='hidden'
+    <% }else { %> class="reveal"
+            <% } %>
+    >
 </div>
 <!-- path: /views/book_format.ejs -->

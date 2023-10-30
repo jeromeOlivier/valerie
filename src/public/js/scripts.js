@@ -61,7 +61,7 @@ const nav = document.querySelector("nav");
 const navItems = document.querySelectorAll(".menu > li");
 
 // Click events for navigation
-logo.addEventListener("click", function () {
+logo.addEventListener("click", function() {
   if (nav.classList.contains("slide-in")) {
     nav.classList.remove("slide-in");
     nav.classList.add("slide-out");
@@ -73,7 +73,7 @@ logo.addEventListener("click", function () {
 
 // Adds a click event for navigation
 navItems.forEach((item) => {
-  item.addEventListener("click", function () {
+  item.addEventListener("click", function() {
     if (nav.classList.contains("slide-in")) {
       nav.classList.remove("slide-in");
       nav.classList.add("slide-out");
@@ -82,7 +82,7 @@ navItems.forEach((item) => {
 });
 
 // Adds a resize event for navigation
-window.addEventListener("resize", function () {
+window.addEventListener("resize", function() {
   clearTimeout(resizeTimer); // Clear any existing timeout to avoid conflicts
   nav.classList.add("no-transition"); // Temporarily stop transitions
 
@@ -129,15 +129,15 @@ scroller();
 document.body.addEventListener("htmx:afterSwap", scroller);
 
 // add 'loaded' class to book-covers on load
-document.body.addEventListener('htmx:afterSwap', function() {
-    const bookCovers = document.querySelectorAll(".img-fade");
-    bookCovers.forEach((cover) => {
-      if (cover.complete) {
-        cover.classList.add("loaded");
-      } else {
-        cover.onload = function() { this.classList.add("loaded"); }
-      }
-    });
+document.body.addEventListener("htmx:afterSwap", function() {
+  const bookCovers = document.querySelectorAll(".img-fade");
+  bookCovers.forEach((cover) => {
+    if (cover.complete) {
+      cover.classList.add("loaded");
+    } else {
+      cover.onload = function() { this.classList.add("loaded"); };
+    }
+  });
 });
 
 // add 'loaded' class to book-covers on load
@@ -146,6 +146,6 @@ bookCovers.forEach((cover) => {
   if (cover.complete) {
     cover.classList.add("loaded");
   } else {
-    cover.onload = function() { this.classList.add("loaded"); }
+    cover.onload = function() { this.classList.add("loaded"); };
   }
 });
