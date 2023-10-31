@@ -23,7 +23,8 @@ router.get("/data_panier", get.data_panier);
 router.get("/data_powerpoint", get.book);
 router.get("/data_service", get.data_service);
 router.get("/data_word", get.book);
-router.get("/:title/format/:format", get.book_format);
+router.get("/:title/format/:type", get.book_format);
+router.get("/preview/:title", get.preview);
 
 module.exports = router;
 // path: src/routes/index.js

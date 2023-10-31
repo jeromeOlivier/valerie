@@ -1,52 +1,49 @@
 <div class="navbar">
     <img src="./img/svg/logo_black.svg" alt="Valérie Gervais" class='logo' width="240px" decoding="async" loading="lazy">
-    <img id='modal-button' src="./img/svg/panier.svg" width='24px'
+    <img id='panier-button' src="./img/svg/panier.svg" width='24px'
          alt="panier" loading="lazy" decoding="async">
     <nav>
         <ul class="menu">
             <li hx-target="main"
                 hx-get="/data_index"
-                hx-swap="show:top ease-in-out"
+                hx-swap="innerHTML show:top"
                 hx-push-url="/">Accueil
             </li>
             <li hx-target="main"
                 hx-get="/data_service"
-                hx-swap="show:top ease-in-out"
+                hx-swap="innerHTML show:top"
                 hx-push-url="/service">Service
             </li>
             <li hx-target="main"
                 hx-get="/data_word"
-                hx-swap="show:top ease-in-out"
+                hx-swap="innerHTML show:top"
                 hx-push-url="/word">Word
             </li>
             <li hx-target="main"
                 hx-get="/data_excel"
-                hx-swap="show:top ease-in-out"
+                hx-swap="innerHTML show:top"
                 hx-push-url="/excel">Excel
             </li>
             <li hx-target="main"
                 hx-get="/data_powerpoint"
-                hx-swap="show:top ease-in-out"
+                hx-swap="innerHTML show:top"
                 hx-push-url="/powerpoint">PowerPoint
             </li>
             <li hx-target="main"
                 hx-get="/data_outlook"
-                hx-swap="show:top ease-in-out"
+                hx-swap="innerHTML show:top"
                 hx-push-url="/outlook">Outlook
             </li>
             <li hx-target="main"
                 hx-get="/data_blog"
-                hx-swap="show:top ease-in-out"
+                hx-swap="innerHTML show:top"
                 hx-push-url="/blog">Blog
             </li>
         </ul>
     </nav>
 </div>
-<dialog class="modal" id="modal">
+<dialog class="modal" id="panier">
         <p class="panier-title">Panier</p>
-<!--    <div class="modal-header between">-->
-<!--        <button class="red-button">&times;</button>-->
-<!--    </div>-->
     <div class="modal-body">Votre panier est vide
     </div>
 </dialog>

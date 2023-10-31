@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const compression = require("compression");
 require("dotenv").config();
 const path = require("path");
+const fs = require("fs");
 const rateLimit = require("express-rate-limit");
 // internal dependencies
 const routes = require("./routes/index");
@@ -19,6 +20,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 // configure middleware
+app.use(compression());
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -29,7 +31,6 @@ app.use(
     },
   }),
 );
-app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));

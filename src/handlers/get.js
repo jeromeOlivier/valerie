@@ -25,6 +25,8 @@ const validFormats = require("../utils/validFormats");
  * @property {function} query - A function to execute a database query.
  */
 const db = require("../utils/database");
+const fs = require("fs");
+const path = require("path");
 
 // GET INDEX
 const index = asyncHandler(async(req, res) => {
@@ -62,19 +64,22 @@ const data_blog = asyncHandler(async(req, res) => {
 });
 
 // GET PANIER
-const panier = asyncHandler(async(req, res) => {
-  getStaticLayout(req, res, validUrls);
-});
-const data_panier = asyncHandler(async(req, res) => {
-  getStaticData(req, res, validUrls);
-});
+const panier = asyncHandler(async(req, res) => getStaticLayout(req, res, validUrls));
+const data_panier = asyncHandler(async(req, res) => getStaticData(req, res, validUrls));
 
 // GET BOOK FORMAT
 const book_format = asyncHandler(async(req, res) => {
   const title = req.params.title;
-  const format = req.params.format;
+  const format = req.params.type;
   const result = await getBookFormat(title, format, validFormats);
   res.render("book_format", { book_format: result });
+});
+
+// GET IMAGES FOR BOOKS
+const preview = asyncHandler(async(req, res) => {
+  const title = req.params.title;
+  const images = await getImages(title, validFormats);
+  res.render("preview", { images });
 });
 
 // handler for full page renders
@@ -139,7 +144,6 @@ async function getBook(req, res, validUrls, validFormats) {
       } else {
         book.workbooks = [];
       }
-      console.log("book:", book);
 
       // render the data_book with or without layout
       if (selection.full) {
@@ -151,7 +155,7 @@ async function getBook(req, res, validUrls, validFormats) {
       res.status(500).send(`Internal Server Error`);
     }
   } else {
-    console.log("Database query failed");
+    throw new Error("Database query failed");
   }
 }
 
@@ -232,6 +236,24 @@ async function getWorkbooks(title) {
   return result;
 }
 
+async function getImages(title, validFormats) {
+  // validate query parameter
+  const isValidTitle = validFormats.has(title.toLowerCase());
+  if (!isValidTitle) throw new Error("Invalid title");
+  const dir = path.join(__dirname, `../public/img/webp/${ title }`);
+  return new Promise((resolve, reject) => {
+    fs.readdir(dir, (err, files) => {
+      files = files.filter((file) => (file.endsWith(".webp")));
+      if (err) {
+        reject("file not found:", err);
+      } else {
+        const images = files.map((file) => `./img/webp/${ title }/${ file }`);
+        resolve(images);
+      }
+    });
+  });
+}
+
 module.exports = {
   data_index,
   index,
@@ -245,6 +267,7 @@ module.exports = {
   service,
   data_service,
   book_format,
+  preview,
 };
 
 // path: src/handlers/get.js
