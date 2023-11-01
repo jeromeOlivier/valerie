@@ -78,7 +78,7 @@ const book_format = asyncHandler(async(req, res) => {
 // GET IMAGES FOR BOOKS
 const preview = asyncHandler(async(req, res) => {
   const title = req.params.title;
-  const images = await getImages(title, validFormats);
+  const images = await getImages(title);
   res.render("preview", { images });
 });
 
@@ -144,12 +144,13 @@ async function getBook(req, res, validUrls, validFormats) {
       } else {
         book.workbooks = [];
       }
+      const images = await getImages(book.title);
 
       // render the data_book with or without layout
       if (selection.full) {
-        res.render("layout", { main: "book", book, book_format });
+        res.render("layout", { main: "book", book, book_format, images });
       } else {
-        res.render("book", { book, book_format });
+        res.render("book", { book, book_format, images });
       }
     } catch (err) {
       res.status(500).send(`Internal Server Error`);
@@ -236,10 +237,7 @@ async function getWorkbooks(title) {
   return result;
 }
 
-async function getImages(title, validFormats) {
-  // validate query parameter
-  const isValidTitle = validFormats.has(title.toLowerCase());
-  if (!isValidTitle) throw new Error("Invalid title");
+async function getImages(title) {
   const dir = path.join(__dirname, `../public/img/webp/${ title }`);
   return new Promise((resolve, reject) => {
     fs.readdir(dir, (err, files) => {

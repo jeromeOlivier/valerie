@@ -351,6 +351,13 @@ nav > ul > li {
 
 nav > img { z-index : 30; }
 
+.disable-transition {
+    -moz-transition    : none;
+    -o-transition      : none;
+    -webkit-transition : none;
+    transition         : none;
+}
+
 /* navigation on smaller devices */
 @media (max-width : 60rem) {
     nav {
@@ -362,11 +369,11 @@ nav > img { z-index : 30; }
         position           : absolute;
         right              : 0;
         top                : 0;
-        transform          : translate(5%, 0%);
-        -moz-transition    : transform 0.5s ease-in-out;
-        -o-transition      : transform 0.5s ease-in-out;
-        -webkit-transition : transform 0.5s ease-in-out;
-        transition         : transform 0.5s ease-in-out;
+        transform          : translate(5%, 100%);
+        -moz-transition    : transform 0.25s ease-in-out;
+        -o-transition      : transform 0.25s ease-in-out;
+        -webkit-transition : transform 0.25s ease-in-out;
+        transition         : transform 0.25s ease-in-out;
         width              : 100vw;
         z-index            : -1;
     }
@@ -388,13 +395,12 @@ nav > img { z-index : 30; }
         font-size : 1.5rem;
     }
 
-    .htmx-settling nav > .show {
-        transform : translate(5%, 100%);
-    }
+    /*.htmx-settling nav > .show {*/
+    /*    transform : translate(5%, 100%);*/
+    /*}*/
 
     nav > .hide {
-        transform  : translate(5%, 100%);
-        transition : none;
+        visibility: hidden;
     }
 
     .slide-out {
