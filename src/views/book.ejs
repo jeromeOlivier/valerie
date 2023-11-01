@@ -4,9 +4,9 @@
             <h1 class="white"><%= book.title; %></h1>
             <div class="main-book-container">
                 <img src="./img/svg/<%= book.image; %>" alt="couverture du manuel"
-                     class="book-cover img-fade <%= book.border; %> >">
+                     class="book-cover <%= book.border; %> ">
                 <img id="preview-button" src="./img/svg/preview.svg" alt="aperçu du manuel"
-                     class="" hx-get="/preview/<%= book.title %>" hx-target="#preview">
+                     hx-get="/preview/<%= book.title %>" hx-target="main" hx-swap="beforeend">
             </div>
         </div>
         <h2 class="mt3 mb1">À propos du manuel <%= book.title %></h2>
@@ -58,7 +58,4 @@
         </form>
     </div>
 </div>
-<dialog id="preview" autofocus>
-
-</dialog>
 <!--path: /views/book.ejs-->

@@ -1,15 +1,17 @@
-<ul>
-    <% for(let i = 0; i < images.length; i++) {
-    if (i === 0) { %>
-        <li>
-            <img src="<%= images[i]; %>" alt="Apperçu du contenu" class="active">
-        </li>
-    <% } else { %>
-        <li>
-            <img src="<%= images[i]; %>" alt="Apperçu du contenu">
-        </li>
-    <% } %>
-    <% } %>
-</ul>
-<button id="next">&#9205;</button>
-<button id="prev">&#9204;</button>
+<dialog id="preview" autofocus>
+    <ul>
+        <% for(let i = 0; i < images.length; i++) {
+        if (i === 0) { %>
+            <li>
+                <img src="<%= images[i]; %>" alt="Apperçu du contenu" class="active">
+            </li>
+        <% } else { %>
+            <li>
+                <img src="<%= images[i]; %>" alt="Apperçu du contenu">
+            </li>
+        <% } %>
+        <% } %>
+    </ul>
+    <button id="next">&#9205;</button>
+    <button id="prev">&#9204;</button>
+</dialog>

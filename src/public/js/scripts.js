@@ -1,36 +1,99 @@
 /**
- * Handles the behavior of the header based on the window width.
+ * Toggles the attributes and events of the header based on the window width
  *
  * @function handleHeader
  */
-const handleHeader = () => {
+const eventMap = new Map();
+const windowWidth = window.innerWidth;
+let areMobileEventsAdded;
+if (windowWidth < 960 && areMobileEventsAdded === undefined) {
+  areMobileEventsAdded = false;
+}
+
+function handleHeader() {
   // Selects the header
-  const header = document.querySelector("header > div > img:nth-child(1)");
-  // Checks if the window width is less than 960
-  if (window.innerWidth < 960) {
-    if (header) {
-      // If yes, it removes the attributes
-      header.removeAttribute("hx-target");
-      header.removeAttribute("hx-get");
-      header.removeAttribute("hx-swap");
-      header.removeAttribute("hx-push-url");
-      // and adds an onclick event.
-      header.addEventListener('click', () => {});
+  const logo = document.querySelector(".logo");
+  const nav = document.querySelector("nav");
+  const navItems = document.querySelectorAll(".menu > li");
+  // if in mobile view
+  if (window.innerWidth < 960 && !areMobileEventsAdded) {
+    if (logo) {
+      // If it is, we remove the attributes from the logo link if they exist.
+      logo.removeAttribute("hx-target");
+      logo.removeAttribute("hx-get");
+      logo.removeAttribute("hx-swap");
+      logo.removeAttribute("hx-push-url");
+      // and add a click event to toggle the navigation visibility.
+      const boundHandleClick = handleClick.bind(nav);
+      logo.addEventListener("click", boundHandleClick);
+      // store the event in a map to be able to remove it later.
+      eventMap.set(logo, boundHandleClick);
+    }
+    if (navItems) {
+      // we also add eventListeners to the links to close the navigation when clicked.
+      navItems.forEach((item) => {
+        const boundHandleClick = handleClick.bind(nav);
+        item.addEventListener("click", boundHandleClick);
+        // store the event in a map to be able to remove it later.
+        eventMap.set(item, boundHandleClick);
+      });
+    areMobileEventsAdded = true;
     }
   } else {
-    if (header) {
-      // If not, it sets the attributes.
-      header.setAttribute("hx-target", "main");
-      header.setAttribute("hx-get", "/content_accueil");
-      header.setAttribute("hx-swap", "show:window:top");
-      header.setAttribute("hx-push-url", "/");
+    if (areMobileEventsAdded) {
+      // if in desktop view
+      if (logo) {
+        // we set the attributes to the logo to link to accueil.
+        logo.setAttribute("hx-target", "main");
+        logo.setAttribute("hx-get", "/data_index");
+        logo.setAttribute("hx-swap", "show:window:top");
+        logo.setAttribute("hx-push-url", "/");
+        // and removes the click event from the logo.
+        const boundHandleClick = eventMap.get(nav);
+        if (boundHandleClick) {
+          logo.removeEventListener("click", boundHandleClick);
+          eventMap.delete(logo);
+        }
+        logo.removeEventListener("click", handleClick.bind(nav));
+      }
+      if (navItems) {
+        // we also remove the eventListeners to the individual links
+        navItems.forEach((item) => {
+          const boundHandleClick = eventMap.get(item);
+          if (boundHandleClick) {
+            item.removeEventListener("click", boundHandleClick);
+            eventMap.delete(item);
+          }
+        });
+      }
+      areMobileEventsAdded = false;
     }
   }
-};
+}
+
+function toggleVisibility(item) {
+  if (item.classList.contains("slide-in")) {
+    item.classList.remove("slide-in");
+    item.classList.add("slide-out");
+  } else {
+    item.classList.remove("slide-out");
+    item.classList.add("slide-in");
+  }
+}
+
+function handleClick() { toggleVisibility(this);}
 
 // Binds event listeners for load and resize to handleHeader function.
 window.addEventListener("load", handleHeader);
-window.addEventListener("resize", handleHeader);
+// Debounce the resize event to avoid calling handleHeader too often.
+let resizeTimer;
+window.addEventListener("resize", () => {
+  // hide the navigation when resizing
+  const nav = document.querySelector("nav");
+  nav && nav.classList.add("slide-out");
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(handleHeader, 200);
+});
 
 // Panier modal window
 const panier = document.querySelector("#panier");
@@ -48,24 +111,29 @@ document.addEventListener("DOMContentLoaded", () => {
 panier.addEventListener("click", (event) => {
   const dialogDimensions = panier.getBoundingClientRect();
   // Close modal if user clicks outside the dialog
-  if (
-    dialogDimensions.top > event.clientY ||
-    dialogDimensions.bottom < event.clientY ||
-    dialogDimensions.left > event.clientX ||
-    dialogDimensions.right < event.clientX
-  ) {
+  if (isOutsideDialog(dialogDimensions, event)) {
     panier.close();
     document.body.classList.remove("no-scroll");
   }
 });
 
+function isOutsideDialog(rectangle, event) {
+  const top = rectangle.top > event.clientY;
+  const bottom = rectangle.bottom < event.clientY;
+  const left = rectangle.left > event.clientX;
+  const right = rectangle.right < event.clientX;
+  return top || bottom || left || right;
+}
+
 // Preview modal window
 const preview = document.querySelector("#preview");
-document.addEventListener("DOMContentLoaded", () => {
-  // Selects the modal button and adds an event lister for click.
-  const previewButton = document.querySelector("#preview-button");
-  // when the preview button is clicked, show the modal
-  previewButton.addEventListener("click", () => {
+preview.addEventListener("DOMContentLoaded", () => openPreview());
+preview.addEventListener("htmx:afterSwap", () => openPreview());
+
+// when the preview button is clicked, show the modal
+function openPreview() {
+  document.querySelector("#preview-button").addEventListener("click", () => {
+    const preview = document.querySelector("#preview");
     // Before showing the modal, adjust its position to the center of the viewport
     const top = window.innerHeight / 2 - preview.offsetHeight / 2 + window.scrollY;
     const left = window.innerWidth / 2 - preview.offsetWidth / 2 + window.scrollX;
@@ -77,23 +145,22 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("no-scroll");
     // delay activation of preview navigation until it is loaded
     setTimeout(() => activatePreview(), 100);
+    closeModal(preview);
   });
-});
+}
+
+function closeModal(modal) {
+  modal.addEventListener("click", (event) => {
+    const dialogDimensions = modal.getBoundingClientRect();
+    // Close modal if user clicks outside the dialog
+    if (isOutsideDialog(dialogDimensions, event)) {
+      modal.close();
+      document.body.classList.remove("no-scroll");
+    }
+  });
+}
 
 // Adds a click event to the preview modal for closing.
-preview.addEventListener("click", (event) => {
-  const dialogDimensions = preview.getBoundingClientRect();
-  // Close modal if user clicks outside the dialog
-  if (
-    dialogDimensions.top > event.clientY ||
-    dialogDimensions.bottom < event.clientY ||
-    dialogDimensions.left > event.clientX ||
-    dialogDimensions.right < event.clientX
-  ) {
-    preview.close();
-    document.body.classList.remove("no-scroll");
-  }
-});
 
 // Add click events to the preview modal to change the image
 function activatePreview() {
@@ -121,58 +188,6 @@ function activatePreview() {
     });
   });
 }
-
-// Navigation
-let resizeTimer;
-const logo = document.querySelector(".logo");
-const nav = document.querySelector("nav");
-const navItems = document.querySelectorAll(".menu > li");
-
-// Click events for navigation
-logo.addEventListener("click", function() {
-  if (nav.classList.contains("slide-in")) {
-    nav.classList.remove("slide-in");
-    nav.classList.add("slide-out");
-  } else {
-    nav.classList.remove("slide-out");
-    nav.classList.add("slide-in");
-  }
-});
-
-// Adds a click event for navigation
-navItems.forEach((item) => {
-  item.addEventListener("click", function() {
-    if (nav.classList.contains("slide-in")) {
-      nav.classList.remove("slide-in");
-      nav.classList.add("slide-out");
-    }
-  });
-});
-
-// Adds a resize event for navigation
-window.addEventListener("resize", function() {
-  clearTimeout(resizeTimer); // Clear any existing timeout to avoid conflicts
-  nav.classList.add("no-transition"); // Temporarily stop transitions
-
-  // After a brief delay, allow transitions again
-  resizeTimer = setTimeout(() => {
-    nav.classList.remove("no-transition");
-  }, 10);
-
-  // If the window is wide (e.g., desktop view)
-  if (window.innerWidth > 960) {
-    // Make sure navigation isn't hidden or sliding
-    nav.classList.remove("hide");
-    nav.classList.remove("slide-in");
-    nav.classList.remove("slide-out");
-  } else {
-    // Else, if the window is narrow (e.g., mobile view)
-    // Hide navigation and reset any sliding
-    nav.classList.remove("slide-in");
-    nav.classList.remove("slide-out");
-    nav.classList.add("hide");
-  }
-});
 
 // Check if the user has set their system to use reduced motion
 const scroller = () => {

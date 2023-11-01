@@ -354,18 +354,21 @@ nav > img { z-index : 30; }
 /* navigation on smaller devices */
 @media (max-width : 60rem) {
     nav {
-        align-items : center;
-        background  : var(--white);
-        display     : flex;
-        height      : 100vh;
-        padding     : 0;
-        position    : absolute;
-        right       : 0;
-        top         : 0;
-        transform   : translate(5%, 100%);
-        transition  : transform .5s ease;
-        width       : 100vw;
-        z-index     : -1;
+        align-items        : center;
+        background         : var(--white);
+        display            : flex;
+        height             : 100vh;
+        padding            : 0;
+        position           : absolute;
+        right              : 0;
+        top                : 0;
+        transform          : translate(5%, 0%);
+        -moz-transition    : transform 0.5s ease-in-out;
+        -o-transition      : transform 0.5s ease-in-out;
+        -webkit-transition : transform 0.5s ease-in-out;
+        transition         : transform 0.5s ease-in-out;
+        width              : 100vw;
+        z-index            : -1;
     }
 
     .menu {
@@ -383,6 +386,10 @@ nav > img { z-index : 30; }
     nav > ul > li {
         color     : black;
         font-size : 1.5rem;
+    }
+
+    .htmx-settling nav > .show {
+        transform : translate(5%, 100%);
     }
 
     nav > .hide {
@@ -470,13 +477,24 @@ nav > img { z-index : 30; }
     width      : auto;
 }
 
-#preview ul li img.active {
-    opacity : 1;
-}
-
+#preview ul li img.active { opacity : 1; }
 
 #preview-button {
-    height : 10vh;
+    bottom             : -20px;
+    cursor             : pointer;
+    height             : 10vh;
+    position           : absolute;
+    right              : -20px;
+    -moz-transition    : transform 1s ease-out, opacity .1s ease-out;
+    -o-transition      : transform 1s ease-out, opacity .1s ease-out;
+    -webkit-transition : transform 1s ease-out, opacity .1s ease-out;
+    transition         : transform 1s ease-out, opacity .1s ease-out;
+    z-index            : 1;
+}
+
+.htmx-settling #preview-button {
+    opacity   : 0;
+    transform : translateX(-2rem);
 }
 
 #next, #prev {
@@ -507,7 +525,7 @@ nav > img { z-index : 30; }
 
 /* remove preview button for screens narrower than regular paper */
 @media (max-aspect-ratio : 8.5/11) {
-    /*#preview-button { visibility : hidden; }*/
+    #preview-button { visibility : hidden; }
 }
 
 /* interactions */
@@ -778,23 +796,19 @@ div#format-specs {
     display : block;
 }
 
-.main-book-container > #preview-button {
-    bottom     : -20px;
-    position   : absolute;
-    right      : -20px;
-    transition : transform 0.125s ease-in-out;
-    z-index    : 1;
-}
+/*.main-book-container > #preview-button {*/
+/*    */
+/*}*/
 
-.main-book-container > #preview-button:hover {
-    transform  : scale(1.1);
-    transition : transform 0.125s ease-in-out;
-}
+/*.main-book-container > #preview-button:hover {*/
+/*    transform  : scale(1.1);*/
+/*    transition : transform 0.125s ease-in-out;*/
+/*}*/
 
-.main-book-container > #preview-button:active {
-    transform  : scale(1);
-    transition : none;
-}
+/*.main-book-container > #preview-button:active {*/
+/*    transform  : scale(1);*/
+/*    transition : none;*/
+/*}*/
 
 .book-cover {
     height : 61.803vh;
@@ -817,17 +831,16 @@ div#format-specs {
     }
 }
 
-.img-fade {
-    opacity            : 0;
-    -moz-transition    : opacity 1s ease-in-out;
-    -o-transition      : opacity 1s ease-in-out;
-    -webkit-transition : opacity 1s ease-in-out;
-    transition         : opacity 1s ease-in-out;
+.htmx-settling img { opacity : 0; }
+
+img {
+    -moz-transition    : opacity .5s ease-in;
+    -o-transition      : opacity .5s ease-in;
+    -webkit-transition : opacity .5s ease-in;
+    transition         : opacity .5s ease-in;
 }
 
-.img-fade.loaded {
-    opacity : 1;
-}
+/*.img-fade.loaded { opacity : 1; }*/
 
 /* backgrounds */
 .blue-background { background : var(--g_main); }
