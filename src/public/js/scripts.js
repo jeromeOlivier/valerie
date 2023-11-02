@@ -162,7 +162,6 @@
         // get the index of the current image and add the offset
         const currentIndex = [...listOfImages].indexOf(current);
         let newIndex = currentIndex + offset;
-        console.log(newIndex);
         // if the new index is out of bounds, wrap around
         if (newIndex < 0) newIndex = listOfImages.length - 1;
         if (newIndex > listOfImages.length - 1) newIndex = 0;
@@ -199,21 +198,12 @@
 }
 // TOGGLE CANADA POST ----------------------------------------------------------
 {
-  document.addEventListener("DOMContentLoaded", () => {
-    const canadaPost = document.querySelector("#post-logo");
-    const pdfButton = document.querySelector("#pdf-format-tab");
-    const paperButton = document.querySelector("#papier-format-tab");
-    pdfButton.addEventListener("click", () => {
-      canadaPost.classList.add("hide-post");
-      canadaPost.classList.remove("show-post");
-    });
-    paperButton.addEventListener("click", () => {
-      canadaPost.classList.remove("hide-post");
-      canadaPost.classList.add("show-post");
-    });
-  });
+  // initialize canada post toggle for full page load
+  document.addEventListener("DOMContentLoaded", () => toggleCanadaPostVisibility());
+  // initialize canada post toggle for htmx swap
+  document.addEventListener("htmx:afterSwap", () => toggleCanadaPostVisibility());
 
-    document.addEventListener("htmx:afterSwap", () => {
+  function toggleCanadaPostVisibility() {
     const canadaPost = document.querySelector("#post-logo");
     const pdfButton = document.querySelector("#pdf-format-tab");
     const paperButton = document.querySelector("#papier-format-tab");
@@ -225,5 +215,6 @@
       canadaPost.classList.remove("hide-post");
       canadaPost.classList.add("show-post");
     });
-  });
+  }
 }
+//

@@ -1,4 +1,4 @@
-/* typefaces */
+/* TYPEFACES */
 @font-face {
     font-family : "iThin";
     src         : url("../font/iThin.woff2") format("woff2");
@@ -34,7 +34,7 @@
     font-style  : normal;
 }
 
-/* variables */
+/* VARIABLES */
 :root {
     --black                     : #000000;
     --btn_blue_main             : #146885;
@@ -55,13 +55,14 @@
     --btn_red_main              : #B30F0F;
     --btn_red_main_hover        : #FF2B2B;
     --btn_red_stoke             : #331A1A;
-    --g_excel                   : linear-gradient(137.51deg, #237045 0.86%, #17766F 43.85%, #98438A 100%);
-    --g_main                    : linear-gradient(137.51deg, #1D375B 1.4%, #12ADAD 99.12%);
-    --g_outlook                 : linear-gradient(137.51deg, #987A3C 0%, #218567 70.8%, #21689E 100%);
-    --g_power                   : linear-gradient(137.51deg, #BE3435 20.72%, #708743 64.63%, #00AC96 100%);
-    --g_word                    : linear-gradient(137.51deg, #263C51 1.65%, #23486C 12.05%, #C95D7C 64.6%, #E38C6F 90.47%, #ECB86A 99.38%);
+    --grad_excel                : linear-gradient(137.51deg, #237045 0.86%, #17766F 43.85%, #98438A 100%);
+    --grad_main                 : linear-gradient(137.51deg, #1D375B 1.4%, #12ADAD 99.12%);
+    --grad_outlook              : linear-gradient(137.51deg, #987A3C 0%, #218567 70.8%, #21689E 100%);
+    --grad_power                : linear-gradient(137.51deg, #BE3435 20.72%, #708743 64.63%, #00AC96 100%);
+    --grad_word                 : linear-gradient(137.51deg, #263C51 1.65%, #23486C 12.05%, #C95D7C 64.6%, #E38C6F 90.47%, #ECB86A 99.38%);
     --grey                      : #CCCCCC;
     --header                    : rgba(255, 255, 255, 0.7);
+    --medium_grey               : #888888;
     --stroke                    : 0.0625rem;
     --txt                       : #505050;
     --white                     : #FFFFFF;
@@ -80,39 +81,39 @@
     --off-white                 : #F5F5F5;
 }
 
-/* margins */
-.mt1 { margin-top : 1rem; }
+/* MARGINS */
+.margin_top_1rem { margin-top : 1rem; }
 
-.mt2 { margin-top : 2rem; }
+.margin_top_2rem { margin-top : 2rem; }
 
-.mt3 { margin-top : 3rem; }
+.margin_top_3rem { margin-top : 3rem; }
 
-.mt4 { margin-top : 4rem; }
+.margin_top_4rem { margin-top : 4rem; }
 
-.mt5 { margin-top : 5rem; }
+.margin_top_5rem { margin-top : 5rem; }
 
-.mb1 { margin-bottom : 1rem; }
+.margin_bottom_1rem { margin-bottom : 1rem; }
 
-.mb2 { margin-bottom : 2rem; }
+.margin_bottom_2rem { margin-bottom : 2rem; }
 
-.mb3 { margin-bottom : 3rem; }
+.margin_bottom_3rem { margin-bottom : 3rem; }
 
-.mb4 { margin-bottom : 4rem; }
+.margin_bottom_4rem { margin-bottom : 4rem; }
 
-.mb5 { margin-bottom : 5rem; }
+.margin_bottom_5rem { margin-bottom : 5rem; }
 
-/* paddings */
-.p0 { padding : 0; }
+/* PADDINGS */
+.padding_0 { padding : 0; }
 
-.p1 { padding : 1rem; }
+.padding_1rem { padding : 1rem; }
 
-.p2 { padding : 2rem; }
+.padding_2rem { padding : 2rem; }
 
-.p3 { padding : 3rem; }
+.padding_3rem { padding : 3rem; }
 
-.p4 { padding : 4rem; }
+.padding_4rem { padding : 4rem; }
 
-.p5 { padding : 5rem; }
+.padding_5rem { padding : 5rem; }
 
 .pt1 { padding-top : 1rem; }
 
@@ -602,7 +603,7 @@ button > svg { margin-left : .5rem; }
 
 #tabs > div > button, #tabs > div > div > button {
     align-items     : center;
-    border-radius   : .66rem;
+    border-radius   : .45rem;
     color           : var(--white);
     display         : inline-flex;
     font-family     : var(--font-semibold);
@@ -615,19 +616,19 @@ button > svg { margin-left : .5rem; }
 }
 
 #tabs > #format-tabs > button {
-    background    : var(--grey);
-    border        : solid var(--stroke-double) var(--txt);
-    border-radius : .66rem .66rem 0 0;
-    color         : var(--txt);
+    background    : var(--off-white);
+    border        : solid var(--stroke) var(--grey);
+    border-radius : .45rem .45rem 0 0;
+    color         : var(--medium_grey);
     position      : relative;
     transition    : none;
     z-index       : 1;
 }
 
 #tabs > #format-tabs > button.selected {
-
-    background    : var(--off-white);
-    border-bottom : solid var(--stroke-double) var(--off-white);
+    color: var(--txt);
+    background    : var(--white);
+    border-bottom : solid var(--stroke) var(--white);
     z-index       : 3;
 }
 
@@ -783,14 +784,14 @@ textarea {
 /*}*/
 
 div#format-specs {
-    background-color      : var(--off-white);
-    border-radius         : .66rem;
+    background-color      : var(--white);
+    border-radius         : .45rem;
     display               : grid;
     gap                   : 1rem 2rem;
     /*width: 100%;*/
     grid-template-columns : 4fr 5fr;
     max-width             : 25rem;
-    outline               : solid var(--stroke-double) var(--txt);
+    outline               : solid var(--stroke) var(--grey);
     z-index               : 2;
 }
 
@@ -851,12 +852,12 @@ img {
 /*.img-fade.loaded { opacity : 1; }*/
 
 /* backgrounds */
-.blue-background { background : var(--g_main); }
+.blue-background { background : var(--grad_main); }
 
 .white-background { background : var(--off-white); }
 
 .main-background:before {
-    background : var(--g_main);
+    background : var(--grad_main);
     content    : "";
     height     : calc(61.803vh + var(--header-height));
     left       : 0;
@@ -866,7 +867,7 @@ img {
 }
 
 .word-background:before {
-    background : var(--g_word);
+    background : var(--grad_word);
     content    : "";
     height     : calc(61.803% + var(--header-height));
     left       : 0;
@@ -876,7 +877,7 @@ img {
 }
 
 .excel-background:before {
-    background : var(--g_excel);
+    background : var(--grad_excel);
     content    : "";
     height     : calc(61.803% + var(--header-height));
     left       : 0;
@@ -886,7 +887,7 @@ img {
 }
 
 .power-background:before {
-    background : var(--g_power);
+    background : var(--grad_power);
     content    : "";
     height     : calc(61.803% + var(--header-height));
     left       : 0;
@@ -896,7 +897,7 @@ img {
 }
 
 .outlook-background:before {
-    background : var(--g_outlook);
+    background : var(--grad_outlook);
     content    : "";
     height     : calc(61.803% + var(--header-height));
     left       : 0;

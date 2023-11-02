@@ -259,7 +259,7 @@ module.exports = {
   data_blog,
   contact,
   data_contact,
-  panier,
+  cart: panier,
   data_panier,
   book,
   service,

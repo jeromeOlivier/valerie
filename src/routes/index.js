@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const get = require("../handlers/get");
+const post = require("../handlers/post");
 
 // GET CONTENT WITH LAYOUT (whole page)
 router.get("/", get.index);
@@ -8,7 +9,7 @@ router.get("/blog", get.blog);
 router.get("/contact", get.contact);
 router.get("/excel", get.book);
 router.get("/outlook", get.book);
-router.get("/panier", get.panier);
+router.get("/panier", get.cart);
 router.get("/powerpoint", get.book);
 router.get("/service", get.service);
 router.get("/word", get.book);
@@ -25,6 +26,9 @@ router.get("/data_service", get.data_service);
 router.get("/data_word", get.book);
 router.get("/:title/format/:type", get.book_format);
 router.get("/preview/:title", get.preview);
+
+// POST ENDPOINTS
+router.post("/addToCart/:title/:type", post.addToCart);
 
 module.exports = router;
 // path: src/routes/index.js
