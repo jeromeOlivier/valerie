@@ -395,9 +395,6 @@ nav > img { z-index : 30; }
         font-size : 1.5rem;
     }
 
-    /*.htmx-settling nav > .show {*/
-    /*    transform : translate(5%, 100%);*/
-    /*}*/
     nav > .hide {
         visibility : hidden;
     }
@@ -491,16 +488,16 @@ dialog#preview {
     height             : 10vh;
     position           : absolute;
     right              : -20px;
-    -moz-transition    : transform 1s ease-out, opacity .1s ease-out;
-    -o-transition      : transform 1s ease-out, opacity .1s ease-out;
-    -webkit-transition : transform 1s ease-out, opacity .1s ease-out;
-    transition         : transform 1s ease-out, opacity .1s ease-out;
+    -moz-transition    : transform 1s ease-in-out, opacity .1s ease-out;
+    -o-transition      : transform 1s ease-in-out, opacity .1s ease-out;
+    -webkit-transition : transform 1s ease-in-out, opacity .1s ease-out;
+    transition         : transform 1s ease-in-out, opacity .1s ease-out;
     z-index            : 1;
 }
 
-.htmx-swapping #preview-button {
+.htmx-settling #preview-button {
     opacity   : 0;
-    transform : translateX(-2rem);
+    transform : translateX(-3rem);
 }
 
 #next, #prev {
@@ -845,10 +842,10 @@ div#format-specs {
 .htmx-settling img { opacity : 0; }
 
 img {
-    -moz-transition    : opacity .5s ease-in;
-    -o-transition      : opacity .5s ease-in;
-    -webkit-transition : opacity .5s ease-in;
-    transition         : opacity .5s ease-in;
+    -moz-transition    : opacity 1s ease-in-out;
+    -o-transition      : opacity 1s ease-in-out;
+    -webkit-transition : opacity 1s ease-in-out;
+    transition         : opacity 1s ease-in-out;
 }
 
 /*.img-fade.loaded { opacity : 1; }*/
