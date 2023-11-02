@@ -398,9 +398,8 @@ nav > img { z-index : 30; }
     /*.htmx-settling nav > .show {*/
     /*    transform : translate(5%, 100%);*/
     /*}*/
-
     nav > .hide {
-        visibility: hidden;
+        visibility : hidden;
     }
 
     .slide-out {
@@ -413,9 +412,9 @@ nav > img { z-index : 30; }
 }
 
 /* MODALS */
-#preview::backdrop {
-    background-color : var(--black);
-    opacity          : 0.5;
+dialog::backdrop {
+    background-color : black;
+    opacity          : 0.1;
 }
 
 /* panier */
@@ -498,7 +497,7 @@ nav > img { z-index : 30; }
     z-index            : 1;
 }
 
-.htmx-settling #preview-button {
+.htmx-swapping #preview-button {
     opacity   : 0;
     transform : translateX(-2rem);
 }
@@ -623,6 +622,7 @@ button > svg { margin-left : .5rem; }
     border-radius : .66rem .66rem 0 0;
     color         : var(--txt);
     position      : relative;
+    transition    : none;
     z-index       : 1;
 }
 
@@ -633,13 +633,17 @@ button > svg { margin-left : .5rem; }
     z-index       : 3;
 }
 
-.double-column {
-    grid-column : span 2;
+.double-column { grid-column : span 2; }
+
+.hide-post {
+    transform  : translateY(-120px);
+    transition : transform 0.25s ease-in-out;
 }
 
-/*#tabs > #format-tabs {*/
-/*    border-bottom: solid var(--stroke-double) var(--txt);*/
-/*}*/
+.show-post {
+    transform  : translateY(0);
+    transition : transform 0.25s ease-in-out;
+}
 
 .pointer { cursor : pointer; }
 

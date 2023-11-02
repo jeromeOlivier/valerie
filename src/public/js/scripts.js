@@ -124,6 +124,8 @@
     // Select button and associated modal.
     const preview = document.querySelector("#preview");
     const previewButton = document.querySelector("#preview-button");
+    console.log("window.scrollY", window.scrollY, "window.scrollX", window.scrollX);
+    console.log("preview.offsetHeight", preview.offsetHeight, "preview.offsetWidth", preview.offsetWidth);
     previewButton.addEventListener("click", () => {
       // Before showing the modal, adjust its position to the center of the viewport
       const top = window.innerHeight / 2 - preview.offsetHeight / 2 + window.scrollY;
@@ -152,7 +154,6 @@
 
 // Add click events to the preview modal to change the image
   function activatePreview() {
-    console.log("activatePreview");
     const buttons = document.querySelectorAll("#next, #prev");
     buttons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -176,7 +177,6 @@
     });
   }
 }
-
 // SCROLLING -------------------------------------------------------------------
 {
 // Check if the user has set their system to use reduced motion
@@ -201,25 +201,33 @@
   scroller();
   document.body.addEventListener("htmx:afterSwap", scroller);
 }
-
-// add 'loaded' class to images on load from htmx swap
-document.body.addEventListener("htmx:afterSwap", function() {
-  const images = document.querySelectorAll(".img-fade");
-  images.forEach((img) => {
-    if (img.complete) {
-      img.classList.add("loaded");
-    } else {
-      img.onload = function() { this.classList.add("loaded"); };
-    }
+// TOGGLE CANADA POST ----------------------------------------------------------
+{
+  document.addEventListener("DOMContentLoaded", () => {
+    const canadaPost = document.querySelector("#post-logo");
+    const pdfButton = document.querySelector("#pdf-format-tab");
+    const paperButton = document.querySelector("#papier-format-tab");
+    pdfButton.addEventListener("click", () => {
+      canadaPost.classList.add("hide-post");
+      canadaPost.classList.remove("show-post");
+    });
+    paperButton.addEventListener("click", () => {
+      canadaPost.classList.remove("hide-post");
+      canadaPost.classList.add("show-post");
+    });
   });
-});
 
-// add 'loaded' class to book-covers on load from initial page load
-const bookCovers = document.querySelectorAll(".img-fade");
-bookCovers.forEach((cover) => {
-  if (cover.complete) {
-    cover.classList.add("loaded");
-  } else {
-    cover.onload = function() { this.classList.add("loaded"); };
-  }
-});
+    document.addEventListener("htmx:afterSwap", () => {
+    const canadaPost = document.querySelector("#post-logo");
+    const pdfButton = document.querySelector("#pdf-format-tab");
+    const paperButton = document.querySelector("#papier-format-tab");
+    pdfButton.addEventListener("click", () => {
+      canadaPost.classList.add("hide-post");
+      canadaPost.classList.remove("show-post");
+    });
+    paperButton.addEventListener("click", () => {
+      canadaPost.classList.remove("hide-post");
+      canadaPost.classList.add("show-post");
+    });
+  });
+}

@@ -22,6 +22,9 @@
         <div id="tabs" class="center mt3" hx-target="#tabs" hx-swap="innerHTML">
             <%- include('book_format.ejs') %>
         </div>
+        <div class="center mt1">
+            <img id="post-logo" class="hide-post" src="./img/svg/poste_canada.svg" alt="logo de Poste Canada" width="180px">
+        </div>
         <% if (book.workbook_desc) { %>
             <h2 class="mt3 mb1">Manuels par niveaux</h2>
             <div>
@@ -50,7 +53,7 @@
             <label for="courriel" class="block mt2 mb1">Courriel</label>
             <input id="courriel" type="email" class="grey-border" placeholder="mon@couriel.com" />
             <label for="subject" class="block mt2 mb1">Sujet</label>
-            <input id="subject" type="text" class="grey-border" required value="Manuel <%= book.title%>" />
+            <input id="subject" type="text" class="grey-border" required value="Manuel <%= book.title %>" />
             <label for="message" class="block mt2 mb1">Message</label>
             <textarea id="message" rows="10" class="grey-border" required></textarea>
             <button class="main-button mt2">Envoyer</button>
@@ -62,11 +65,11 @@
         <% for(let i = 0; i < images.length; i++) {
         if (i === 0) { %>
             <li>
-                <img src="<%= images[i]; %>" alt="Apperçu du contenu" class="active">
+                <img src="<%= images[i]; %>" alt="Apperçu du contenu" class="active" loading="lazy">
             </li>
         <% } else { %>
             <li>
-                <img src="<%= images[i]; %>" alt="Apperçu du contenu">
+                <img src="<%= images[i]; %>" alt="Apperçu du contenu" loading="lazy">
             </li>
         <% } %>
         <% } %>
@@ -74,4 +77,14 @@
     <button id="next">&#9205;</button>
     <button id="prev">&#9204;</button>
 </dialog>
-<!--path: /views/book.ejs-->
+<script>
+    function hidePost() {
+        const postLogo = document.getElementById('post-logo');
+        postLogo.classList.add('hide');
+    }
+    function showPost() {
+        const postLogo = document.getElementById('post-logo');
+        postLogo.classList.remove('hide');
+    }
+</script>
+// path: /views/book.ejs

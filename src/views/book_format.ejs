@@ -1,15 +1,15 @@
 <div id="format-tabs">
-    <button
-    <% if (book_format.type.toLowerCase() === "pdf") { %> class="blue selected cursor"
+    <button id="pdf-format-tab"
+    <% if (book_format.type.toLowerCase() === "pdf") { %> class="selected"
     <% }
-    else { %> class="blue" hx-get="/<%= book_format.title.toLowerCase() ;%>/format/pdf"%>
+    else { %> hx-get="/<%= book_format.title.toLowerCase() ;%>/format/pdf"%>
             <% } %>
     >Format PDF
     </button>
-    <button
-    <% if (book_format.type.toLowerCase() === "papier") { %> class="blue selected cursor"
+    <button id="papier-format-tab"
+    <% if (book_format.type.toLowerCase() === "papier") { %> class="selected"
     <% }
-    else { %> class="blue" hx-get="/<%= book_format.title.toLowerCase() ;%>/format/papier"%>
+    else { %> hx-get="/<%= book_format.title.toLowerCase() ;%>/format/papier"%>
             <% } %>
     >Format Papier
     </button>
@@ -48,12 +48,5 @@
     <div class="center mt1 double-column">
         <button class="orange-button">Ajouter au panier</button>
     </div>
-</div>
-<div class="center mt1">
-    <img id="post-logo" src="./img/svg/poste_canada.svg" alt="logo de Poste Canada" width="180px"
-    <% if (book_format.type === 'pdf') { %> class='hidden'
-    <% }else { %> class="reveal"
-            <% } %>
-    >
 </div>
 <!-- path: /views/book_format.ejs -->
