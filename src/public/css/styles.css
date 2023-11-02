@@ -440,19 +440,20 @@ dialog::backdrop {
 }
 
 /* preview*/
-#preview {
-    background    : var(--white);
-    border        : solid var(--stroke) var(--txt);
-    border-radius : 1rem;
-    filter        : var(--drop-shadow);
-    height        : 96vh;
-    left          : 50%;
-    margin        : 0;
-    overflow      : hidden;
-    position      : static;
-    top           : 50%;
-    transform     : translate(-50%, -50%);
-    width         : 74.18vh;
+
+dialog#preview {
+    align-items     : center;
+    backdrop-filter : brightness(0.9);
+    border          : solid var(--stroke) var(--txt);
+    border-radius   : 1rem;
+    height          : 96vh;
+    justify-content : center;
+    left            : 50%;
+    overflow        : hidden;
+    position        : fixed;
+    top             : 50%;
+    transform       : translate(-50%, -50%);
+    width           : 74.18vh;
 }
 
 #preview ul {

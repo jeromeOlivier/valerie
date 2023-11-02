@@ -122,26 +122,22 @@
 
   function launchPreviewModal() {
     // Select button and associated modal.
-    const preview = document.querySelector("#preview");
+    const preview = document.querySelector("dialog#preview");
     const previewButton = document.querySelector("#preview-button");
-    console.log("window.scrollY", window.scrollY, "window.scrollX", window.scrollX);
-    console.log("preview.offsetHeight", preview.offsetHeight, "preview.offsetWidth", preview.offsetWidth);
     previewButton.addEventListener("click", () => {
       // Before showing the modal, adjust its position to the center of the viewport
-      const top = window.innerHeight / 2 - preview.offsetHeight / 2 + window.scrollY;
-      const left = window.innerWidth / 2 - preview.offsetWidth / 2 + window.scrollX;
-      preview.style.top = `${ top }px`;
-      preview.style.left = `${ left }px`;
       // show the modal
+      console.log(preview);
       preview.showModal();
-      document.body.classList.add("no-scroll");
+      document.body.style.overflow = 'hidden';
       activatePreview();
       // new document level click event to close the modal
       setTimeout(() => {
         document.addEventListener("click", function closeModal(event) {
           if (isOutsideDialog(preview.getBoundingClientRect(), event)) {
+            // wrapper.style.display = "none";
             preview.close();
-            document.body.classList.remove("no-scroll");
+            document.body.style.overflow = 'auto';
             // remove the event listener
             document.removeEventListener("click", closeModal);
           }
