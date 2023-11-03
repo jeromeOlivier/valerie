@@ -1,7 +1,7 @@
 const { INTERNAL_SERVER_ERROR, INVALID_QUERY } = require("../constants/messages");
 const fs = require("fs");
 const path = require("path");
-const validUrls = require("../data/validUrls");
+const validUrls = require("../data_models/validUrls");
 
 async function getPageLayout(req, res) {
     if (req && typeof req.url === "string") {

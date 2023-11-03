@@ -1,7 +1,7 @@
 // Description: This file contains the handlers for all GET requests.
 const asyncHandler = require("express-async-handler");
-const validUrls = require("../data/validUrls");
-const validFormats = require("../data/validFormats");
+const validUrls = require("../data_models/validUrls");
+const validFormats = require("../data_models/validFormats");
 const db = require("../db_ops/db");
 const { getPageData, getPageLayout, getBlogData, getImages } = require("../utils/getPages");
 const { getBook, getBookFormat, getWorkbooks } = require("../utils/getBooks");
