@@ -5,6 +5,7 @@ const validFormats = require("../data_models/validFormats");
 const db = require("../db_ops/db");
 const { getPageData, getPageLayout, getBlogData, getImages } = require("../utils/getPages");
 const { getBook, getBookFormat, getWorkbooks } = require("../utils/getBooks");
+const { getCartItems } = require("../utils/getCartItems");
 const fs = require("fs");
 const path = require("path");
 
@@ -24,7 +25,7 @@ const blog = asyncHandler(async(req, res) => {
 const data_blog = asyncHandler(async(req, res) => getBlogData(req, res, validUrls));
 
 // GET CART
-const cart = asyncHandler(async(req, res) => getPageData(req, res, validUrls));
+const cart = asyncHandler(async(req, res) => getCartItems(req, res, validUrls));
 
 // GET PREVIEWS
 const preview = asyncHandler(async(req, res) => {

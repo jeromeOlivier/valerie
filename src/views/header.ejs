@@ -1,7 +1,7 @@
 <div class="navbar">
     <img src="./img/svg/logo_black.svg" alt="Valérie Gervais" class='logo' width="240px" loading="lazy">
     <img id='cart-button' src="./img/svg/cart.svg" width='24px'
-         alt="cart" loading="lazy" decoding="async" hx-get="/cart" hx-target="#cart">
+         alt="cart" loading="lazy" hx-get="/cart" hx-target="#cart" hx-swap="innerHTML" hx-push-url="false">
     <nav>
         <ul class="menu">
             <li hx-target="main"
