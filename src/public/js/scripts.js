@@ -94,19 +94,19 @@
     return top || bottom || left || right;
   }
 
-// Panier modal window
+// cart modal window
   document.addEventListener("DOMContentLoaded", () => {
     // Select button and associated modal.
-    const panier = document.querySelector("#panier");
-    const panierButton = document.querySelector("#panier-button");
-    panierButton.addEventListener("click", (event) => {
-      panier.showModal();
+    const cart = document.querySelector("#cart");
+    const cartButton = document.querySelector("#cart-button");
+    cartButton.addEventListener("click", (event) => {
+      cart.showModal();
       document.body.classList.add("no-scroll");
       // new document level click event to close the modal
       setTimeout(() => {
         document.addEventListener("click", function closeModal(event) {
-          if (isOutsideDialog(panier.getBoundingClientRect(), event)) {
-            panier.close();
+          if (isOutsideDialog(cart.getBoundingClientRect(), event)) {
+            cart.close();
             document.body.classList.remove("no-scroll");
             // remove the event listener
             document.removeEventListener("click", closeModal);

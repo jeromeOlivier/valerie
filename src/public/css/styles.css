@@ -238,7 +238,7 @@ nav > ul > li {
     text-decoration : none;
 }
 
-.panier-title {
+.cart-title {
     font-family : var(--font-bold);
     font-size   : 1.25rem;
     font-style  : normal;
@@ -415,8 +415,8 @@ dialog::backdrop {
     opacity          : 0.1;
 }
 
-/* panier */
-#panier {
+/* cart */
+#cart {
     background    : var(--white);
     border        : solid var(--stroke) var(--txt);
     border-radius : 1rem;
@@ -430,7 +430,7 @@ dialog::backdrop {
 }
 
 @media (max-width : 1060px) {
-    #panier {
+    #cart {
         max-width : 90vw;
         transform : translateX(5%);
         width     : 90vw;
@@ -520,11 +520,11 @@ dialog#preview {
 }
 
 #next {
-    right : 1rem;
+    right : .5rem;
 }
 
 #prev {
-    left : 1rem;
+    left : .5rem;
 }
 
 /* remove preview button for screens narrower than regular paper */
@@ -626,9 +626,9 @@ button > svg { margin-left : .5rem; }
 }
 
 #tabs > #format-tabs > button.selected {
-    color: var(--txt);
     background    : var(--white);
     border-bottom : solid var(--stroke) var(--white);
+    color         : var(--txt);
     z-index       : 3;
 }
 
@@ -876,14 +876,23 @@ img {
     width      : 100%;
 }
 
+.excel-background.htmx-settling:before {
+    opacity : 0;
+}
+
 .excel-background:before {
-    background : var(--grad_excel);
-    content    : "";
-    height     : calc(61.803% + var(--header-height));
-    left       : 0;
-    position   : absolute;
-    top        : 0;
-    width      : 100%;
+    background         : var(--grad_excel);
+    content            : "";
+    height             : calc(61.803% + var(--header-height));
+    left               : 0;
+    opacity            : 1;
+    position           : absolute;
+    top                : 0;
+    -moz-transition    : opacity 1s ease-in-out;
+    -o-transition      : opacity 1s ease-in-out;
+    -webkit-transition : opacity 1s ease-in-out;
+    transition         : opacity 1s ease-in-out;
+    width              : 100%;
 }
 
 .power-background:before {

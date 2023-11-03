@@ -63,9 +63,9 @@ const data_blog = asyncHandler(async(req, res) => {
   getBlogData(req, res, validUrls);
 });
 
-// GET PANIER
-const panier = asyncHandler(async(req, res) => getStaticLayout(req, res, validUrls));
-const data_panier = asyncHandler(async(req, res) => getStaticData(req, res, validUrls));
+// GET cart
+const cart = asyncHandler(async(req, res) => getStaticLayout(req, res, validUrls));
+const data_cart = asyncHandler(async(req, res) => getStaticData(req, res, validUrls));
 
 // GET BOOK FORMAT
 const book_format = asyncHandler(async(req, res) => {
@@ -259,8 +259,8 @@ module.exports = {
   data_blog,
   contact,
   data_contact,
-  cart: panier,
-  data_panier,
+  cart: cart,
+  data_cart,
   book,
   service,
   data_service,

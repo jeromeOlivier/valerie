@@ -1,7 +1,7 @@
 <div class="navbar">
     <img src="./img/svg/logo_black.svg" alt="Valérie Gervais" class='logo' width="240px" loading="lazy">
-    <img id='panier-button' src="./img/svg/panier.svg" width='24px'
-         alt="cart" loading="lazy" decoding="async">
+    <img id='cart-button' src="./img/svg/cart.svg" width='24px'
+         alt="cart" loading="lazy" decoding="async" hx-get="/cart" hx-target="#cart">
     <nav>
         <ul class="menu">
             <li hx-target="main"
@@ -42,8 +42,8 @@
         </ul>
     </nav>
 </div>
-<dialog class="modal" id="panier">
-    <p class="panier-title">Panier</p>
-    <div class="modal-body">Votre cart est vide
+<dialog class="modal" id="cart">
+    <p class="cart-title">Panier</p>
+    <div class="modal-body">Votre panier est vide
     </div>
 </dialog>
