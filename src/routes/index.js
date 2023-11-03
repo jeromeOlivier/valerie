@@ -20,12 +20,15 @@ router.get("/data_blog", get.data_blog);
 router.get("/data_contact", get.data_contact);
 router.get("/data_excel", get.book);
 router.get("/data_outlook", get.book);
-router.get("/data_cart", get.data_cart);
+router.get("/data_cart", get.cart);
 router.get("/data_powerpoint", get.book);
 router.get("/data_service", get.data_service);
 router.get("/data_word", get.book);
+
+// PARTIAL PAGE CONTENT
 router.get("/:title/format/:type", get.book_format);
 router.get("/preview/:title", get.preview);
+router.get("/cart", get.cart);
 
 // POST ENDPOINTS
 router.post("/addToCart/:title/:type", post.addToCart);

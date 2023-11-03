@@ -5,7 +5,7 @@
 // false, the content of the page's main element will be swapped with the
 // new content. if true, the file will be injected into layout and a full
 // page render will be executed.
-module.exports = [
+const validUrls = [
   { path: "/", file: "index", full: true },
   { path: "/data_index", file: "index", full: false },
   { path: "/blog", file: "blog", full: true },
@@ -14,8 +14,6 @@ module.exports = [
   { path: "/data_contact", file: "contact", full: false },
   { path: "/excel", title: "Excel", full: true },
   { path: "/data_excel", title: "Excel", full: false },
-  // { path: "/formation", file: "data_formation", full: true },
-  // { path: "/data_formation", file: "data_formation", full: false },
   { path: "/outlook", file: "data_outlook", title: "Outlook", full: true },
   { path: "/data_outlook", file: "data_outlook", title: "Outlook", full: false },
   { path: "/cart", file: "cart", full: true },
@@ -29,4 +27,5 @@ module.exports = [
   { path: "/word", file: "data_word", title: "Word", full: true },
   { path: "/data_word", file: "data_word", title: "Word", full: false },
 ];
+module.exports = validUrls;
 // path: src/utils/validUrls.js

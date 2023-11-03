@@ -11,7 +11,7 @@ const rateLimit = require("express-rate-limit");
 // internal dependencies
 const routes = require("./routes/index");
 const { log } = require("util");
-const db = require("./utils/database");
+const db = require("./db_ops/db");
 
 // initialize express app
 const app = express();

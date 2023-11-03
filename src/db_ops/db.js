@@ -12,4 +12,4 @@ const db = mysql
   .promise();
 
 module.exports = db;
-// path: src/utils/database.js
+// path: src/utils/db.js
