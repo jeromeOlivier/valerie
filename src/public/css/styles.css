@@ -59,7 +59,8 @@
     --grad_main                 : linear-gradient(137.51deg, #1D375B 1.4%, #12ADAD 99.12%);
     --grad_outlook              : linear-gradient(137.51deg, #987A3C 0%, #218567 70.8%, #21689E 100%);
     --grad_power                : linear-gradient(137.51deg, #BE3435 20.72%, #708743 64.63%, #00AC96 100%);
-    --grad_word                 : linear-gradient(137.51deg, #263C51 1.65%, #23486C 12.05%, #C95D7C 64.6%, #E38C6F 90.47%, #ECB86A 99.38%);
+    --grad_service              : linear-gradient(137.51deg, #33102E 0%, #771028 25%, #D36F2B 75%, #CEA114 100%);
+    --grad_word                 : linear-gradient(137.51deg, #263C51 0%, #23486C 12.05%, #C95D7C 64.6%, #E38C6F 90.47%, #ECB86A 99.38%);
     --grey                      : #CCCCCC;
     --header                    : rgba(255, 255, 255, 0.7);
     --medium_grey               : #888888;
@@ -444,14 +445,21 @@ dialog#preview {
     backdrop-filter : brightness(0.9);
     border          : solid var(--stroke) var(--txt);
     border-radius   : 1rem;
+    filter          : drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.25));
     height          : 96vh;
     justify-content : center;
     left            : 50%;
+    opacity         : 1;
     overflow        : hidden;
     position        : fixed;
     top             : 50%;
     transform       : translate(-50%, -50%);
+    transition      : opacity 0.25s ease-in-out;
     width           : 74.18vh;
+}
+
+.htmx-settling dialog#preview {
+    opacity : 0;
 }
 
 #preview ul {
@@ -484,21 +492,19 @@ dialog#preview {
 #preview ul li img.active { opacity : 1; }
 
 #preview-button {
-    bottom             : -20px;
-    cursor             : pointer;
-    height             : 10vh;
-    position           : absolute;
-    right              : -20px;
-    -moz-transition    : transform 1s ease-in-out, opacity .1s ease-out;
-    -o-transition      : transform 1s ease-in-out, opacity .1s ease-out;
-    -webkit-transition : transform 1s ease-in-out, opacity .1s ease-out;
-    transition         : transform 1s ease-in-out, opacity .1s ease-out;
-    z-index            : 1;
+    bottom     : -20px;
+    cursor     : pointer;
+    height     : 10vh;
+    position   : absolute;
+    right      : -20px;
+    scale      : 1;
+    transition : opacity 1s ease-in-out 1s, scale 1s ease-in-out 1s;
+    z-index    : 1;
 }
 
 .htmx-settling #preview-button {
-    opacity   : 0;
-    transform : translateX(-3rem);
+    opacity : 0;
+    scale   : 1.1;
 }
 
 #next, #prev {
@@ -805,22 +811,14 @@ div#format-specs {
     display : block;
 }
 
-/*.main-book-container > #preview-button {*/
-/*    */
-/*}*/
-
-/*.main-book-container > #preview-button:hover {*/
-/*    transform  : scale(1.1);*/
-/*    transition : transform 0.125s ease-in-out;*/
-/*}*/
-
-/*.main-book-container > #preview-button:active {*/
-/*    transform  : scale(1);*/
-/*    transition : none;*/
-/*}*/
-
 .book-cover {
-    height : 61.803vh;
+    height     : 61.803vh;
+    opacity    : 1;
+    transition : opacity 1s ease-in-out 0.5s;
+}
+
+.htmx-settling .book-cover {
+    opacity : 0;
 }
 
 .hidden {
@@ -840,80 +838,49 @@ div#format-specs {
     }
 }
 
-.htmx-settling img { opacity : 0; }
-
-img {
-    -moz-transition    : opacity 1s ease-in-out;
-    -o-transition      : opacity 1s ease-in-out;
-    -webkit-transition : opacity 1s ease-in-out;
-    transition         : opacity 1s ease-in-out;
-}
-
-/*.img-fade.loaded { opacity : 1; }*/
-
 /* backgrounds */
 .blue-background { background : var(--grad_main); }
 
+
 .white-background { background : var(--off-white); }
 
-.main-background:before {
-    background : var(--grad_main);
-    content    : "";
-    height     : calc(61.803vh + var(--header-height));
-    left       : 0;
-    position   : absolute;
-    top        : 0;
-    width      : 100%;
+
+.htmx-settling .excel-background:before,
+.htmx-settling .service-background:before,
+.htmx-settling .main-background:before,
+.htmx-settling .word-background:before,
+.htmx-settling .power-background:before,
+.htmx-settling .outlook-background:before {
+    filter : brightness(0);
 }
 
+.main-background:before,
+.service-background:before,
+.excel-background:before,
+.power-background:before,
+.outlook-background:before,
 .word-background:before {
-    background : var(--grad_word);
     content    : "";
+    filter     : brightness(1);
     height     : calc(61.803% + var(--header-height));
     left       : 0;
     position   : absolute;
     top        : 0;
+    transition : filter 0.75s ease-in-out;
     width      : 100%;
 }
 
-.excel-background.htmx-settling:before {
-    opacity : 0;
-}
+.main-background:before { background : var(--grad_main); }
 
-.excel-background:before {
-    background         : var(--grad_excel);
-    content            : "";
-    height             : calc(61.803% + var(--header-height));
-    left               : 0;
-    opacity            : 1;
-    position           : absolute;
-    top                : 0;
-    -moz-transition    : opacity 1s ease-in-out;
-    -o-transition      : opacity 1s ease-in-out;
-    -webkit-transition : opacity 1s ease-in-out;
-    transition         : opacity 1s ease-in-out;
-    width              : 100%;
-}
+.service-background:before { background : var(--grad_service); }
 
-.power-background:before {
-    background : var(--grad_power);
-    content    : "";
-    height     : calc(61.803% + var(--header-height));
-    left       : 0;
-    position   : absolute;
-    top        : 0;
-    width      : 100%;
-}
+.excel-background:before { background : var(--grad_excel);}
 
-.outlook-background:before {
-    background : var(--grad_outlook);
-    content    : "";
-    height     : calc(61.803% + var(--header-height));
-    left       : 0;
-    position   : absolute;
-    top        : 0;
-    width      : 100%;
-}
+.word-background:before { background : var(--grad_word); }
+
+.power-background:before { background : var(--grad_power); }
+
+.outlook-background:before { background : var(--grad_outlook); }
 
 h1 > span.hero-h1, h1 > span.hero-h1 > *, h2 > span.hero-h2 {
     color      : var(--off-white);
@@ -937,6 +904,12 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
     border        : solid var(--stroke) var(--btn_blue_stoke);
     border-radius : 50%;
     height        : 38.197vh;
+    opacity       : 1;
+    transition    : opacity 1s ease-in-out 0.5s;
+}
+
+.htmx-settling .head-shot {
+    opacity : 0;
 }
 
 .head-shot-caption {
@@ -945,13 +918,25 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 }
 
 .head-shot-caption > img {
-    width : 70%;
+    opacity    : 1;
+    transition : opacity 1s ease-in-out 0.75s;
+    width      : 70%;
+}
+
+.htmx-settling .head-shot-caption > img {
+    opacity : 0;
 }
 
 .head-shot-caption > p:first-of-type {
     font-family : var(--font-regular);
     font-size   : clamp(1rem, 3vw, 1.25rem);
     margin-top  : .5rem;
+    opacity     : 1;
+    transition  : opacity 1s ease-in-out 1s;
+}
+
+.htmx-settling .head-shot-caption > p:first-of-type {
+    opacity : 0;
 }
 
 .head-shot-caption > p {
@@ -959,6 +944,12 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
     font-size   : 1rem;
     line-height : .5rem;
     margin-top  : 0;
+    opacity     : 1;
+    transition  : opacity 1s ease-in-out 1.25s;
+}
+
+.htmx-settling .head-shot-caption > p {
+    opacity : 0;
 }
 
 @keyframes scroll {

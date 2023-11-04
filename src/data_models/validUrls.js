@@ -27,4 +27,4 @@ const validUrls = [
   { path: "/data_word", file: "data_word", title: "Word", full: false },
 ];
 module.exports = validUrls;
-// path: src/utils/validUrls.js
+// path: src/data_models/validUrls.js

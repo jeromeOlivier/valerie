@@ -1,6 +1,11 @@
 const asyncHandler = require("express-async-handler");
+const { getCartItems } = require("../utils/getCartItems");
+const validUrls = require("../data_models/validUrls");
 
-const addToCart = asyncHandler(async(req, res) => {
+// GET
+const find = asyncHandler(async(req, res) => getCartItems(req, res, validUrls));
+// POST
+const add = asyncHandler(async(req, res) => {
   const title = req.params.title;
   const type = req.params.type;
   const cookie = req.cookies ? JSON.parse(req.cookies.cart || '[]') : [];
@@ -23,5 +28,6 @@ const addToCart = asyncHandler(async(req, res) => {
 });
 
 module.exports = {
-  addToCart,
+  find,
+  add,
 };

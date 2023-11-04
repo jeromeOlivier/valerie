@@ -24,9 +24,6 @@ const blog = asyncHandler(async(req, res) => {
 });
 const data_blog = asyncHandler(async(req, res) => getBlogData(req, res, validUrls));
 
-// GET CART
-const cart = asyncHandler(async(req, res) => getCartItems(req, res, validUrls));
-
 // GET PREVIEWS
 const preview = asyncHandler(async(req, res) => {
   const title = req.params.title;
@@ -53,7 +50,6 @@ module.exports = {
   data_blog,
   contact,
   data_contact,
-  cart,
   preview,
 };
 

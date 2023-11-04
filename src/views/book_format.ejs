@@ -2,14 +2,14 @@
     <button id="pdf-format-tab"
     <% if (book_format.type.toLowerCase() === "pdf") { %> class="selected"
     <% }
-    else { %> hx-get="/<%= book_format.title.toLowerCase(); %>/format/pdf"%>
+    else { %> hx-get="/format/<%= book_format.title.toLowerCase(); %>/pdf"%>
             <% } %>
     >Format PDF
     </button>
     <button id="papier-format-tab"
     <% if (book_format.type.toLowerCase() === "papier") { %> class="selected"
     <% }
-    else { %> hx-get="/<%= book_format.title.toLowerCase(); %>/format/papier"%>
+    else { %> hx-get="/format/<%= book_format.title.toLowerCase(); %>/papier"%>
             <% } %>
     >Format Papier
     </button>
@@ -47,7 +47,7 @@
     <div class="bold"><%= book_format.price; %> $ CAD</div>
     <div class="center margin_top_1rem double-column">
         <button id="add_to_cart" class="orange-button"
-                hx-post="addToCart/<%= book_format.title.toLowerCase() %>/<%= book_format.type %>"
+                hx-post="cart/add/<%= book_format.title.toLowerCase() %>/<%= book_format.type %>"
                 hx-swap="none">Ajouter au panier
         </button>
     </div>
