@@ -18,7 +18,7 @@ VALUES ('Word', 'word-background', 'word-cover', 'word_cover.svg',
         @word_description, @word_workbook_desc),
        ('Excel', 'excel-background', 'excel-cover', 'excel_cover.svg',
         @excel_description, @excel_workbook_desc),
-       ('PowerPoint', 'power-background', 'power-cover', 'power_cover.svg',
+       ('PowerPoint', 'power-background', 'power-cover', 'powerpoint_cover.svg',
         @power_description, NULL),
        ('Outlook', 'outlook-background', 'outlook-cover', 'outlook_cover.svg',
         @outlook_description, NULL);

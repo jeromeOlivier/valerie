@@ -1,9 +1,39 @@
 <div id="cart_heading">
     <h4>Votre panier</h4>
 </div>
-<div>
-    <% %>
+<div id="cart-items">
+    <% cart.forEach(item => { %>
+        <div class="cart-item">
+            <div class="cart-item-image">
+                <img src="/img/svg/<%= `${ item.title.toLowerCase() }_cover.svg`; %>" alt="<%= item.title; %>">
+            </div>
+            <div class="delete-cart-item">
+                <button>&times;</button>
+            </div>
+            <div class="cart-item-label">
+                Format:
+            </div>
+            <div class="cart-item-detail">
+                <%= item.type.toUpperCase(); %>
+            </div>
+            <div class="cart-item-label">
+                Prix:
+            </div>
+            <div class="cart-item-price">
+                <%= item.total.toFixed(2); %>$ CAD
+            </div>
+            <label class="cart-item-label" for="quantity">
+                Quantité:
+            </label>
+            <div class="cart-item-quantity">
+                <select name="quantity" id="quantity">
+                    <% for (let i = 1; i <= 3; i++) { %>
+                        <option value="<%= i; %>" <% if (i === item.quantity) { %>selected
+                                <% } %>
+                        ><%= i; %></option>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+    <% }); %>
 </div>
-
-// it the cart is empty, display 'Votre panier est vide'
-// else display the cart items

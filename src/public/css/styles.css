@@ -44,11 +44,11 @@
     --btn_blue_stoke_disabled   : #3B5A64;
     --btn_blue_text_disabled    : #87A8B4;
     --btn_orange_main           : #BE5A13;
-    --btn_orange_main_disabled  : #E3A071;
+    --btn_orange_main_disabled  : #B9947B;
     --btn_orange_main_hover     : #FC7A23;
     --btn_orange_stoke          : #533926;
-    --btn_orange_stoke_disabled : #9C6741;
-    --btn_orange_text_disabled  : #EFD0BA;
+    --btn_orange_stoke_disabled : #816E63;
+    --btn_orange_text_disabled  : #E3D9D5;
     --btn_radio_checked         : #359EC1;
     --btn_radio_unchecked       : #1C424F;
     --btn_red_hover_stoke       : #541414;
@@ -58,7 +58,7 @@
     --grad_excel                : linear-gradient(137.51deg, #237045 0.86%, #17766F 43.85%, #98438A 100%);
     --grad_main                 : linear-gradient(137.51deg, #1D375B 1.4%, #12ADAD 99.12%);
     --grad_outlook              : linear-gradient(137.51deg, #987A3C 0%, #218567 70.8%, #21689E 100%);
-    --grad_power                : linear-gradient(137.51deg, #BE3435 20.72%, #708743 64.63%, #00AC96 100%);
+    --grad_powerpoint                : linear-gradient(137.51deg, #BE3435 20.72%, #708743 64.63%, #00AC96 100%);
     --grad_service              : linear-gradient(137.51deg, #33102E 0%, #771028 25%, #D36F2B 75%, #CEA114 100%);
     --grad_word                 : linear-gradient(137.51deg, #263C51 0%, #23486C 12.05%, #C95D7C 64.6%, #E38C6F 90.47%, #ECB86A 99.38%);
     --grey                      : #CCCCCC;
@@ -76,7 +76,7 @@
     --drop-shadow               : drop-shadow(5px 5px 3px #0000003F);
     --excel-stoke               : #014328;
     --outlook-stoke             : #0D3C66;
-    --power-stoke               : #793C27;
+    --powerpoint-stoke               : #793C27;
     --word-stoke                : #1D1F3E;
     --font-thin                 : iThin, Arial, sans-serif;
     --off-white                 : #F5F5F5;
@@ -233,7 +233,7 @@ cite {
 
 nav > ul > li {
     color           : var(--black);
-    /*font-family     : var(--font-semibold);*/
+    font-family     : var(--font-semibold);
     font-style      : normal;
     font-weight     : 700;
     text-decoration : none;
@@ -418,16 +418,89 @@ dialog::backdrop {
 
 /* cart */
 #cart {
-    background    : var(--white);
-    border        : solid var(--stroke) var(--txt);
-    border-radius : 1rem;
-    filter        : var(--drop-shadow);
-    max-width     : 30rem;
-    overflow-y    : hidden;
-    padding       : 1rem;
-    top           : 3.75rem;
-    transform     : translateX(50vw);
-    width         : 45vw;
+    background      : var(--off-white);
+    border          : solid var(--stroke) var(--txt);
+    border-radius   : 1rem;
+    filter          : var(--drop-shadow);
+    max-height      : calc(100vh - var(--header-height) - 3.75rem);
+    max-width       : 30rem;
+    scrollbar-width : none;
+    top             : 3.75rem;
+    transform       : translateX(50vw);
+    width           : 45vw;
+}
+
+#cart::-webkit-scrollbar {
+    display : none;
+}
+
+#cart_heading {
+    align-items   : center;
+    background    : var(--off-white);
+    border-bottom : solid var(--stroke) var(--grey);
+    padding       : 1.5rem 1rem;
+    position      : sticky;
+    width: 100%;
+    top           : 0;
+    filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.125));
+
+}
+
+#cart-items {
+    background-color: var(--off-white);
+    display         : flex;
+    flex-direction  : column;
+    height          : 100%;
+    overflow-y      : auto;
+    padding         : 1rem;
+    scrollbar-width : none;
+}
+
+[class^="cart-item-"], .cart-item-quantity > #quantity {
+    font-family: iSemi, Arial, sans-serif;
+}
+
+
+
+.cart-item {
+    background: var(--white);
+    display         : grid;
+    gap             : 1rem;
+    grid-template : repeat(4, auto) / 1fr 1fr 1fr;
+    width           : auto;
+    padding: 1rem;
+    border-radius: .5rem;
+    border: solid var(--stroke) var(--grey);
+    margin-bottom: 1rem;
+}
+
+.cart-item > .cart-item-image {
+    grid-row: span 5;
+    height: 100%;
+}
+
+.cart-item > .delete-cart-item {
+    grid-column: span 2;
+    justify-self: end;
+}
+
+/*.cart-item > .cart-item-quantity > input {*/
+/*    padding: 1rem;*/
+/*    margin: 0;*/
+/*    width: 2rem;*/
+/*    border: solid var(--stroke) var(--grey);*/
+/*}*/
+
+.cart-item > .delete-cart-item > button {
+    color : var(--grey);
+    padding: 0 .5rem;
+    background-color: var(--white);
+    border-color: var(--grey);
+}
+
+.cart-item > .delete-cart-item > button:hover {
+    color : var(--white);
+    background-color: var(--grey);
 }
 
 @media (max-width : 1060px) {
@@ -439,7 +512,6 @@ dialog::backdrop {
 }
 
 /* preview*/
-
 dialog#preview {
     align-items     : center;
     backdrop-filter : brightness(0.9);
@@ -602,6 +674,12 @@ button.orange-button {
 
 button.orange-button:hover { background : var(--btn_orange_main_hover); }
 
+button#add_to_cart.orange-button.disabled {
+    border-color : var(--btn_orange_stoke_disabled);
+    background   : var(--btn_orange_main_disabled);
+    color        : var(--btn_orange_text_disabled);
+    cursor: default;
+}
 
 button > svg { margin-left : .5rem; }
 
@@ -849,7 +927,7 @@ div#format-specs {
 .htmx-settling .service-background:before,
 .htmx-settling .main-background:before,
 .htmx-settling .word-background:before,
-.htmx-settling .power-background:before,
+.htmx-settling .powerpoint-background:before,
 .htmx-settling .outlook-background:before {
     filter : brightness(0);
 }
@@ -857,7 +935,7 @@ div#format-specs {
 .main-background:before,
 .service-background:before,
 .excel-background:before,
-.power-background:before,
+.powerpoint-background:before,
 .outlook-background:before,
 .word-background:before {
     content    : "";
@@ -878,7 +956,7 @@ div#format-specs {
 
 .word-background:before { background : var(--grad_word); }
 
-.power-background:before { background : var(--grad_power); }
+.powerpoint-background:before { background : var(--grad_powerpoint); }
 
 .outlook-background:before { background : var(--grad_outlook); }
 
@@ -1023,9 +1101,9 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
     border     : solid var(--stroke) var(--excel-stoke);
 }
 
-.power-cover {
-    background : var(--power-stoke);
-    border     : solid var(--stroke) var(--power-stoke);
+.powerpoint-cover {
+    background : var(--powerpoint-stoke);
+    border     : solid var(--stroke) var(--powerpoint-stoke);
 }
 
 .outlook-cover {

@@ -46,10 +46,7 @@
     <div class="semi-bold">Prix</div>
     <div class="bold"><%= book_format.price; %> $ CAD</div>
     <div class="center margin_top_1rem double-column">
-        <button id="add_to_cart" class="orange-button"
-                hx-post="cart/add/<%= book_format.title.toLowerCase() %>/<%= book_format.type %>"
-                hx-swap="none">Ajouter au panier
-        </button>
+        <%- include('book_format_add_button.ejs') %>
     </div>
 </div>
 <!-- path: /views/book_format.ejs -->

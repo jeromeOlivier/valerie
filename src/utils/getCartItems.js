@@ -24,14 +24,10 @@ async function getCartItems(req, res) {
         const title = item.title.charAt(0).toUpperCase() + item.title.slice(1);
         return { ...item, title: title };
     });
-    console.log('formatTitles:', formatTitles);
     // add new total attribute to each item object with the price * quantity
-    const totalPrice = formatTitles.map((item) => {
-        // const total = item.price * item.quantity;
-        return { ...item, total: item.price * item.quantity };
+    return  formatTitles.map((item) => {
+        return { ...item, total: item.price * item.quantity }
     });
-    console.log('totalPrice:', totalPrice);
-
 }
 
 async function getPriceByNameAndType(items) {
@@ -46,8 +42,6 @@ async function getPriceByNameAndType(items) {
                  JOIN formats f ON f.id = bf.format
         WHERE ${ whereClause }
     `);
-    console.log('prices:', prices);
-    console.log('items:', items);
     // map the prices to the items
     return items.map(item => {
         const price = prices.find(p => p.title.toLowerCase() === item.title && p.type === item.type);

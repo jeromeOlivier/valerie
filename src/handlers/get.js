@@ -14,7 +14,8 @@ const book = asyncHandler(async(req, res) => getBook(req, res, validUrls, validF
 const book_format = asyncHandler(async(req, res) => {
   const title = req.params.title;
   const format = req.params.type;
-  const result = await getBookFormat(title, format, validFormats);
+  const cookies = req.cookies ? JSON.parse(req.cookies.cart || '[]') : [];
+  const result = await getBookFormat(title, format, cookies);
   res.render("book_format", { book_format: result });
 });
 

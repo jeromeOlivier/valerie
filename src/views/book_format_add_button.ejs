@@ -1,0 +1,10 @@
+<button id="add_to_cart"
+        <% if (book_format.quantity < 3) { %>
+        hx-post="cart/add/<%= book_format.title.toLowerCase(); %>/<%= book_format.type; %>"
+        hx-swap="outerHTML"
+        hx-target="#add_to_cart"
+        class="orange-button">Ajouter au panier
+    <% } else { %>
+        class="orange-button disabled">Limite de 3 exemplaires
+        <% } %>
+</button>

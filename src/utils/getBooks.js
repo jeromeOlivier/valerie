@@ -1,14 +1,16 @@
 const db = require("../db_ops/db");
 const { NOT_FOUND, INVALID_QUERY } = require("../constants/messages");
 const { getImages } = require("./getPages");
+const validFormats = require("../data_models/validFormats");
+const validUrls = require("../data_models/validUrls");
 
-const getBookData = async(validUrl, validFormats) => {
+const getBookData = async(validUrl) => {
     const [[book]] = await db.query("SELECT * FROM books WHERE title = ? ;", [validUrl.title]);
     db.disconnect;
     if (book.length === 0) throw new Error(NOT_FOUND);
     const title = book.title.toLowerCase();
     const format = "pdf";
-    const book_format = await getBookFormat(title, format, validFormats);
+    const book_format = await getBookFormat(title, format);
     book.workbooks = book.workbook_desc ? await getWorkbooks(title) : [];
     const images = await getImages(book.title);
     return { book, book_format, images };
@@ -31,13 +33,14 @@ async function getBook(req, res, validUrls, validFormats) {
     }
 }
 
-async function getBookFormat(title, format, validFormats) {
+async function getBookFormat(title, format, cookies = []) {
     // validate the query parameters
     const isValidTitle = validFormats.has(title);
     const isValidFormat = validFormats.has(format);
     const capitalizedTitle = title[0].toUpperCase() + title.slice(1);
     if (!isValidTitle || !isValidFormat) throw new Error(INVALID_QUERY);
 
+    console.log('cookies: ', cookies);
     // get the book format data
     const [[book_format]] = await db.query(`
         SELECT b.title     AS title,
@@ -58,6 +61,10 @@ async function getBookFormat(title, format, validFormats) {
     `);
     if (!book_format) throw new Error(INVALID_QUERY);
     db.disconnect;
+
+    // use cookie to add current quantity to the book format data
+    const item = cookies.find((i) => i.title === title && i.type === format);
+    if (item) { book_format.quantity = item.quantity; }
 
     return book_format;
 }
