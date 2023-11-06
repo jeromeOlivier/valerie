@@ -12,6 +12,7 @@ const rateLimit = require("express-rate-limit");
 const routes = require("./routes/index");
 const { log } = require("util");
 const db = require("./db_ops/db");
+const shutDown = require("./db_ops/shutdown");
 
 // initialize express app
 const app = express();
@@ -48,6 +49,10 @@ app.use(cookie({
 
 // routes
 app.use("/", routes);
+
+// db shutdown on process exit
+process.on('SIGTERM', shutDown);
+process.on('SIGINT', shutDown);
 
 // initialize server
 const port = process.env.PORT || "3000";

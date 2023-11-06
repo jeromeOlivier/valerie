@@ -503,7 +503,7 @@ dialog::backdrop {
     background-color: var(--grey);
 }
 
-@media (max-width : 1060px) {
+@media (max-width : 512px) {
     #cart {
         max-width : 90vw;
         transform : translateX(5%);

@@ -1,14 +1,20 @@
 const { INTERNAL_SERVER_ERROR, INVALID_QUERY } = require("../constants/messages");
 const fs = require("fs");
 const path = require("path");
-const validUrls = require("../data_models/validUrls");
+const urlEndpointConfig = require("../data_models/urlEndpointConfig");
 
+/**
+ * Description: This function returns the page layout for the given path.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 async function getPageLayout(req, res) {
     if (req && typeof req.url === "string") {
         // if req is defined and req.url is a string, try to render the page
         try {
             // validate the query parameters over the whitelist to prevent injection
-            const isValid = validUrls.find(valid => valid.path === req.url);
+            const isValid = urlEndpointConfig.find(valid => valid.path === req.url);
             if (isValid) {
                 // if the page is valid, render the layout with the page's content
                 await res.render("layout", { main: isValid.file });
@@ -26,11 +32,17 @@ async function getPageLayout(req, res) {
     }
 }
 
+/**
+ * Description: This function returns the page data for the given path.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 async function getPageData(req, res) {
     if (req && typeof req.url === "string") {
         try {
             // validate the query parameters over the whitelist to prevent injection
-            const valid = validUrls.find((page) => page.path === req.url);
+            const valid = urlEndpointConfig.find((page) => page.path === req.url);
             if (valid) {
                 // if the page is valid, render the layout with the page's content
                 res.render(valid.file);
@@ -51,7 +63,7 @@ async function getPageData(req, res) {
 async function getBlogData(req, res) {
     if (req && typeof req.url === "string") {
         try {
-            const valid = validUrls.find((page) => page.path === req.url);
+            const valid = urlEndpointConfig.find((page) => page.path === req.url);
             if (valid) {
                 res.render(valid.file);
             } else {
@@ -65,30 +77,8 @@ async function getBlogData(req, res) {
     }
 }
 
-const IMAGE_PATH = "img/webp";
-
-async function getImages(title) {
-    // generate the absolute path to the directory for the book's images
-    const directoryPath = path.join(__dirname, `../public/${ IMAGE_PATH }/${ title }`);
-    return new Promise((resolve, reject) => {
-    // read the directory
-        fs.readdir(directoryPath, (err, files) => {
-            if (err) {
-                reject(`file not found: ${ err }`);
-            } else {
-                // filter out non-webp files
-                files = files.filter((file) => (file.endsWith(".webp")));
-                // generate the relative path for each image
-                const images = files.map((file) => `./${ IMAGE_PATH }/${ title }/${ file }`);
-                resolve(images);
-            }
-        });
-    });
-}
-
 module.exports = {
     getPageLayout,
     getPageData,
     getBlogData,
-    getImages,
 };

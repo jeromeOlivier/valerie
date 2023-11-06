@@ -1,11 +1,8 @@
-// Array of valid pages, otherwise known as a "whitelist".
-// path: the url path.
-// file: the content to be rendered.
-// full: a boolean that determines how the content should be rendered. if
-// false, the content of the page's main element will be swapped with the
-// new content. if true, the file will be injected into layout and a full
-// page render will be executed.
-const validUrls = [
+/**
+ * Description: This file contains an array of Path objects that represent a whitelist of valid pages.
+ * @type {Array.<Path>}
+ */
+const urlEndpointConfig = [
   { path: "/", file: "index", full: true },
   { path: "/data_index", file: "index", full: false },
   { path: "/blog", file: "blog", full: true },
@@ -26,5 +23,5 @@ const validUrls = [
   { path: "/word", file: "data_word", title: "Word", full: true },
   { path: "/data_word", file: "data_word", title: "Word", full: false },
 ];
-module.exports = validUrls;
-// path: src/data_models/validUrls.js
+module.exports = urlEndpointConfig;
+// path: src/data_models/urlEndpointConfig.js

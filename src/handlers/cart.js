@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
-const { getCartItems } = require("../utils/getCartItems");
-const validUrls = require("../data_models/validUrls");
+const { getCartItems } = require("../utils/getCookieCart");
+const urlEndpointConfig = require("../data_models/urlEndpointConfig");
 const { updateCookie } = require("../utils/cookieUtils");
 
 // GET
@@ -14,6 +14,7 @@ const add = asyncHandler(async(req, res) => {
   const title = req.params.title;
   const type = req.params.type;
   const cookie = req.cookies ? JSON.parse(req.cookies.cart || '[]') : [];
+  console.log('cookie inside add:', cookie);
   let quantity;
   if (cookie.length > 0) {
     const existingItemIndex = cookie.findIndex(item => item.title === title && item.type === type);
@@ -26,7 +27,7 @@ const add = asyncHandler(async(req, res) => {
   } else {
     cookie.push({ title: title, type: type, quantity: 1 });
   }
-  res.cookie("cart", JSON.stringify(cookie), {
+  res.cookie("items", JSON.stringify(cookie), {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
   });

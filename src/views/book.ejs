@@ -10,9 +10,11 @@
         </div>
         <h2 class="margin_top_3rem margin_bottom_1rem">À propos du manuel <%= book.title %></h2>
         <div class="long-text">
-            <% book.description.split('\\n').forEach((paragraph) => { %>
-                <p><%= paragraph; %></p><br><br>
-            <% }); %>
+            <% if (book && book.description) { %>
+                <% book.description.split('\\n').forEach(paragraph => { %>
+                    <p><%= paragraph; %></p><br><br>
+                <% }); %>
+            <% } %>
         </div>
         <h2 class="margin_top_3rem margin_bottom_1rem">Acheter maintenant</h2>
         <p style="color: red;">The textbooks are available as a downloadable PDF or physical copy. After making
@@ -64,14 +66,14 @@
 
 <dialog id="preview" autofocus>
     <ul>
-        <% for(let i = 0; i < images.length; i++) {
+        <% for(let i = 0; i < book.preview_images.length; i++) {
         if (i === 0) { %>
             <li>
-                <img src="<%= images[i]; %>" alt="Apperçu du contenu" class="active" loading="lazy">
+                <img src="<%= book.preview_images[i]; %>" alt="Apperçu du contenu" class="active" loading="lazy">
             </li>
         <% } else { %>
             <li>
-                <img src="<%= images[i]; %>" alt="Apperçu du contenu" loading="lazy">
+                <img src="<%= book.preview_images[i]; %>" alt="Apperçu du contenu" loading="lazy">
             </li>
         <% } %>
         <% } %>

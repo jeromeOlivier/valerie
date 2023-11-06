@@ -1,30 +1,53 @@
-const db = require("../db_ops/db");
+// Description: This file contains the functions for getting the book data.
+// constants
 const { NOT_FOUND, INVALID_QUERY } = require("../constants/messages");
-const { getImages } = require("./getPages");
-const validFormats = require("../data_models/validFormats");
-const validUrls = require("../data_models/validUrls");
+// database connection
+const db = require("../db_ops/db");
+// data_models
+const urlProductTypes = require("../data_models/urlProductTypes");
+const urlEndpointConfig = require("../data_models/urlEndpointConfig");
+const { BookFormat } = require("../data_models/book");
+const { Path } = require("../data_models/path");
+const { Book } = require("../data_models/book");
+const { Cart, CartItem } = require("../data_models/cart");
+// methods
+const { getQuantityForItem, parseCookieItems } = require("./getCookieCart");
+// for reading the images from the file system
+const fs = require("fs");
+const path = require("path");
+// path to the images
+const { IMAGE_PATH } = require("../constants/links");
 
-const getBookData = async(validUrl) => {
-    const [[book]] = await db.query("SELECT * FROM books WHERE title = ? ;", [validUrl.title]);
-    db.disconnect;
-    if (book.length === 0) throw new Error(NOT_FOUND);
-    const title = book.title.toLowerCase();
-    const format = "pdf";
-    const book_format = await getBookFormat(title, format);
-    book.workbooks = book.workbook_desc ? await getWorkbooks(title) : [];
-    const images = await getImages(book.title);
-    return { book, book_format, images };
-};
-
-async function getBook(req, res, validUrls, validFormats) {
-    if (req && typeof req.url === "string") {
-        const validUrl = validUrls.find((s) => s.path === req.url);
-        if (!validUrl || !validUrl.title) {
-            return res.status(500).send(INVALID_QUERY);
-        }
+/**
+ * Description: This function returns the book data for the given path.
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
+async function getBook(req, res) {
+    console.log("req url inside getBook:", req.url);
+    // validate the query parameters
+    if (isValidQuery(req)) {
+        // find the path in the urlEndpointConfig array, assign the matching values to path variable
+        /**
+         * @type {Path}
+         */
+        const path = fetchUrlEndpointConfiguration(req);
+        // if path is null, send an error message
+        if (!isValidPath(path)) { return res.status(500).send(INVALID_QUERY); }
         try {
-            const { book, book_format, images } = await getBookData(validUrl, validFormats);
-            res.render(validUrl.full ? "layout" : "book", { main: "book", book, book_format, images });
+            console.log("path inside getBook try:", path);
+            // get book data (book, book_format and preview images)
+            /**
+             * @type {Book}
+             */
+            const book = await getBookData(path);
+            console.log("book inside getBook:", book);
+            const items = parseCookieItems(req.cookies);
+            // get the quantity of books in user's cookie if it's not empty
+            const quantity = items.length > 0 ? getQuantityForItem(items, book.title, book.format.type): 0;
+            // render the book page
+            res.render(path.full ? "layout" : "book", { main: "book", book, quantity });
         } catch (error) {
             res.status(500).send(error.message);
         }
@@ -33,16 +56,40 @@ async function getBook(req, res, validUrls, validFormats) {
     }
 }
 
-async function getBookFormat(title, format, cookies = []) {
-    // validate the query parameters
-    const isValidTitle = validFormats.has(title);
-    const isValidFormat = validFormats.has(format);
-    const capitalizedTitle = title[0].toUpperCase() + title.slice(1);
-    if (!isValidTitle || !isValidFormat) throw new Error(INVALID_QUERY);
+/**
+ * Description: This function returns the book data for the given path.
+ * @param {Path} path
+ * @returns {Book}
+ */
+const getBookData = async(path) => {
+    /**
+     * @type {Book}
+     */
+    const book = await fetchBookByTitle(path.title);
+    // get the book format data for the given title and pdf format
+    book.format = await getBookFormat(book.title);
+    // establish the quantity of books in user's cart
+    // get the workbooks for the book
+    await handleWorkbooks(book);
+    // get the book cover image
+    book.preview_images = await getImages(book.title);
+    // return the book data
+    return book;
+};
 
-    console.log('cookies: ', cookies);
+/**
+ * Description: This function returns relevant data for the given title and format.
+ * @param title
+ * @param format
+ * @returns {Promise<BookFormat>}
+ */
+async function getBookFormat(title, format = "pdf") {
+    // validate the query parameters
+    const isValidTitle = urlProductTypes.has(title.toLowerCase());
+    const isValidFormat = urlProductTypes.has(format);
+    if (!isValidTitle || !isValidFormat) throw new Error(INVALID_QUERY);
     // get the book format data
-    const [[book_format]] = await db.query(`
+    const [[query]] = await db.query(`
         SELECT b.title     AS title,
                bf.pub_date AS date,
                f.name      AS type,
@@ -56,19 +103,20 @@ async function getBookFormat(title, format, cookies = []) {
                  JOIN formats f ON f.id = bf.format
                  JOIN languages l ON l.id = bf.language
                  JOIN market_coverage m ON m.id = bf.market
-        WHERE b.title = '${ capitalizedTitle }'
+        WHERE b.title = '${ title }'
           AND f.name = '${ format }';
     `);
-    if (!book_format) throw new Error(INVALID_QUERY);
-    db.disconnect;
-
-    // use cookie to add current quantity to the book format data
-    const item = cookies.find((i) => i.title === title && i.type === format);
-    if (item) { book_format.quantity = item.quantity; }
-
-    return book_format;
+    console.log('before query check');
+    if (!query) throw new Error(INVALID_QUERY);
+    // create a new BookFormat object
+    return new BookFormat(query.title, query.date, query.type, query.size, query.pages, query.language, query.market, query.price);
 }
 
+/**
+ * Description: This function returns the workbooks for the given title.
+ * @param title
+ * @returns {Promise<*>}
+ */
 async function getWorkbooks(title) {
     // get the workbooks for the book
     const [query] = await db.query(
@@ -82,7 +130,7 @@ async function getWorkbooks(title) {
                   JOIN workbook_previews wp ON wb.id = wp.workbook_id
          WHERE b.title = '${ title }'
          ORDER BY b.id, sequence, path + '.';`);
-    db.disconnect;
+    db.end();
 
     // group the workbooks by title, add the description and level to the content array
     // and sort the content array by path
@@ -111,6 +159,123 @@ async function getWorkbooks(title) {
 
         return accumulator;
     }, []);
+}
+
+/**
+ * Description: This function returns an array of image paths for the given title.
+ * @param title
+ * @returns {Book.preview_images}
+ */
+async function getImages(title) {
+    // generate the absolute path to the directory for the book's images
+    const directoryPath = path.join(__dirname, `../public/${ IMAGE_PATH }/${ title }`);
+    try {
+        return new Promise((resolve, reject) => {
+            // read the directory
+            fs.readdir(directoryPath, (err, files) => {
+                if (err) {
+                    reject(`file not found: ${ err }`);
+                } else {
+                    // filter out non-webp files
+                    files = files.filter((file) => (file.endsWith(".webp")));
+                    // generate the relative path for each image
+                    const images = files.map((file) => `./${ IMAGE_PATH }/${ title }/${ file }`);
+                    resolve(images);
+                }
+            });
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Description: This function returns the book data for the given title.
+ * @param title
+ * @returns {Promise<Book>}
+ */
+async function fetchBookByTitle(title) {
+    try {
+        const [[book]] = await db.query("SELECT * FROM books WHERE title = ? ;", [title]);
+        console.log("book inside fetchBookByTitle:", book);
+        return new Book(book.title, book.background, book.border, book.image, book.preview_images, book.description, book.format, book.workbook_desc);
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Description: This function checks if the book exists.
+ * @param book
+ */
+function checkBookExists(book) {
+    if (book && book.title) throw new Error(NOT_FOUND);
+    return book;
+}
+
+// /**
+//  * Description: This function returns the quantity and format for the given book and cookies.
+//  * @param cookies
+//  * @param title
+//  * @param format
+//  * @returns {{format: string, title: string}}
+//  */
+// function getCartQuantity(cookies, title, format = "pdf") {
+//     return queryCart(JSON.parse(cookies.cart), title, format);
+// }
+
+/**
+ * Description: This function returns the workbooks for the given book.
+ * @param book
+ * @returns {Promise<void>}
+ */
+async function handleWorkbooks(book) {
+    return book.workbooks = book.workbook_desc ? await getWorkbooks(book.title) : [];
+}
+
+// /**
+//  * Description: This function returns the images for the given book.
+//  * @param book
+//  * @returns {Promise<*>}
+//  */
+// async function handleImages(book) {
+//     return getImages(book.title);
+// }
+
+/**
+ * Description: This function returns strings with the first letter capitalized.
+ * @param string
+ * @returns {string}
+ */
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+/**
+ * Description: This function returns true if the given request is valid.
+ * @param req
+ * @returns {boolean}
+ */
+function isValidQuery(req) {
+    return req && typeof req.url === "string";
+}
+
+/**
+ * Description: This function returns the configuration for a given request.
+ * @param req
+ * @returns {Path | null}
+ */
+function fetchUrlEndpointConfiguration(req) {
+    return urlEndpointConfig.find((endPoint) => endPoint.path === req.url);
+}
+
+/**
+ * Description: This function returns the path if it is valid.
+ * @param {Path} path
+ * @returns {Path}
+ */
+function isValidPath(path) {
+    return (path && path.title) ? path : null;
 }
 
 module.exports = {

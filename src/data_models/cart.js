@@ -3,19 +3,32 @@
  */
 class Cart {
     /**
-     * @param {string} title
-     * @param {string} type
-     * @param {number} quantity
-     * @param {number} price
-     * @param {number} total
+     * @param {CartItem[]} items
+     * @param {number} [total]
      */
-    constructor(title, type, quantity, price, total) {
-        this.title = title;
-        this.type = type;
-        this.quantity = quantity;
-        this.price = price;
+    constructor(items, total) {
+        this.items = items;
         this.total = total;
     }
 }
 
-module.exports = { Cart };
+/**
+ * @class
+ */
+class CartItem {
+    /**
+     * @param {string} title
+     * @param {string} type
+     * @param {number} quantity
+     * @param {number} [price]
+     */
+    constructor(title, type, quantity, price) {
+        this.title = title;
+        this.type = type;
+        this.quantity = quantity;
+        this.price = price;
+    }
+}
+
+module.exports = { Cart, CartItem };
+
