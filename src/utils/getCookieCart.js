@@ -84,7 +84,7 @@ function getCartItemsFromCookie(cookies) {
     return cookies ? JSON.parse(cookies.items || "[]") : [];
 }
 
-function addOneToCart(cartItems, title, type, res) {
+function addOneItemToCart(cartItems, title, type, res) {
     let quantity;
     if (cartItems.length > 0) {
         // if the item already exists in the cart, add one to the quantity
@@ -106,11 +106,10 @@ function addOneToCart(cartItems, title, type, res) {
     }
     res.cookie("items", JSON.stringify(cartItems), {
         maxAge: 1000 * 60 * 60 * 24 * 7,
-        httpOnly: true,
         sameSite: "Strict",
         secure: true,
     });
     return quantity;
 }
 
-module.exports = { getCartItems, getQuantityOfItem, getCartItemsFromCookie, validateCartItems, handleCartUpdate: addOneToCart };
+module.exports = { getCartItems, getQuantityOfItem, getCartItemsFromCookie, validateCartItems, addOneItemToCart };

@@ -360,6 +360,21 @@ nav > img { z-index : 30; }
     transition         : none;
 }
 
+#cherry {
+    background-color : var(--btn_red_main);
+    border-radius    : 50%;
+    height           : 0.33rem;
+    width            : 0.33rem;
+    position: absolute;
+    top: .75rem;
+    right: -.33rem;
+    z-index: 11;
+}
+
+.invisible {
+    opacity   : 0;
+}
+
 /* navigation on smaller devices */
 @media (max-width : 60rem) {
     nav {
@@ -460,8 +475,6 @@ dialog::backdrop {
     font-family: iSemi, Arial, sans-serif;
 }
 
-
-
 .cart-item {
     background: var(--white);
     display         : grid;
@@ -510,6 +523,7 @@ dialog::backdrop {
         width     : 90vw;
     }
 }
+
 
 /* preview*/
 dialog#preview {

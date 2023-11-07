@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { getCartItems, getCartItemsFromCookie, handleCartUpdate } = require("../utils/getCookieCart");
+const { getCartItems, getCartItemsFromCookie, addOneItemToCart } = require("../utils/getCookieCart");
 const urlEndpointConfig = require("../data_models/urlEndpointConfig");
 const { updateCookie } = require("../utils/cookieUtils");
 const { CartItem } = require("../data_models/cart");
@@ -25,7 +25,7 @@ const add = asyncHandler(async(req, res) => {
      */
     const cartItems = getCartItemsFromCookie(req.cookies);
     // add one to the quantity of the item if it already exists in the cart and return the new quantity
-    const quantity = handleCartUpdate(cartItems, title, type, res);
+    const quantity = addOneItemToCart(cartItems, title, type, res);
     // rerender the button with the new quantity
     const book = {};
     book.format = {};
