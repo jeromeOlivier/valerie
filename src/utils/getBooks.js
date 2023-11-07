@@ -72,7 +72,7 @@ const getBookData = async(path) => {
     // get the workbooks for the book
     await handleWorkbooks(book);
     // get the book cover image
-    book.preview_images = await getImages(book.title);
+    book.preview_images = await getBookPreviewImages(book.title);
     // return the book data
     return book;
 };
@@ -165,7 +165,7 @@ async function getWorkbooks(title) {
  * @param title
  * @returns {Book.preview_images}
  */
-async function getImages(title) {
+async function getBookPreviewImages(title) {
     // generate the absolute path to the directory for the book's images
     const directoryPath = path.join(__dirname, `../public/${ IMAGE_PATH }/${ title }`);
     try {
@@ -261,4 +261,5 @@ module.exports = {
     getBook,
     getBookFormat,
     getWorkbooks,
+    getBookPreviewImages,
 };

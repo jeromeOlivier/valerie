@@ -43,8 +43,8 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(cookie({
   maxAge: 1000 * 60 * 60 * 24 * 7,
-  httpOnly: false,
-  sameSite: "strict",
+  sameSite: "Strict",
+  secure: true,
 }));
 
 // routes

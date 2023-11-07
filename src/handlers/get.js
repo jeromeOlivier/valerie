@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const urlEndpointConfig = require("../data_models/urlEndpointConfig");
 const urlProductTypes = require("../data_models/urlProductTypes");
 const db = require("../db_ops/db");
-const { getPageData, getPageLayout, getBlogData, getImages } = require("../utils/getPages");
+const { getPageData, getPageLayout, getBlogData, getBookPreviewImages } = require("../utils/getPages");
 const { getBook, getBookFormat, getWorkbooks } = require("../utils/getBooks");
 const { getCartItems, getQuantityOfItem, getCartItemsFromCookie } = require("../utils/getCookieCart");
 const fs = require("fs");
@@ -38,7 +38,7 @@ const data_blog = asyncHandler(async(req, res) => getBlogData(req, res, urlEndpo
 // GET PREVIEWS
 const preview = asyncHandler(async(req, res) => {
     const title = req.params.title;
-    const images = await getImages(title);
+    const images = await getBookPreviewImages(title);
     res.render("preview", { images });
 });
 
