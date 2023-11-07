@@ -5,7 +5,7 @@ const urlProductTypes = require("../data_models/urlProductTypes");
 const db = require("../db_ops/db");
 const { getPageData, getPageLayout, getBlogData, getImages } = require("../utils/getPages");
 const { getBook, getBookFormat, getWorkbooks } = require("../utils/getBooks");
-const { getCartItems, getQuantityForItem } = require("../utils/getCookieCart");
+const { getCartItems, getQuantityOfItem, getCartItemsFromCookie } = require("../utils/getCookieCart");
 const fs = require("fs");
 const path = require("path");
 const { INTERNAL_SERVER_ERROR, INVALID_QUERY } = require("../constants/messages");
@@ -18,13 +18,14 @@ const book = asyncHandler(async(req, res) => getBook(req, res));
 const book_format = asyncHandler(async(req, res) => {
     // partial page load still requires the book data as its base
     console.log("req.params.title:", req.params.title);
-    console.log("req.params.format:", req.params.format);
+    console.log("req.params.format:", req.params.type);
     const validTitle = urlProductTypes.has(req.params.title.toLowerCase());
-    const validFormat = urlProductTypes.has(req.params.format.toLowerCase());
+    const validFormat = urlProductTypes.has(req.params.type.toLowerCase());
     if (!validTitle || !validFormat) { return res.status(500).send(INVALID_QUERY); }
-    book.format = await getBookFormat(req.params.title, req.params.format);
+    book.format = await getBookFormat(req.params.title, req.params.type);
+    const cartItems = getCartItemsFromCookie(req.cookies);
     console.log("book inside book_format:", book);
-    const quantity = getQuantityForItem(req.cookies.items, req.params.title, req.params.format);
+    const quantity = getQuantityOfItem(cartItems, req.params.title, req.params.type);
     res.render("book_format", { book, quantity });
 });
 

@@ -1,14 +1,16 @@
 const db = require("../db_ops/db");
 const urlProductTypes = require("../data_models/urlProductTypes");
+const { CartItem } = require("../data_models/cart");
 
-async function processCookie(req, res) {
-    const cart = parseCookieItems(req.cookies);
+async function getCartItems(req, res) {
+    const cartItems = getCartItemsFromCookie(req.cookies);
+    console.log("cartItems inside getCartItems:", cartItems);
     // if cart is empty, render the cart page with an empty cart
-    if (cart.items === []) {
-        res.render("cart", cart.items);
+    if (cartItems === []) {
+        res.render("cart", cartItems);
     }
     // if cart is not empty, validate the items
-    const validItems = validateCartItems(cart);
+    const validItems = validateCartItems(cartItems);
     // if all items are valid, get the price for each item from the database
     const itemsWithPrices = await getPriceByNameAndType(validItems);
     // uppercase the first letter of each title
@@ -37,7 +39,7 @@ async function getPriceByNameAndType(items) {
     // map the prices to the items
     return items.map(item => {
         const price = prices.find(p => p.title.toLowerCase() === item.title && p.type === item.type);
-        return { ...item, price: price ? price.price : "erreur" };
+        return { ...item, price: price ? price.price : "database item mismatch" };
     });
 }
 
@@ -48,26 +50,25 @@ async function getPriceByNameAndType(items) {
  * @param {string} format
  * @returns {number}
  */
-function getQuantityForItem(items, title, format) {
+function getQuantityOfItem(items, title, format) {
     if (!items || items.length === 0) return 0;
     const item = items.find((i) => i.title === title.toLowerCase() && i.type === format);
-    console.log("item inside queryCart:", item);
     if (item) { return item.quantity; }
     return 0;
 }
 
-function validateCartItems(cart) {
-    const valid = {items: []};
-    if (!cart || cart.items.length === 0) return valid;
+function validateCartItems(cartItems) {
+    const validItems = [];
+    if (!cartItems || cartItems.length === 0) return validItems;
     try {
-        cart.items.forEach((item) => {
+        cartItems.forEach((item) => {
             console.log("item inside validateCartItems:", item);
             const title = urlProductTypes.has(item.title);
             const quantity = item.quantity > 0;
             const type = urlProductTypes.has(item.type);
-            if (title && quantity && type) { valid.items.push(item); }
+            if (title && quantity && type) { validItems.push(item); }
         });
-        return valid;
+        return validItems;
     } catch (err) {
         throw new Error(err.message);
     }
@@ -78,8 +79,36 @@ function validateCartItems(cart) {
  * @param cookies
  * @returns {CartItem[]}
  */
-function parseCookieItems(cookies) {
+function getCartItemsFromCookie(cookies) {
+    console.log("cookies inside getCartItemsFromCookie:", cookies);
     return cookies ? JSON.parse(cookies.items || "[]") : [];
 }
 
-module.exports = { getCartItems: processCookie, getQuantityForItem, parseCookieItems, validateCartItems };
+function addOneToCart(cartItems, title, type, res) {
+    let quantity;
+    if (cartItems.length > 0) {
+        // if the item already exists in the cart, add one to the quantity
+        const matchingItem = cartItems.find(item => item.title === title && item.type === type);
+        if (matchingItem) {
+            console.log("matchingItem inside add:", matchingItem);
+            matchingItem.quantity += 1;
+            quantity = matchingItem.quantity;
+        // otherwise, add the item to the cart
+        } else {
+            const newCartItem = new CartItem(title, type, 1);
+            cartItems.push(newCartItem);
+            quantity = 1;
+        }
+    } else {
+        const newCartItem = new CartItem(title, type, 1);
+        cartItems.push(newCartItem);
+        quantity = 1;
+    }
+    res.cookie("items", JSON.stringify(cartItems), {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        httpOnly: true,
+    });
+    return quantity;
+}
+
+module.exports = { getCartItems, getQuantityOfItem, getCartItemsFromCookie, validateCartItems, handleCartUpdate: addOneToCart };

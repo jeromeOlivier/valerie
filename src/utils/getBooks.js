@@ -11,7 +11,7 @@ const { Path } = require("../data_models/path");
 const { Book } = require("../data_models/book");
 const { Cart, CartItem } = require("../data_models/cart");
 // methods
-const { getQuantityForItem, parseCookieItems } = require("./getCookieCart");
+const { getQuantityOfItem, getCartItemsFromCookie } = require("./getCookieCart");
 // for reading the images from the file system
 const fs = require("fs");
 const path = require("path");
@@ -42,10 +42,10 @@ async function getBook(req, res) {
              * @type {Book}
              */
             const book = await getBookData(path);
-            console.log("book inside getBook:", book);
-            const items = parseCookieItems(req.cookies);
+            const items = getCartItemsFromCookie(req.cookies);
             // get the quantity of books in user's cookie if it's not empty
-            const quantity = items.length > 0 ? getQuantityForItem(items, book.title, book.format.type): 0;
+            const quantity = items.length > 0 ? getQuantityOfItem(items, book.title, book.format.type): 0;
+            console.log("quantity inside getBook:", quantity);
             // render the book page
             res.render(path.full ? "layout" : "book", { main: "book", book, quantity });
         } catch (error) {
@@ -130,7 +130,6 @@ async function getWorkbooks(title) {
                   JOIN workbook_previews wp ON wb.id = wp.workbook_id
          WHERE b.title = '${ title }'
          ORDER BY b.id, sequence, path + '.';`);
-    db.end();
 
     // group the workbooks by title, add the description and level to the content array
     // and sort the content array by path
@@ -213,17 +212,6 @@ function checkBookExists(book) {
     return book;
 }
 
-// /**
-//  * Description: This function returns the quantity and format for the given book and cookies.
-//  * @param cookies
-//  * @param title
-//  * @param format
-//  * @returns {{format: string, title: string}}
-//  */
-// function getCartQuantity(cookies, title, format = "pdf") {
-//     return queryCart(JSON.parse(cookies.cart), title, format);
-// }
-
 /**
  * Description: This function returns the workbooks for the given book.
  * @param book
@@ -232,15 +220,6 @@ function checkBookExists(book) {
 async function handleWorkbooks(book) {
     return book.workbooks = book.workbook_desc ? await getWorkbooks(book.title) : [];
 }
-
-// /**
-//  * Description: This function returns the images for the given book.
-//  * @param book
-//  * @returns {Promise<*>}
-//  */
-// async function handleImages(book) {
-//     return getImages(book.title);
-// }
 
 /**
  * Description: This function returns strings with the first letter capitalized.

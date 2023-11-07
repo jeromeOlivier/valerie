@@ -1,6 +1,6 @@
 <button id="add_to_cart"
         <% if (quantity < 3) {
-                console.log('quantity inside add_to_cart:', quantity);
+                console.log('quantity inside add_to_cart button:', quantity);
         %>
         hx-post="cart/add/<%= book.format.title.toLowerCase(); %>/<%= book.format.type; %>"
         hx-swap="outerHTML"
