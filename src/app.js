@@ -3,7 +3,7 @@
 const express = require("express");
 const helmet = require("helmet");
 const compression = require("compression");
-const cookie = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const path = require("path");
 const fs = require("fs");
@@ -41,7 +41,7 @@ const limiter = rateLimit({
   max: 200, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
-app.use(cookie({
+app.use(cookieParser({
   maxAge: 1000 * 60 * 60 * 24 * 7,
   sameSite: "Strict",
   secure: true,

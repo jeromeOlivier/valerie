@@ -107,6 +107,8 @@ function addOneToCart(cartItems, title, type, res) {
     res.cookie("items", JSON.stringify(cartItems), {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         httpOnly: true,
+        sameSite: "Strict",
+        secure: true,
     });
     return quantity;
 }
