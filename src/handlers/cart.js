@@ -6,8 +6,9 @@ const { CartItem } = require("../data_models/cart");
 
 // GET
 const find = asyncHandler(async(req, res) => {
-    const cart = await getCartItems(req, res);
-    res.render("cart", { cart: cart });
+    const cartItems = await getCartItems(req, res);
+    console.log('cartItems:', cartItems);
+    res.render("cart", { cartItems });
 });
 
 // POST

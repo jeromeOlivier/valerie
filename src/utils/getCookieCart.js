@@ -4,7 +4,6 @@ const { CartItem } = require("../data_models/cart");
 
 async function getCartItems(req, res) {
     const cartItems = getCartItemsFromCookie(req.cookies);
-    console.log("cartItems inside getCartItems:", cartItems);
     // if cart is empty, render the cart page with an empty cart
     if (cartItems === []) {
         res.render("cart", cartItems);
@@ -62,7 +61,6 @@ function validateCartItems(cartItems) {
     if (!cartItems || cartItems.length === 0) return validItems;
     try {
         cartItems.forEach((item) => {
-            console.log("item inside validateCartItems:", item);
             const title = urlProductTypes.has(item.title);
             const quantity = item.quantity > 0;
             const type = urlProductTypes.has(item.type);

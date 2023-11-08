@@ -60,7 +60,7 @@ function adjustNavigationUI() {
             if (!boundHandleClick) {
                 const boundHandleClick = function() {
                     toggleVisibility(nav);
-                }
+                };
                 // If it is, we add a click event to toggle the navigation visibility.
                 logo.addEventListener("click", boundHandleClick);
                 // store the event in a map to be able to remove it later.
@@ -72,7 +72,7 @@ function adjustNavigationUI() {
             navItems.forEach((item) => {
                 const boundHandleClick = function() {
                     toggleVisibility(nav);
-                }
+                };
                 item.addEventListener("click", boundHandleClick);
                 // store the event in a map to be able to remove it later.
                 eventMap.set(item, boundHandleClick);
@@ -265,6 +265,5 @@ function getTotalQuantityFromCookie() {
             }
         }
     }
-
     return totalQuantity;
 }
