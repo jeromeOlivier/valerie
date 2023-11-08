@@ -3,24 +3,41 @@
 const eventMap = new Map();
 let areMobileEventsAdded = false;
 
+// OBSERVER
+function updateUI(path) {
+    const books = new Set(["/word", "/excel", "/powerpoint", "/outlook"]);
+    if (books.has(path)) {
+        launchCartModal();
+        launchPreviewModal();
+        updateCartDotState();
+        toggleCanadaPostIconVisibility();
+    } else if (path === "/") {
+        applyScrollingEffectToBrands();
+        launchCartModal();
+    }
+}
+
+const observer = new MutationObserver(() => {
+    const path = window.location.pathname;
+    updateUI(path);
+    observer.disconnect();
+});
+
+observer.observe(document, { childList: true, subtree: true });
+
 // EVENT LISTENERS
 // for full page load
 document.addEventListener("DOMContentLoaded", () => {
     adjustNavigationUI();
-    launchCartModal();
-    launchPreviewModal();
-    updateCartDotState();
-    updateCartDotState();
-    applyScrollingEffectToBrands();
-    toggleCanadaPostIconVisibility();
+    const path = window.location.pathname;
+    updateUI(path);
 });
 
 // for htmx swap
 document.addEventListener("htmx:afterSwap", () => {
+    const path = window.location.pathname;
     applyScrollingEffectToBrands();
-    launchPreviewModal();
-    updateCartDotState();
-    toggleCanadaPostIconVisibility();
+    updateUI(path);
 });
 
 // for resize
@@ -41,7 +58,9 @@ function adjustNavigationUI() {
             // check if an event has already been added to the logo.
             const boundHandleClick = eventMap.get(logo);
             if (!boundHandleClick) {
-                const boundHandleClick = toggleVisibility.bind(nav);
+                const boundHandleClick = function() {
+                    toggleVisibility(nav);
+                }
                 // If it is, we add a click event to toggle the navigation visibility.
                 logo.addEventListener("click", boundHandleClick);
                 // store the event in a map to be able to remove it later.
@@ -51,7 +70,9 @@ function adjustNavigationUI() {
         if (navItems) {
             // we also add eventListeners to the links to close the navigation when clicked.
             navItems.forEach((item) => {
-                const boundHandleClick = toggleVisibility.bind(nav);
+                const boundHandleClick = function() {
+                    toggleVisibility(nav);
+                }
                 item.addEventListener("click", boundHandleClick);
                 // store the event in a map to be able to remove it later.
                 eventMap.set(item, boundHandleClick);
@@ -89,19 +110,19 @@ let resizeTimer;
 
 function disableTransition() {
     const nav = document.querySelector("nav");
-    nav && nav.classList.add("disable-transition");
+    nav && nav.classList.add("disable_transition");
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
         if (nav) {
-            nav.classList.remove("disable-transition");
+            nav.classList.remove("disable_transition");
         }
         adjustNavigationUI();
     }, 100);
 }
 
 function toggleVisibility(item) {
-    item.classList.toggle("slide-out");
-    item.classList.toggle("slide-in");
+    item.classList.toggle("slide_out");
+    item.classList.toggle("slide_in");
 }
 
 // MODAL
@@ -111,13 +132,13 @@ function launchCartModal() {
     const cartButton = document.querySelector("#cart-button");
     cartButton.addEventListener("click", (event) => {
         cart.showModal();
-        document.body.classList.add("no-scroll");
+        document.body.classList.add("no_scroll");
         // new document level click event to close the modal
         setTimeout(() => {
             document.addEventListener("click", function closeModal(event) {
                 if (checkClickOutsideModal(cart.getBoundingClientRect(), event)) {
                     cart.close();
-                    document.body.classList.remove("no-scroll");
+                    document.body.classList.remove("no_scroll");
                     // remove the event listener
                     document.removeEventListener("click", closeModal);
                 }
@@ -188,8 +209,7 @@ const applyScrollingEffectToBrands = () => {
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
-    const scroller = document.querySelector(".scroller__inner");
-
+    const scroller = document.querySelector(".scroller_inner");
     if (scroller && !prefersReducedMotion) {
         scroller.setAttribute("data-animated", "true");
         const items = Array.from(scroller.children);
