@@ -4,7 +4,7 @@ const {
     getCartItemsFromCookie,
     incrementCartItem,
     removeOneItemFromCart,
-    getCartSubTotal,
+    getCartTotals,
 } = require("../services/cart_services");
 
 const { CartItem } = require("../data_models/cart");
@@ -15,10 +15,8 @@ const { updateCookie } = require("../services/cookie_services");
 const findAllItems = asyncHandler(async(req, res) => {
     const cartItemsFromCookies = getCartItemsFromCookie(req.cookies);
     const cartItems = await getCartItems(cartItemsFromCookies);
-    console.log(cartItems);
-    const cartTotal = getCartSubTotal(cartItems);
-    console.log(cartTotal);
-    res.render("cart", { cartItems, cartTotal });
+    const cart = getCartTotals(cartItems);
+    res.render("cart", { cartItems, cart });
 });
 
 // POST
@@ -61,9 +59,8 @@ const removeItem = asyncHandler(async(req, res) => {
     // update the cookie
     updateCookie(res, cartItemsAfterRemoval);
     const cartItems = await getCartItems(cartItemsAfterRemoval)
-    const cartTotal = await getCartSubTotal(cartItems);
-    console.log(cartTotal);
-    res.render("cart", { cartItems, cartTotal });
+    const cart = await getCartTotals(cartItems);
+    res.render("cart", { cartItems, cart });
 
 });
 

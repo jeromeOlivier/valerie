@@ -167,17 +167,21 @@ function removeOneItemFromCart(oldCartItems, title, type) {
 }
 
 /**
- * Calculates the subtotal of the items in the shopping cart.
+ * Calculates the totals excluding shipping.
  *
  * @param {Array<CartItem>} cartItems - An array containing the items in the shopping cart.
- * @returns {string} - The subtotal of the items in the shopping cart.
+ * @returns {Cart}
  */
-function getCartSubTotal(cartItems) {
-    return cartItems.reduce((acc, cur) => {
+function getCartTotals(cartItems) {
+    const cart = {};
+    cart.subtotal = cartItems.reduce((acc, cur) => {
         const total = parseFloat(cur.total);
         acc += total;
         return acc;
     }, 0).toFixed(2);
+    cart.taxes = (((Number(cart.subtotal) * 100) * 0.14975) / 100).toFixed(2);
+    cart.total = (Number(cart.subtotal) + Number(cart.taxes)).toFixed(2);
+    return cart;
 }
 
 module.exports = {
@@ -187,5 +191,5 @@ module.exports = {
     incrementCartItem,
     removeOneItemFromCart,
     getPriceByNameAndType,
-    getCartSubTotal,
+    getCartTotals,
 };

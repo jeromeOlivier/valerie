@@ -4,10 +4,16 @@
 class Cart {
     /**
      * @param {CartItem[]} items
+     * @param {number} [subtotal]
+     * @param {number} [shipping]
+     * @param {number} [taxes]
      * @param {number} [total]
      */
-    constructor(items, total) {
+    constructor(items, subtotal, shipping, taxes, total) {
         this.items = items;
+        this.subtotal = subtotal;
+        this.shipping = shipping;
+        this.taxes = taxes;
         this.total = total;
     }
 }

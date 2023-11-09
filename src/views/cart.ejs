@@ -19,16 +19,16 @@
                             hx-target="#cart">&times;
                     </button>
                 </div>
-                <div class="cart_item_label">
+                <div class="cart_item_label bold">
                     Format:
                 </div>
                 <div class="cart_item_detail">
                     <%= item.type.toUpperCase(); %>
                 </div>
-                <div class="cart-item-label">
+                <div class="cart-item-label bold">
                     Prix:
                 </div>
-                <div class="cart_item_price">
+                <div class="cart_item_price bold">
                     <%= Number(item.total).toFixed(2); %>$ CAD
                 </div>
                 <label class="cart_item_label" for="quantity">
@@ -48,13 +48,18 @@
         <% }); %>
     <% } %>
 </div>
-<div id="cart_total">
-    <div>
-        <button class="orange-button">Acheter</button>
-    </div>
-    <div id="cart_amounts">
-        <% if (typeof cartTotal !== 'undefined') { %>
-            <p>Sous-Total: <%= cartTotal %></p>
-        <% } %>
-    </div>
+<div id="cart_footer">
+    <% if (typeof cart !== 'undefined') { %>
+        <div>
+            <button class="orange-button bold">Acheter</button>
+        </div>
+        <div id="cart_amounts">
+            <div>sous-total:</div>
+            <div><%= cart.subtotal %></div>
+            <div>taxes:</div>
+            <div><%= cart.taxes %></div>
+            <div class="bold">total:</div>
+            <div class="bold"><%= cart.total %></div>
+        </div>
+    <% } %>
 </div>
