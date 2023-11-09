@@ -49,7 +49,12 @@
     <% } %>
 </div>
 <div id="cart_total">
-    <% if (typeof cartTotal !== 'undefined') { %>
-        <p><%= cartTotal %></p>
-    <% } %>
+    <div>
+        <button class="orange-button">Acheter</button>
+    </div>
+    <div id="cart_amounts">
+        <% if (typeof cartTotal !== 'undefined') { %>
+            <p>Sous-Total: <%= cartTotal %></p>
+        <% } %>
+    </div>
 </div>

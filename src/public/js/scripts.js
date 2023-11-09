@@ -5,13 +5,16 @@ let areMobileEventsAdded = false;
 
 // OBSERVER
 function updateUI(path) {
+    console.log("inside updateUI. the path is:", path);
     const books = new Set(["/word", "/excel", "/powerpoint", "/outlook"]);
     if (books.has(path)) {
+        adjustNavigationUI();
         launchCartModal();
         launchPreviewModal();
-        updateCartDotState();
         toggleCanadaPostIconVisibility();
+        updateCartDotState();
     } else if (path === "/") {
+        adjustNavigationUI();
         applyScrollingEffectToBrands();
         launchCartModal();
     }
@@ -28,16 +31,19 @@ observer.observe(document, { childList: true, subtree: true });
 // EVENT LISTENERS
 // for full page load
 document.addEventListener("DOMContentLoaded", () => {
-    adjustNavigationUI();
-    const path = window.location.pathname;
-    updateUI(path);
+    setTimeout(() => {
+        const path = window.location.pathname;
+        updateUI(path);
+    }, 250)
 });
 
 // for htmx swap
 document.addEventListener("htmx:afterSwap", () => {
-    const path = window.location.pathname;
-    applyScrollingEffectToBrands();
-    updateUI(path);
+    setTimeout(() => {
+        const path = window.location.pathname;
+        console.log("path", path);
+        updateUI(path);
+    }, 250);
 });
 
 // for resize

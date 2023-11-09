@@ -462,13 +462,20 @@ dialog::backdrop {
 
 #cart_total {
     align-items   : center;
-    background    : var(--off_white);
-    border-bottom : solid var(--stroke) var(--grey);
-    filter        : drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.125));
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background    : var(--white);
+    border-top : solid var(--stroke) var(--grey);
+    /*filter        : drop-shadow(0px -3px 3px rgba(0, 0, 0, 0.125));*/
     padding       : 1.5rem 1rem;
     position      : sticky;
-    top           : 0;
+    bottom        : 0;
     width         : 100%;
+}
+
+#cart_total > * {
+    font-family: iBold, "Arial Black", sans-serif;
 }
 
 #cart_items {
@@ -1063,7 +1070,6 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 
 .scroller_inner {
     display       : flex;
-    gap           : 5rem;
     list-style    : none;
     padding-block : 1rem;
     width         : fit-content;
@@ -1077,7 +1083,10 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 
 .scroller_inner:hover { animation-play-state : paused; }
 
-.scroller_inner > li > img { height : 50px; }
+.scroller_inner > li > img {
+    height : 50px;
+    margin: 0 2.5rem;
+}
 
 .book-grid {
     align-items : stretch;
