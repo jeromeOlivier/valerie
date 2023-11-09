@@ -2,22 +2,22 @@
     <h4>Votre panier</h4>
 </div>
 <div id="cart_items">
-    <% if (typeof cartItems === 'undefined') { %>
+    <% if (typeof cartItems === 'undefined' || cartItems.length === 0) { %>
         <div class="cart_item empty_cart">
-            <p>Votre panier est vide</p>
-        </div>
-    <% } else if (cartItems.length === 0) { %>
-        <div class="cart_item">
             <p>Votre panier est vide</p>
         </div>
     <% } else { %>
         <% cartItems.forEach(item => { %>
+            <% const title = item.title.toLowerCase(); %>
+            <% const type = item.type.toLowerCase(); %>
             <div class="cart_item">
                 <div class="cart_item_image">
-                    <img src="/img/svg/<%= `${ item.title.toLowerCase() }_cover.svg`; %>" alt="<%= item.title; %>">
+                    <img src="/img/svg/<%= `${ title }_cover.svg`; %>" alt="<%= item.title; %>">
                 </div>
                 <div class="delete_cart_item">
-                    <button>&times;</button>
+                    <button hx-delete="cart/delete/<%= title %>/<%= type %>" hx-swap="innerHTML"
+                            hx-target="#cart">&times;
+                    </button>
                 </div>
                 <div class="cart_item_label">
                     Format:
@@ -29,13 +29,14 @@
                     Prix:
                 </div>
                 <div class="cart_item_price">
-                    <%= item.total.toFixed(2); %>$ CAD
+                    <%= Number(item.total).toFixed(2); %>$ CAD
                 </div>
                 <label class="cart_item_label" for="quantity">
                     Quantité:
                 </label>
                 <div class="cart_item_quantity">
-                    <select name="quantity" id="quantity">
+                    <select name="quantity" id="quantity" hx-put="cart/update/<%= title %>/<%= type %>"
+                            hx-swap="innerHTML" hx-target="#cart">
                         <% for (let i = 1; i <= 3; i++) { %>
                             <option value="<%= i; %>" <% if (i === item.quantity) { %>selected
                                     <% } %>
@@ -45,5 +46,10 @@
                 </div>
             </div>
         <% }); %>
+    <% } %>
+</div>
+<div id="cart_total">
+    <% if (typeof cartTotal !== 'undefined') { %>
+        <p><%= cartTotal %></p>
     <% } %>
 </div>

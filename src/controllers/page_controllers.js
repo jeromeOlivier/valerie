@@ -1,11 +1,11 @@
-// Description: This file contains the handlers for all GET requests.
+// Description: This file contains the controllers for all GET requests.
 const asyncHandler = require("express-async-handler");
-const urlEndpointConfig = require("../data_models/urlEndpointConfig");
-const urlProductTypes = require("../data_models/urlProductTypes");
+const urlEndpointConfig = require("../data_models/url_endpoint_config");
+const urlProductTypes = require("../data_models/url_product_types");
 const db = require("../db_ops/db");
-const { getPageData, getPageLayout, getBlogData, getBookPreviewImages } = require("../utils/getPages");
-const { getBook, getBookFormat, getWorkbooks } = require("../utils/getBooks");
-const { getCartItems, getQuantityOfItem, getCartItemsFromCookie } = require("../utils/getCookieCart");
+const { getPageData, getPageLayout, getBlogData, getBookPreviewImages } = require("../services/page_services");
+const { getBook, getBookFormat, getWorkbooks } = require("../services/book_services");
+const { getCartItems, getQuantityOfItem, getCartItemsFromCookie } = require("../services/cart_services");
 const fs = require("fs");
 const path = require("path");
 const { INTERNAL_SERVER_ERROR, INVALID_QUERY } = require("../constants/messages");
@@ -17,14 +17,11 @@ const book = asyncHandler(async(req, res) => getBook(req, res));
 
 const book_format = asyncHandler(async(req, res) => {
     // partial page load still requires the book data as its base
-    console.log("req.params.title:", req.params.title);
-    console.log("req.params.format:", req.params.type);
     const validTitle = urlProductTypes.has(req.params.title.toLowerCase());
     const validFormat = urlProductTypes.has(req.params.type.toLowerCase());
     if (!validTitle || !validFormat) { return res.status(500).send(INVALID_QUERY); }
     book.format = await getBookFormat(req.params.title, req.params.type);
     const cartItems = getCartItemsFromCookie(req.cookies);
-    console.log("book inside book_format:", book);
     const quantity = getQuantityOfItem(cartItems, req.params.title, req.params.type);
     res.render("book_format", { book, quantity });
 });
@@ -64,4 +61,4 @@ module.exports = {
     preview,
 };
 
-// path: src/handlers/get.js
+// path: src/controllers/page_controllers.js

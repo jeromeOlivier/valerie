@@ -1,7 +1,18 @@
+const {
+  url_endpoint_config,
+  url_product_types,
+  Book,
+  Workbook,
+  BookFormat,
+  Path,
+  Cart,
+  CartItem,
+} = require("../data_models");
+
 const { INTERNAL_SERVER_ERROR, INVALID_QUERY } = require("../constants/messages");
+
 const fs = require("fs");
 const path = require("path");
-const urlEndpointConfig = require("../data_models/urlEndpointConfig");
 
 /**
  * Description: This function returns the page layout for the given path.
@@ -14,7 +25,7 @@ async function getPageLayout(req, res) {
         // if req is defined and req.url is a string, try to render the page
         try {
             // validate the query parameters over the whitelist to prevent injection
-            const isValid = urlEndpointConfig.find(valid => valid.path === req.url);
+            const isValid = url_endpoint_config.find(valid => valid.path === req.url);
             if (isValid) {
                 // if the page is valid, render the layout with the page's content
                 await res.render("layout", { main: isValid.file });
@@ -42,7 +53,7 @@ async function getPageData(req, res) {
     if (req && typeof req.url === "string") {
         try {
             // validate the query parameters over the whitelist to prevent injection
-            const valid = urlEndpointConfig.find((page) => page.path === req.url);
+            const valid = url_endpoint_config.find((page) => page.path === req.url);
             if (valid) {
                 // if the page is valid, render the layout with the page's content
                 res.render(valid.file);
@@ -63,7 +74,7 @@ async function getPageData(req, res) {
 async function getBlogData(req, res) {
     if (req && typeof req.url === "string") {
         try {
-            const valid = urlEndpointConfig.find((page) => page.path === req.url);
+            const valid = url_endpoint_config.find((page) => page.path === req.url);
             if (valid) {
                 res.render(valid.file);
             } else {

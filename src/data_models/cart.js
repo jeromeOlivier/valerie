@@ -20,13 +20,15 @@ class CartItem {
      * @param {string} title
      * @param {string} type
      * @param {number} quantity
-     * @param {number} [price]
+     * @param {string} [price]
+     * @param {string} [total]
      */
-    constructor(title, type, quantity, price) {
+    constructor(title, type, quantity, price, total) {
         this.title = title;
         this.type = type;
         this.quantity = quantity;
         this.price = price;
+        this.total = total;
     }
 }
 

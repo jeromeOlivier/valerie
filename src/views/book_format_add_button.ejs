@@ -1,14 +1,11 @@
 <button id="add_to_cart"
-        <% if (quantity < 3) {
-                console.log('quantity inside add_to_cart button:', quantity);
-        %>
+<% if (quantity < 3) { %>
         hx-post="cart/add/<%= book.format.title.toLowerCase(); %>/<%= book.format.type; %>"
         hx-swap="outerHTML"
         hx-target="#add_to_cart"
-        class="orange-button">Ajouter au panier
-    <% } else {
-            console.log('quantity:', quantity);
-    %>
+        class="orange-button">
+    Ajouter au panier
+    <% } else { %>
         class="orange-button disabled">Limite de 3 exemplaires
-        <% } %>
+    <% } %>
 </button>

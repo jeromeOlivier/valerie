@@ -2,7 +2,7 @@
  * Description: This file contains an array of Path objects that represent a whitelist of valid pages.
  * @type {Array.<Path>}
  */
-const urlEndpointConfig = [
+const url_endpoint_config = [
   { path: "/", file: "index", full: true },
   { path: "/data_index", file: "index", full: false },
   { path: "/blog", file: "blog", full: true },
@@ -23,5 +23,5 @@ const urlEndpointConfig = [
   { path: "/word", file: "data_word", title: "Word", full: true },
   { path: "/data_word", file: "data_word", title: "Word", full: false },
 ];
-module.exports = urlEndpointConfig;
-// path: src/data_models/urlEndpointConfig.js
+module.exports = url_endpoint_config;
+// path: src/data_models/url_endpoint_config.js

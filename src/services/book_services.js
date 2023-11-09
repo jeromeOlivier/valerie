@@ -1,31 +1,35 @@
 // Description: This file contains the functions for getting the book data.
 // constants
 const { NOT_FOUND, INVALID_QUERY } = require("../constants/messages");
-// database connection
+const { IMAGE_PATH } = require("../constants/links");
+
 const db = require("../db_ops/db");
-// data_models
-const urlProductTypes = require("../data_models/urlProductTypes");
-const urlEndpointConfig = require("../data_models/urlEndpointConfig");
-const { BookFormat } = require("../data_models/book");
-const { Path } = require("../data_models/path");
-const { Book } = require("../data_models/book");
-const { Cart, CartItem } = require("../data_models/cart");
-// methods
-const { getQuantityOfItem, getCartItemsFromCookie } = require("./getCookieCart");
-// for reading the images from the file system
+
+const {
+  url_endpoint_config,
+  url_product_types,
+  Book,
+  Workbook,
+  BookFormat,
+  Path,
+  Cart,
+  CartItem,
+} = require("../data_models");
+
+const { getQuantityOfItem, getCartItemsFromCookie } = require("./cart_services");
+const { isValidQuery, fetchUrlEndpointConfiguration, isValidPath } = require("./utility_services")
+
 const fs = require("fs");
 const path = require("path");
-// path to the images
-const { IMAGE_PATH } = require("../constants/links");
+
 
 /**
  * Description: This function returns the book data for the given path.
  * @param req
  * @param res
- * @returns {Promise<*>}
+ * @returns {Promise<Book>}
  */
 async function getBook(req, res) {
-    console.log("req url inside getBook:", req.url);
     // validate the query parameters
     if (isValidQuery(req)) {
         // find the path in the urlEndpointConfig array, assign the matching values to path variable
@@ -36,7 +40,6 @@ async function getBook(req, res) {
         // if path is null, send an error message
         if (!isValidPath(path)) { return res.status(500).send(INVALID_QUERY); }
         try {
-            console.log("path inside getBook try:", path);
             // get book data (book, book_format and preview images)
             /**
              * @type {Book}
@@ -45,7 +48,6 @@ async function getBook(req, res) {
             const items = getCartItemsFromCookie(req.cookies);
             // get the quantity of books in user's cookie if it's not empty
             const quantity = items.length > 0 ? getQuantityOfItem(items, book.title, book.format.type): 0;
-            console.log("quantity inside getBook:", quantity);
             // render the book page
             res.render(path.full ? "layout" : "book", { main: "book", book, quantity });
         } catch (error) {
@@ -59,7 +61,7 @@ async function getBook(req, res) {
 /**
  * Description: This function returns the book data for the given path.
  * @param {Path} path
- * @returns {Book}
+ * @returns {Promise<Book>}
  */
 const getBookData = async(path) => {
     /**
@@ -85,8 +87,8 @@ const getBookData = async(path) => {
  */
 async function getBookFormat(title, format = "pdf") {
     // validate the query parameters
-    const isValidTitle = urlProductTypes.has(title.toLowerCase());
-    const isValidFormat = urlProductTypes.has(format);
+    const isValidTitle = url_product_types.has(title.toLowerCase());
+    const isValidFormat = url_product_types.has(format);
     if (!isValidTitle || !isValidFormat) throw new Error(INVALID_QUERY);
     // get the book format data
     const [[query]] = await db.query(`
@@ -106,7 +108,6 @@ async function getBookFormat(title, format = "pdf") {
         WHERE b.title = '${ title }'
           AND f.name = '${ format }';
     `);
-    console.log('before query check');
     if (!query) throw new Error(INVALID_QUERY);
     // create a new BookFormat object
     return new BookFormat(query.title, query.date, query.type, query.size, query.pages, query.language, query.market, query.price);
@@ -115,7 +116,7 @@ async function getBookFormat(title, format = "pdf") {
 /**
  * Description: This function returns the workbooks for the given title.
  * @param title
- * @returns {Promise<*>}
+ * @returns {Promise<Array<Workbook>>}
  */
 async function getWorkbooks(title) {
     // get the workbooks for the book
@@ -163,7 +164,7 @@ async function getWorkbooks(title) {
 /**
  * Description: This function returns an array of image paths for the given title.
  * @param title
- * @returns {Book.preview_images}
+ * @returns {Promise<Array<Book.preview_images>>}
  */
 async function getBookPreviewImages(title) {
     // generate the absolute path to the directory for the book's images
@@ -196,7 +197,6 @@ async function getBookPreviewImages(title) {
 async function fetchBookByTitle(title) {
     try {
         const [[book]] = await db.query("SELECT * FROM books WHERE title = ? ;", [title]);
-        console.log("book inside fetchBookByTitle:", book);
         return new Book(book.title, book.background, book.border, book.image, book.preview_images, book.description, book.format, book.workbook_desc);
     } catch (error) {
         throw error;
@@ -205,9 +205,10 @@ async function fetchBookByTitle(title) {
 
 /**
  * Description: This function checks if the book exists.
- * @param book
+ * @param {Book} book
+ * @return {Book}
  */
-function checkBookExists(book) {
+function isValidBook(book) {
     if (book && book.title) throw new Error(NOT_FOUND);
     return book;
 }
@@ -215,46 +216,10 @@ function checkBookExists(book) {
 /**
  * Description: This function returns the workbooks for the given book.
  * @param book
- * @returns {Promise<void>}
+ * @returns {Promise<Array<Workbook>> | Array<>}
  */
 async function handleWorkbooks(book) {
     return book.workbooks = book.workbook_desc ? await getWorkbooks(book.title) : [];
-}
-
-/**
- * Description: This function returns strings with the first letter capitalized.
- * @param string
- * @returns {string}
- */
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-/**
- * Description: This function returns true if the given request is valid.
- * @param req
- * @returns {boolean}
- */
-function isValidQuery(req) {
-    return req && typeof req.url === "string";
-}
-
-/**
- * Description: This function returns the configuration for a given request.
- * @param req
- * @returns {Path | null}
- */
-function fetchUrlEndpointConfiguration(req) {
-    return urlEndpointConfig.find((endPoint) => endPoint.path === req.url);
-}
-
-/**
- * Description: This function returns the path if it is valid.
- * @param {Path} path
- * @returns {Path}
- */
-function isValidPath(path) {
-    return (path && path.title) ? path : null;
 }
 
 module.exports = {
