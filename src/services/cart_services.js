@@ -115,7 +115,7 @@ function validateCartItems(cartItems) {
  * @param cookies
  * @returns {Array<CartItem>}
  */
-function getCartItemsFromCookie(cookies) {
+function parseCartItemsFromCookie(cookies) {
     return cookies ? JSON.parse(cookies.items || "[]") : [];
 }
 
@@ -184,10 +184,21 @@ function getCartTotals(cartItems) {
     return cart;
 }
 
+async function updateCartItem(req, res) {
+    const newItem = { title: req.param.title, type: req.param.type, quantity: req.body.quantity }
+    const parsedItems = parseCartItemsFromCookie(req.cookies);
+    parsedItems.map(item => newItem.title === item.title && newItem.type === item.type ? newItem : item);
+    updateCookie(req, parsedItems);
+    const cartItems = await getCartItems(parsedItems);
+    const cart = getCartTotals(cartItems);
+    res.render("")
+    // })
+}
+
 module.exports = {
     getCartItems,
     getQuantityOfItem,
-    getCartItemsFromCookie,
+    parseCartItemsFromCookie,
     incrementCartItem,
     removeOneItemFromCart,
     getPriceByNameAndType,

@@ -1,5 +1,5 @@
-<div class="full-width-container <%= book.background; %>">
-    <div class="content-container margin_top_5rem">
+<div class="full_width_container <%= book.background; %>">
+    <div class="content_container margin_top_5rem">
         <div class="center">
             <h1 class="white"><%= book.title; %></h1>
             <div class="main-book-container">
@@ -8,6 +8,17 @@
                 <img id="preview-button" src="./img/svg/preview.svg" alt="aperçu du manuel">
             </div>
         </div>
+        <h2 class="margin_top_3rem margin_bottom_1rem">Acheter le manuel <%= book.title %></h2>
+        <p style="color: red;">The textbooks are available as a downloadable PDF or physical copy. After making
+            your purchase, a link to download the PDF will be sent to you via email. Physical copies are shipped via
+            Canada Post and only available within Canada.</p>
+        <div id="tabs" class="center margin_top_3rem" hx-target="#tabs" hx-swap="innerHTML">
+            <%- include('book_format.ejs') %>
+        </div>
+        <div class="center margin_top_1rem">
+            <img id="post-logo" class="hide-post" src="./img/svg/poste_canada.svg" alt="logo de Poste Canada"
+                 width="180px">
+        </div>
         <h2 class="margin_top_3rem margin_bottom_1rem">À propos du manuel <%= book.title %></h2>
         <div class="long-text">
             <% if (book && book.description) { %>
@@ -15,18 +26,6 @@
                     <p><%= paragraph; %></p><br><br>
                 <% }); %>
             <% } %>
-        </div>
-        <h2 class="margin_top_3rem margin_bottom_1rem">Acheter le manuel <%= book.title %></h2>
-        <p style="color: red;">The textbooks are available as a downloadable PDF or physical copy. After making
-            your purchase, a link to download the PDF will be sent to you via email. Physical copies are shipped via
-            Canada Post and only available within Canada.</p>
-        <p style="color: red;">Please choose your version below:</p>
-        <div id="tabs" class="center margin_top_3rem" hx-target="#tabs" hx-swap="innerHTML">
-            <%- include('book_format.ejs') %>
-        </div>
-        <div class="center margin_top_1rem">
-            <img id="post-logo" class="hide-post" src="./img/svg/poste_canada.svg" alt="logo de Poste Canada"
-                 width="180px">
         </div>
         <% if (book.workbook_desc) { %>
             <h2 class="margin_top_3rem margin_bottom_1rem">Manuels par niveaux</h2>

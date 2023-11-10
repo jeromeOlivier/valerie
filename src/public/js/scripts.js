@@ -138,13 +138,13 @@ function launchCartModal() {
     const cartButton = document.querySelector("#cart-button");
     cartButton.addEventListener("click", (event) => {
         cart.showModal();
-        document.body.classList.add("no_scroll");
+        document.body.style.overflow = "hidden";
         // new document level click event to close the modal
         setTimeout(() => {
             document.addEventListener("click", function closeModal(event) {
                 if (checkClickOutsideModal(cart.getBoundingClientRect(), event)) {
                     cart.close();
-                    document.body.classList.remove("no_scroll");
+                    document.body.style.overflow = "auto";
                     // remove the event listener
                     document.removeEventListener("click", closeModal);
                 }

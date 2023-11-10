@@ -16,7 +16,7 @@ const {
   CartItem,
 } = require("../data_models");
 
-const { getQuantityOfItem, getCartItemsFromCookie } = require("./cart_services");
+const { getQuantityOfItem, parseCartItemsFromCookie } = require("./cart_services");
 const { isValidQuery, fetchUrlEndpointConfiguration, isValidPath } = require("./utility_services")
 
 const fs = require("fs");
@@ -45,7 +45,7 @@ async function getBook(req, res) {
              * @type {Book}
              */
             const book = await getBookData(path);
-            const items = getCartItemsFromCookie(req.cookies);
+            const items = parseCartItemsFromCookie(req.cookies);
             // get the quantity of books in user's cookie if it's not empty
             const quantity = items.length > 0 ? getQuantityOfItem(items, book.title, book.format.type): 0;
             // render the book page

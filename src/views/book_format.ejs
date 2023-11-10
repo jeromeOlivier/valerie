@@ -14,7 +14,7 @@
     >Format Papier
     </button>
 </div>
-<div id="format-specs" class="padding_2rem">
+<div id="format_specs" class="padding_2rem">
     <div class="semi_bold">Titre</div>
     <div class="bold"><%= book.format.title; %></div>
     <div class="semi_bold">Date&nbsp;de&nbsp;publication</div>
@@ -29,7 +29,7 @@
         %>
         <%= `${ date.getDate() } ${ month_names[date.getMonth()] } ${ date.getFullYear() }`; %></div>
     <div class="semi_bold">Format</div>
-    <div id="format-type" class="bold">
+    <div id="format_type" class="bold">
         <% if (book.format.type === 'pdf') { %>
             <%= book.format.type; %> téléchargeable
         <% } else { %> <%= book.format.type; %>

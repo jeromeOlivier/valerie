@@ -183,7 +183,7 @@ main {
     flex-direction : column;
 }
 
-.content-container {
+.content_container {
     max-width : 60rem;
     width     : 90%;
 }
@@ -314,8 +314,6 @@ nav > ul > li {
 
 /* behaviors */
 html { scroll-behavior : smooth; }
-
-.no_scroll { overflow : hidden; }
 
 /* header */
 header {
@@ -707,14 +705,14 @@ button.red-button {
 
 button.red-button:hover { background : var(--btn_red_main_hover); }
 
-button.orange-button {
+button.orange_button {
     background   : var(--btn_orange_main);
     border-color : var(--btn_orange_stoke);
 }
 
-button.orange-button:hover { background : var(--btn_orange_main_hover); }
+button.orange_button:hover { background : var(--btn_orange_main_hover); }
 
-button#add_to_cart.orange-button.disabled {
+button#add_to_cart.orange_button.disabled {
     background   : var(--btn_orange_main_disabled);
     border-color : var(--btn_orange_stoke_disabled);
     color        : var(--btn_orange_text_disabled);
@@ -799,7 +797,7 @@ textarea {
 }
 
 /* layout */
-.full-width-container {
+.full_width_container {
     align-items     : center;
     display         : flex;
     flex-direction  : column;
@@ -818,7 +816,7 @@ textarea {
     width           : 100vw;
 }
 
-.content-container {
+.content_container {
     max-width  : 960px;
     position   : relative;
     transition : height 0.5s ease-out;
@@ -826,7 +824,19 @@ textarea {
     z-index    : 1;
 }
 
-.flex-row-space-between {
+.styled_content_container {
+    max-width  : 960px;
+    position   : relative;
+    transition : height 0.5s ease-out;
+    width      : 90%;
+    z-index    : 1;
+    background-color: var(--off_white);
+    /*border: var(--grey) var(--stroke) solid;*/
+    border-radius: 0.5rem;
+    padding: 0 3rem 3rem;
+}
+
+.flex_row_space_between {
     display         : flex;
     flex-direction  : row;
     justify-content : space-between;
@@ -907,7 +917,7 @@ textarea {
 /*    }*/
 /*}*/
 
-div#format-specs {
+div#format_specs {
     background-color      : var(--white);
     border-radius         : .45rem;
     display               : grid;
@@ -957,7 +967,7 @@ div#format-specs {
 }
 
 /* backgrounds */
-.blue-background { background : var(--grad_main); }
+.blue_background { background : var(--grad_main); }
 
 
 .white-background { background : var(--off_white); }

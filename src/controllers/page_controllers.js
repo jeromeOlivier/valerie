@@ -5,7 +5,7 @@ const urlProductTypes = require("../data_models/url_product_types");
 const db = require("../db_ops/db");
 const { getPageData, getPageLayout, getBlogData, getBookPreviewImages } = require("../services/page_services");
 const { getBook, getBookFormat, getWorkbooks } = require("../services/book_services");
-const { getCartItems, getQuantityOfItem, getCartItemsFromCookie } = require("../services/cart_services");
+const { getCartItems, getQuantityOfItem, parseCartItemsFromCookie } = require("../services/cart_services");
 const fs = require("fs");
 const path = require("path");
 const { INTERNAL_SERVER_ERROR, INVALID_QUERY } = require("../constants/messages");
@@ -21,7 +21,7 @@ const book_format = asyncHandler(async(req, res) => {
     const validFormat = urlProductTypes.has(req.params.type.toLowerCase());
     if (!validTitle || !validFormat) { return res.status(500).send(INVALID_QUERY); }
     book.format = await getBookFormat(req.params.title, req.params.type);
-    const cartItems = getCartItemsFromCookie(req.cookies);
+    const cartItems = parseCartItemsFromCookie(req.cookies);
     const quantity = getQuantityOfItem(cartItems, req.params.title, req.params.type);
     res.render("book_format", { book, quantity });
 });

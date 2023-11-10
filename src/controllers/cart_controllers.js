@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const {
     getCartItems,
-    getCartItemsFromCookie,
+    parseCartItemsFromCookie,
     incrementCartItem,
     removeOneItemFromCart,
     getCartTotals,
@@ -13,7 +13,7 @@ const { updateCookie } = require("../services/cookie_services");
 
 // GET
 const findAllItems = asyncHandler(async(req, res) => {
-    const cartItemsFromCookies = getCartItemsFromCookie(req.cookies);
+    const cartItemsFromCookies = parseCartItemsFromCookie(req.cookies);
     const cartItems = await getCartItems(cartItemsFromCookies);
     const cart = getCartTotals(cartItems);
     res.render("cart", { cartItems, cart });
@@ -32,7 +32,7 @@ const addItem = asyncHandler(async(req, res) => {
     /**
      * @type {CartItem[]}
      */
-    const cartItems = getCartItemsFromCookie(req.cookies);
+    const cartItems = parseCartItemsFromCookie(req.cookies);
     // add one to the quantity of the item if it already exists in the cart and return the new quantity
     const quantity = incrementCartItem(cartItems, title, type, res);
     // rerender the button with the new quantity
@@ -45,7 +45,8 @@ const addItem = asyncHandler(async(req, res) => {
 
 // PUT
 const updateItem = asyncHandler(async(req, res) => {
-    console.log("req body:", req.body);
+    const cartItems = updateCartItem(req, res);
+    console.log("req body:", req.body.quantity);
     console.log("req url:", req.url);
 });
 
@@ -54,14 +55,13 @@ const removeItem = asyncHandler(async(req, res) => {
     if (!isValidTerm(req.params.title) || !isValidTerm(req.params.type)) {
         throw new Error("invalid parameters");
     }
-    const cartItemsFromCookie = getCartItemsFromCookie(req.cookies);
+    const cartItemsFromCookie = parseCartItemsFromCookie(req.cookies);
     const cartItemsAfterRemoval = removeOneItemFromCart(cartItemsFromCookie, req.params.title, req.params.type);
     // update the cookie
     updateCookie(res, cartItemsAfterRemoval);
     const cartItems = await getCartItems(cartItemsAfterRemoval)
     const cart = await getCartTotals(cartItems);
     res.render("cart", { cartItems, cart });
-
 });
 
 module.exports = {
