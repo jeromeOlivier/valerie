@@ -16,7 +16,11 @@ const findAllItems = asyncHandler(async(req, res) => {
     const cartItemsFromCookies = parseCartItemsFromCookie(req.cookies);
     const cartItems = await getCartItems(cartItemsFromCookies);
     const cart = getCartTotals(cartItems);
-    res.render("cart", { cartItems, cart });
+    if (req.url === "/data_cart") {
+        res.render("cart", { cartItems, cart });
+    } else {
+        res.render("layout", { main: "cart", cartItems, cart });
+    }
 });
 
 // POST
@@ -44,11 +48,11 @@ const addItem = asyncHandler(async(req, res) => {
 });
 
 // PUT
-const updateItem = asyncHandler(async(req, res) => {
-    const cartItems = updateCartItem(req, res);
-    console.log("req body:", req.body.quantity);
-    console.log("req url:", req.url);
-});
+// const updateItem = asyncHandler(async(req, res) => {
+//     const cartItems = updateCartItem(req, res);
+//     console.log("req body:", req.body.type);
+//     console.log("req url:", req.url);
+// });
 
 // DELETE
 const removeItem = asyncHandler(async(req, res) => {

@@ -9,14 +9,14 @@ function updateUI(path) {
     const books = new Set(["/word", "/excel", "/powerpoint", "/outlook"]);
     if (books.has(path)) {
         adjustNavigationUI();
-        launchCartModal();
+        // launchCartModal();
         launchPreviewModal();
         toggleCanadaPostIconVisibility();
         updateCartDotState();
     } else if (path === "/") {
         adjustNavigationUI();
         applyScrollingEffectToBrands();
-        launchCartModal();
+        // launchCartModal();
     }
 }
 
@@ -132,26 +132,26 @@ function toggleVisibility(item) {
 }
 
 // MODAL
-function launchCartModal() {
-    // Select button and associated modal.
-    const cart = document.querySelector("#cart");
-    const cartButton = document.querySelector("#cart-button");
-    cartButton.addEventListener("click", (event) => {
-        cart.showModal();
-        document.body.style.overflow = "hidden";
-        // new document level click event to close the modal
-        setTimeout(() => {
-            document.addEventListener("click", function closeModal(event) {
-                if (checkClickOutsideModal(cart.getBoundingClientRect(), event)) {
-                    cart.close();
-                    document.body.style.overflow = "auto";
-                    // remove the event listener
-                    document.removeEventListener("click", closeModal);
-                }
-            });
-        }, 100);
-    });
-}
+// function launchCartModal() {
+//     // Select button and associated modal.
+//     const cart = document.querySelector("#cart");
+//     const cartButton = document.querySelector("#cart-button");
+//     cartButton.addEventListener("click", (event) => {
+//         cart.showModal();
+//         document.body.style.overflow = "hidden";
+//         // new document level click event to close the modal
+//         setTimeout(() => {
+//             document.addEventListener("click", function closeModal(event) {
+//                 if (checkClickOutsideModal(cart.getBoundingClientRect(), event)) {
+//                     cart.close();
+//                     document.body.style.overflow = "auto";
+//                     // remove the event listener
+//                     document.removeEventListener("click", closeModal);
+//                 }
+//             });
+//         }, 100);
+//     });
+// }
 
 function launchPreviewModal() {
     // Select button and associated modal.

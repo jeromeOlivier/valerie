@@ -1,65 +1,70 @@
-<div id="cart_heading">
-    <h4>Votre panier</h4>
-</div>
-<div id="cart_items">
-    <% if (typeof cartItems === 'undefined' || cartItems.length === 0) { %>
-        <div class="cart_item empty_cart">
-            <p>Votre panier est vide</p>
+<div class="full_width_container margin_bottom_2rem">
+    <div class="content_container margin_top_5rem">
+        <div class="center margin_bottom_1rem">
+            <h1>Votre panier</h1>
         </div>
-    <% } else { %>
-        <% cartItems.forEach(item => { %>
-            <% const title = item.title.toLowerCase(); %>
-            <% const type = item.type.toLowerCase(); %>
-            <div class="cart_item">
-                <div class="cart_item_image">
-                    <img src="/img/svg/<%= `${ title }_cover.svg`; %>" alt="<%= item.title; %>">
-                </div>
-                <div class="delete_cart_item">
-                    <button hx-delete="cart/delete/<%= title %>/<%= type %>" hx-swap="innerHTML"
-                            hx-target="#cart">&times;
-                    </button>
-                </div>
-                <div class="cart_item_label bold">
-                    Format:
-                </div>
-                <div class="cart_item_detail">
-                    <%= item.type.toUpperCase(); %>
-                </div>
-                <div class="cart_item_label bold">
-                    Prix:
-                </div>
-                <div class="cart_item_price bold">
-                    <%= Number(item.total).toFixed(2); %>$ CAD
-                </div>
-                <label class="cart_item_label" for="quantity">
-                    Quantité:
-                </label>
-                <div class="cart_item_quantity">
-                    <select name="quantity" id="quantity" hx-put="cart/update/<%= title %>/<%= type %>"
-                            hx-swap="innerHTML" hx-target="#cart">
-                        <% for (let i = 1; i <= 3; i++) { %>
-                            <option value="<%= i; %>" <% if (i === item.quantity) { %>selected
-                                    <% } %>
-                            ><%= i; %></option>
-                        <% } %>
-                    </select>
-                </div>
+        <div class="cart">
+            <div id="cart_items">
+                <% if (typeof cartItems === 'undefined' || cartItems.length === 0) { %>
+                    <div class="cart_item empty_cart margin_top_3rem">
+                        <p>Votre panier est vide</p>
+                    </div>
+                <% } else { %>
+                    <% cartItems.forEach(item => { %>
+                        <% const title = item.title.toLowerCase(); %>
+                        <% const type = item.type.toLowerCase(); %>
+                        <div class="cart_item">
+                            <div class="cart_item_image">
+                                <img src="/img/svg/<%= `${ title }_cover.svg`; %>" alt="<%= item.title; %>">
+                            </div>
+                            <div class="cart_item_description">
+                                <div class="cart_item_detail">
+                                    <div class="cart_item_label bold">
+                                        Manuel:
+                                    </div>
+                                    <div>
+                                        <%= item.title; %>
+                                    </div>
+                                </div>
+                                <div class="cart_item_detail">
+                                    <div class="cart_item_label bold">
+                                        Format:
+                                    </div>
+                                    <div>
+                                        <%= item.type.toUpperCase(); %>
+                                    </div>
+                                </div>
+                                <div class="cart_item_detail">
+                                    <div class="cart_item_label bold">
+                                        Prix:
+                                    </div>
+                                    <div class="cart_item_price bold">
+                                        <%= Number(item.total).toFixed(2); %>$ CAD
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="delete_cart_item">
+                                <button hx-delete="cart/delete/<%= title %>/<%= type %>" hx-swap="innerHTML"
+                                        hx-target="main" class="red_button delete">supprimer
+                                </button>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } %>
             </div>
-        <% }); %>
-    <% } %>
-</div>
-<div id="cart_footer">
-    <% if (typeof cart !== 'undefined') { %>
-        <div>
-            <button class="orange_button bold">Acheter</button>
+            <div class="cart_totals">
+                <% if (typeof cart !== 'undefined') { %>
+                    <div id="cart_amounts">
+                        <div>sous-total:</div>
+                        <div><%= cart.subtotal %></div>
+                        <div>taxes:</div>
+                        <div><%= cart.taxes %></div>
+                        <div class="bold">total:</div>
+                        <div class="bold"><%= cart.total %></div>
+                    </div>
+                    <button class="orange_button">Passer à la caisse</button>
+                <% } %>
+            </div>
         </div>
-        <div id="cart_amounts">
-            <div>sous-total:</div>
-            <div><%= cart.subtotal %></div>
-            <div>taxes:</div>
-            <div><%= cart.taxes %></div>
-            <div class="bold">total:</div>
-            <div class="bold"><%= cart.total %></div>
-        </div>
-    <% } %>
+    </div>
 </div>

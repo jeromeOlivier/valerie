@@ -2,7 +2,8 @@
     <img src="./img/svg/logo_black.svg" alt="Valérie Gervais" class='logo' width="240px" loading="lazy">
     <span id="cherry" class="invisible"></span>
     <img id='cart-button' src="./img/svg/cart.svg" width='24px'
-         alt="cart" loading="lazy" hx-get="/cart/find" hx-target="#cart" hx-swap="innerHTML" hx-push-url="false">
+         alt="cart" loading="lazy" hx-get="/data_cart" hx-target="main" hx-swap="innerHTML show:top"
+         hx-push-url="/cart">
     <nav>
         <ul class="menu">
             <li hx-target="main"

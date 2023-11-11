@@ -30,10 +30,7 @@
         <%= `${ date.getDate() } ${ month_names[date.getMonth()] } ${ date.getFullYear() }`; %></div>
     <div class="semi_bold">Format</div>
     <div id="format_type" class="bold">
-        <% if (book.format.type === 'pdf') { %>
-            <%= book.format.type; %> téléchargeable
-        <% } else { %> <%= book.format.type; %>
-        <% } %>
+        <%= book.format.type; %>
     </div>
     <div class="semi_bold">Taille</div>
     <div class="bold"><%= book.format.size; %></div>

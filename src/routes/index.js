@@ -33,7 +33,8 @@ router.get("/format/:title/:type", page.book_format);
 router.get("/preview/:title", page.preview);
 
 // CART ENDPOINTS
-router.get("/cart/find", cart.findAllItems);
+router.get("/data_cart", cart.findAllItems)
+router.get("/cart/", cart.findAllItems);
 router.post("/cart/add/:title/:type", cart.addItem);
 router.put("/cart/update/:title/:type", cart.updateItem);
 router.delete("/cart/delete/:title/:type", cart.removeItem);
