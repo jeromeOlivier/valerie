@@ -6,7 +6,7 @@ let areMobileEventsAdded = false;
 // OBSERVER
 function updateUI(path) {
     console.log("inside updateUI. the path is:", path);
-    const books = new Set(["/word", "/excel", "/powerpoint", "/outlook", "/cart"]);
+    const books = new Set(["/word", "/excel", "/powerpoint", "/outlook"]);
     if (books.has(path)) {
         console.log("inside updateUI has path");
         adjustNavigationUI();
@@ -17,6 +17,12 @@ function updateUI(path) {
         console.log("inside updateUI path /");
         adjustNavigationUI();
         applyScrollingEffectToBrands();
+        updateCartDotState();
+        removePreviewModalEventListeners();
+    } else if (path === "/cart") {
+        console.log("inside updateUI path /cart");
+        adjustNavigationUI();
+        removePreviewModalEventListeners();
         updateCartDotState();
     }
 }
@@ -112,7 +118,6 @@ function adjustNavigationUI() {
     }
 }
 
-// NAVIGATION HELPER FUNCTIONS
 let resizeTimer;
 
 function disableTransition() {
@@ -132,43 +137,45 @@ function toggleVisibility(item) {
     item.classList.toggle("slide_in");
 }
 
+// MODAL
+const modalEventMap = new Map();
+
 function launchPreviewModal() {
     // Select button and associated modal.
     const previewButton = document.querySelector("#preview-button");
-    previewButton.addEventListener("click", () => {
+
+    const previewButtonClickHandler = () => {
         const preview = document.querySelector("dialog#preview");
         preview.showModal();
         document.body.style.overflow = "hidden";
         navigatePreviewModal();
         // new document level click event to close the modal
         setTimeout(() => {
-            document.addEventListener("click", function closeModal(event) {
+            const closeModalHandler = (event) => {
                 if (checkClickOutsideModal(preview.getBoundingClientRect(), event)) {
                     preview.close();
                     document.body.style.overflow = "auto";
                     // remove event listener
                     document.removeEventListener("click", closeModal);
                 }
-            });
+            };
+            document.addEventListener("click", closeModalHandler);
+            // storing the closeModal event
+            modalEventMap.set(document, closeModalHandler);
         }, 100);
-    });
-}
+    };
 
-// MODAL HELPER FUNCTIONS
-// define the area outside a modal
-function checkClickOutsideModal(modal, event) {
-    const top = modal.top > event.clientY;
-    const bottom = modal.bottom < event.clientY;
-    const left = modal.left > event.clientX;
-    const right = modal.right < event.clientX;
-    return top || bottom || left || right;
+    previewButton.addEventListener("click", previewButtonClickHandler);
+    // storing the preview click event
+    modalEventMap.set(previewButton, previewButtonClickHandler);
 }
 
 // Add click events to the preview modal to change the image
 function navigatePreviewModal() {
     const buttons = document.querySelectorAll("#next, #prev");
+
     buttons.forEach((button) => {
-        button.addEventListener("click", () => {
+        const previewModalNavHandler = () => {
             // if the button clicked is the next button, offset is 1, else -1
             const offset = button.id === "next" ? 1 : -1;
             // get the list of images and the current image
@@ -184,8 +191,30 @@ function navigatePreviewModal() {
             // remove the active class from the current image and add it to the new one
             images[currentIndex].classList.remove("active");
             images[newIndex].classList.add("active");
-        });
+        };
+
+        button.addEventListener("click", previewModalNavHandler);
+        // storing the events
+        modalEventMap.set(button, previewModalNavHandler);
     });
+}
+
+function removePreviewModalEventListeners() {
+    // removing te added event listeners
+    for (const [element, handler] of modalEventMap) {
+        element.removeEventListener("click", handler);
+    }
+    // clearing the map
+    modalEventMap.clear();
+}
+
+// define the area outside a modal
+function checkClickOutsideModal(modal, event) {
+    const top = modal.top > event.clientY;
+    const bottom = modal.bottom < event.clientY;
+    const left = modal.left > event.clientX;
+    const right = modal.right < event.clientX;
+    return top || bottom || left || right;
 }
 
 // SCROLLING
@@ -226,7 +255,7 @@ function toggleCanadaPostIconVisibility() {
 function updateCartDotState() {
     const invisible = getTotalQuantityFromCookie();
     const cartDot = document.querySelector("#cherry");
-    console.log('invisible', invisible);
+    console.log("invisible", invisible);
     if (invisible > 0) {
         cartDot.classList.remove("invisible");
     } else {
@@ -245,16 +274,21 @@ document.addEventListener("click", () => {
             updateCartDotState();
         });
     });
-})
+});
 
 // CART HELPER FUNCTION
 function getTotalQuantityFromCookie() {
     const cookieName = "items=";
     // is there a better way of getting cookies? count number of times "title" appears in cookie?
-    const array = decodeURIComponent(document.cookie)
+    const array = decodeURIComponent(document.cookie);
+    console.log(array);
+    if (array === "" || array === "items=[]") {
+        return 0;
+    }
+    const amount = array
         .slice(cookieName.length)
         .split(";")
         .map(cookie => cookie.trim());
-    console.log(array);
-    return array.length;
+    console.log(amount);
+    return amount.length;
 }
