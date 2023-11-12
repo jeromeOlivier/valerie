@@ -9,11 +9,11 @@ class Book {
      * @param {string} background
      * @param {string} border
      * @param {string} image
-     * @param {string[]} preview_images
+     * @param {Array<string>} preview_images
      * @param {string} description
-     * @param {BookFormat[]} format
-     * @param {string } [workbook_desc=""]
-     * @param {Workbook[]} [workbooks]
+     * @param {BookFormat} format
+     * @param {string} [workbook_desc=""]
+     * @param {Array<Workbook>} [workbooks]
      */
     constructor(title, background, border, image, preview_images, description, format, workbook_desc, workbooks) {
         this.title = title;

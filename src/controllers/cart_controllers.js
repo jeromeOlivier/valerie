@@ -1,15 +1,13 @@
 const asyncHandler = require("express-async-handler");
 const {
     getCartItems,
-    parseCartItemsFromCookie,
-    incrementCartItem,
     removeOneItemFromCart,
     getCartTotals,
 } = require("../services/cart_services");
 
 const { CartItem } = require("../data_models/cart");
 const { isValidTerm } = require("../services/utility_services");
-const { updateCookie } = require("../services/cookie_services");
+const { saveCookie, addCartItemToCookie, parseCartItemsFromCookie } = require("../services/cookie_services");
 
 // GET
 const findAllItems = asyncHandler(async(req, res) => {
@@ -25,26 +23,9 @@ const findAllItems = asyncHandler(async(req, res) => {
 
 // POST
 const addItem = asyncHandler(async(req, res) => {
-    /**
-     * @type {string}
-     */
-    const title = req.params.title;
-    /**
-     * @type {string}
-     */
-    const type = req.params.type;
-    /**
-     * @type {CartItem[]}
-     */
-    const cartItems = parseCartItemsFromCookie(req.cookies);
-    // add one to the quantity of the item if it already exists in the cart and return the new quantity
-    const quantity = incrementCartItem(cartItems, title, type, res);
-    // rerender the button with the new quantity
-    const book = {};
-    book.format = {};
-    book.format.title = title;
-    book.format.type = type;
-    res.render("book_format_add_button", { book, quantity });
+    addCartItemToCookie(req, res);
+    const isInCart = true;
+    res.render("book_format_add_button", { isInCart });
 });
 
 // PUT
@@ -62,7 +43,7 @@ const removeItem = asyncHandler(async(req, res) => {
     const cartItemsFromCookie = parseCartItemsFromCookie(req.cookies);
     const cartItemsAfterRemoval = removeOneItemFromCart(cartItemsFromCookie, req.params.title, req.params.type);
     // update the cookie
-    updateCookie(res, cartItemsAfterRemoval);
+    saveCookie(res, cartItemsAfterRemoval);
     const cartItems = await getCartItems(cartItemsAfterRemoval)
     const cart = await getCartTotals(cartItems);
     res.render("cart", { cartItems, cart });
@@ -71,6 +52,5 @@ const removeItem = asyncHandler(async(req, res) => {
 module.exports = {
     findAllItems,
     addItem,
-    updateItem,
     removeItem,
 };

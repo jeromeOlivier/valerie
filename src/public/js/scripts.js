@@ -6,17 +6,18 @@ let areMobileEventsAdded = false;
 // OBSERVER
 function updateUI(path) {
     console.log("inside updateUI. the path is:", path);
-    const books = new Set(["/word", "/excel", "/powerpoint", "/outlook"]);
+    const books = new Set(["/word", "/excel", "/powerpoint", "/outlook", "/cart"]);
     if (books.has(path)) {
+        console.log("inside updateUI has path");
         adjustNavigationUI();
-        // launchCartModal();
         launchPreviewModal();
         toggleCanadaPostIconVisibility();
         updateCartDotState();
     } else if (path === "/") {
+        console.log("inside updateUI path /");
         adjustNavigationUI();
         applyScrollingEffectToBrands();
-        // launchCartModal();
+        updateCartDotState();
     }
 }
 
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         const path = window.location.pathname;
         updateUI(path);
-    }, 250)
+    }, 250);
 });
 
 // for htmx swap
@@ -131,28 +132,6 @@ function toggleVisibility(item) {
     item.classList.toggle("slide_in");
 }
 
-// MODAL
-// function launchCartModal() {
-//     // Select button and associated modal.
-//     const cart = document.querySelector("#cart");
-//     const cartButton = document.querySelector("#cart-button");
-//     cartButton.addEventListener("click", (event) => {
-//         cart.showModal();
-//         document.body.style.overflow = "hidden";
-//         // new document level click event to close the modal
-//         setTimeout(() => {
-//             document.addEventListener("click", function closeModal(event) {
-//                 if (checkClickOutsideModal(cart.getBoundingClientRect(), event)) {
-//                     cart.close();
-//                     document.body.style.overflow = "auto";
-//                     // remove the event listener
-//                     document.removeEventListener("click", closeModal);
-//                 }
-//             });
-//         }, 100);
-//     });
-// }
-
 function launchPreviewModal() {
     // Select button and associated modal.
     const previewButton = document.querySelector("#preview-button");
@@ -245,31 +224,37 @@ function toggleCanadaPostIconVisibility() {
 // CART
 // update the cart dot state on click
 function updateCartDotState() {
-    const total = getTotalQuantityFromCookie();
+    const invisible = getTotalQuantityFromCookie();
     const cartDot = document.querySelector("#cherry");
-    if (total > 0) {
+    console.log('invisible', invisible);
+    if (invisible > 0) {
         cartDot.classList.remove("invisible");
     } else {
         cartDot.classList.add("invisible");
     }
 }
 
+document.addEventListener("click", () => {
+    const addToCart = document.querySelector("#add_to_cart");
+    addToCart.addEventListener("click", () => {
+        updateCartDotState();
+    });
+    const deleteButton = document.querySelectorAll(".delete");
+    deleteButton.forEach((button) => {
+        button.addEventListener("click", () => {
+            updateCartDotState();
+        });
+    });
+})
+
 // CART HELPER FUNCTION
 function getTotalQuantityFromCookie() {
     const cookieName = "items=";
-    const decodedCookies = decodeURIComponent(document.cookie);
-    const cookies = decodedCookies.split(";").map(cookie => cookie.trim());
-    let totalQuantity = 0;
-
-    for (const cookie of cookies) {
-        if (cookie.startsWith(cookieName)) {
-            try {
-                const items = JSON.parse(cookie.slice(cookieName.length));
-                totalQuantity = items.reduce((accumulatedQuantity, item) => accumulatedQuantity + item.quantity, 0);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-    }
-    return totalQuantity;
+    // is there a better way of getting cookies? count number of times "title" appears in cookie?
+    const array = decodeURIComponent(document.cookie)
+        .slice(cookieName.length)
+        .split(";")
+        .map(cookie => cookie.trim());
+    console.log(array);
+    return array.length;
 }

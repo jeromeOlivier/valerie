@@ -2,32 +2,31 @@
 // constants
 const { NOT_FOUND, INVALID_QUERY } = require("../constants/messages");
 const { IMAGE_PATH } = require("../constants/links");
-
 const db = require("../db_ops/db");
 
 const {
-  url_endpoint_config,
-  url_product_types,
-  Book,
-  Workbook,
-  BookFormat,
-  Path,
-  Cart,
-  CartItem,
+    url_endpoint_config,
+    url_product_types,
+    Book,
+    Workbook,
+    BookFormat,
+    Path,
+    Cart,
+    CartItem,
 } = require("../data_models");
 
-const { getQuantityOfItem, parseCartItemsFromCookie } = require("./cart_services");
-const { isValidQuery, fetchUrlEndpointConfiguration, isValidPath } = require("./utility_services")
+const { getQuantityOfItem } = require("./cart_services");
+const { parseCartItemsFromCookie } = require("./cookie_services");
+const { isValidQuery, fetchUrlEndpointConfiguration, isValidPath } = require("./utility_services");
 
 const fs = require("fs");
 const path = require("path");
-
 
 /**
  * Description: This function returns the book data for the given path.
  * @param req
  * @param res
- * @returns {Promise<Book>}
+ * @returns {Promise<Book>, Path}
  */
 async function getBook(req, res) {
     // validate the query parameters
@@ -39,17 +38,13 @@ async function getBook(req, res) {
         const path = fetchUrlEndpointConfiguration(req);
         // if path is null, send an error message
         if (!isValidPath(path)) { return res.status(500).send(INVALID_QUERY); }
+        // get book data (book, book_format and preview images)
         try {
-            // get book data (book, book_format and preview images)
             /**
              * @type {Book}
              */
             const book = await getBookData(path);
-            const items = parseCartItemsFromCookie(req.cookies);
-            // get the quantity of books in user's cookie if it's not empty
-            const quantity = items.length > 0 ? getQuantityOfItem(items, book.title, book.format.type): 0;
-            // render the book page
-            res.render(path.full ? "layout" : "book", { main: "book", book, quantity });
+            return { book, path };
         } catch (error) {
             res.status(500).send(error.message);
         }
@@ -71,7 +66,7 @@ const getBookData = async(path) => {
     // get the book format data for the given title and pdf format
     book.format = await getBookFormat(book.title);
     // establish the quantity of books in user's cart
-    // get the workbooks for the book
+    // get the workbooks for the book if they exist
     await handleWorkbooks(book);
     // get the book cover image
     book.preview_images = await getBookPreviewImages(book.title);
@@ -87,9 +82,7 @@ const getBookData = async(path) => {
  */
 async function getBookFormat(title, format = "pdf") {
     // validate the query parameters
-    const isValidTitle = url_product_types.has(title.toLowerCase());
-    const isValidFormat = url_product_types.has(format);
-    if (!isValidTitle || !isValidFormat) throw new Error(INVALID_QUERY);
+    if (!isValidTitleAndType(title, format)) throw new Error(INVALID_QUERY);
     // get the book format data
     const [[query]] = await db.query(`
         SELECT b.title     AS title,
@@ -222,9 +215,14 @@ async function handleWorkbooks(book) {
     return book.workbooks = book.workbook_desc ? await getWorkbooks(book.title) : [];
 }
 
+function isValidTitleAndType(title, format) {
+    const validTitle = url_product_types.has(title.toLowerCase());
+    const validFormat = url_product_types.has(format.toLowerCase());
+    return validTitle && validFormat;
+}
+
 module.exports = {
     getBook,
     getBookFormat,
-    getWorkbooks,
-    getBookPreviewImages,
+    isValidTitleAndType,
 };

@@ -1,11 +1,15 @@
 <button id="add_to_cart"
-<% if (quantity < 3) { %>
+<% if (!isInCart) { %>
         hx-post="cart/add/<%= book.format.title.toLowerCase(); %>/<%= book.format.type; %>"
         hx-swap="outerHTML"
         hx-target="#add_to_cart"
         class="orange_button">
     Ajouter au panier
     <% } else { %>
-        class="orange-button disabled">Limite de 3 exemplaires
+        hx-get="/data_cart"
+        hx-swap="innerHTML show:top"
+        hx-target="main"
+        class="main_button">
+        Voir le panier
     <% } %>
 </button>

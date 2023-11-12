@@ -12,7 +12,9 @@ const {
 } = require("../data_models");
 
 const { isValidTerm, isValidQuantity } = require("./utility_services");
-const { updateCookie } = require("./cookie_services");
+const { updateCookie, parseCartItemsFromCookie } = require("./cookie_services");
+const item = require("../data_models/path");
+const { type } = require("node:os");
 
 /**
  * Gets all items in the cart based on values in the cookie items attribute
@@ -27,15 +29,16 @@ async function getCartItems(cartItems) {
     // if cart is not empty, validate the items
     const validItems = validateCartItems(cartItems);
     // if all items are valid, get the price for each item from the database
-    const itemsWithPrices = await getPriceByNameAndType(validItems);
+    const cartItemsWithPrices = await getPriceByNameAndType(validItems);
     // uppercase the first letter of each title
-    const formatTitles = itemsWithPrices.map(item => {
+    const cartItemsWithFormattedTitles = cartItemsWithPrices.map(item => {
         const title = item.title.charAt(0).toUpperCase() + item.title.slice(1);
         return { ...item, title: title };
     });
+    console.log('cartItemsWithFormattedTitles', cartItemsWithFormattedTitles);
     // add new total attribute to each item object with the price * quantity
-    return formatTitles.map((item) => {
-        return { ...item, total: (Number(item.price) * item.quantity).toFixed(2) };
+    return cartItemsWithFormattedTitles.map((item) => {
+        return { ...item };
     });
 }
 
@@ -100,54 +103,13 @@ function validateCartItems(cartItems) {
     try {
         cartItems.forEach((item) => {
             const title = isValidTerm(item.title);
-            const quantity = isValidQuantity(item.quantity);
             const type = isValidTerm(item.type);
-            if (title && quantity && type) { validItems.push(item); }
+            if (title && type) { validItems.push(item); }
         });
         return validItems;
     } catch (err) {
         throw new Error(err.message);
     }
-}
-
-/**
- * Description: This function returns the cart items array of the cookie.
- * @param cookies
- * @returns {Array<CartItem>}
- */
-function parseCartItemsFromCookie(cookies) {
-    return cookies ? JSON.parse(cookies.items || "[]") : [];
-}
-
-/**
- *
- * @param {Array<CartItem>} cartItems
- * @param {string} title
- * @param {string}  type
- * @param {response} res
- * @returns {number}
- */
-function incrementCartItem(cartItems, title, type, res) {
-    let quantity;
-    if (cartItems.length > 0) {
-        // if the item already exists in the cart, add one to the quantity
-        const matchingItem = cartItems.find(item => item.title === title && item.type === type);
-        if (matchingItem) {
-            matchingItem.quantity += 1;
-            quantity = matchingItem.quantity;
-            // otherwise, add the item to the cart
-        } else {
-            const newCartItem = new CartItem(title, type, 1);
-            cartItems.push(newCartItem);
-            quantity = 1;
-        }
-    } else {
-        const newCartItem = new CartItem(title, type, 1);
-        cartItems.push(newCartItem);
-        quantity = 1;
-    }
-    updateCookie(res, cartItems);
-    return quantity;
 }
 
 /**
@@ -175,7 +137,7 @@ function removeOneItemFromCart(oldCartItems, title, type) {
 function getCartTotals(cartItems) {
     const cart = {};
     cart.subtotal = cartItems.reduce((acc, cur) => {
-        const total = parseFloat(cur.total);
+        const total = parseFloat(cur.price);
         acc += total;
         return acc;
     }, 0).toFixed(2);
@@ -195,12 +157,24 @@ async function updateCartItem(req, res) {
     // })
 }
 
+/**
+ *
+ * @param {Array<CartItem>} cartItems
+ * @param {string} title
+ * @param {string} type
+ * @returns {boolean}
+ */
+function checkIfInCart(cartItems, title, type) {
+    console.log('cartItems', cartItems);
+    console.log('title', title);
+    console.log('type', type);
+    return cartItems.some(item => item.title === title.toLowerCase() && item.type === type.toLowerCase());
+}
+
 module.exports = {
     getCartItems,
     getQuantityOfItem,
-    parseCartItemsFromCookie,
-    incrementCartItem,
     removeOneItemFromCart,
-    getPriceByNameAndType,
     getCartTotals,
+    checkIfInCart,
 };

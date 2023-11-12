@@ -10,21 +10,12 @@ const {
 } = require("../data_models");
 
 /**
- * This function adds one to the quantity of a specific item type and title in a cart.
- *
- * @param {Array} cookie - An array representing the current state of the cart cookie. It contains objects with item details (title, type, quantity).
- * @param {string} title - The title of the item whose quantity needs to be incremented.
- * @param {string} type - The type of the item whose quantity needs to be incremented.
- *
- * @returns {number | undefined} - Returns the updated quantity of the item if existing, otherwise a modified cookie array with new item added.
+ * Description: This function returns the cart items array of the cookie.
+ * @param cookies
+ * @returns {Array<CartItem>}
  */
-function addOneToQuantityOfItem(cookie, title, type) {
-    const existingItemIndex = cookie.findIndex(item => item.title === title && item.type === type);
-    if (existingItemIndex !== -1) {
-        return cookie[existingItemIndex].quantity += 1;
-    } else {
-        return cookie.push({ title: title, type: type, quantity: 1 });
-    }
+function parseCartItemsFromCookie(cookies) {
+    return cookies ? JSON.parse(cookies.items || "[]") : [];
 }
 
 /**
@@ -35,7 +26,7 @@ function addOneToQuantityOfItem(cookie, title, type) {
  *
  * @returns {Object} - Returns the response object with the updated "items" cookie.
  */
-function updateCookie(res, cartItems) {
+function saveCookie(res, cartItems) {
     return res.cookie("items", JSON.stringify(cartItems), {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         sameSite: "Strict",
@@ -43,6 +34,24 @@ function updateCookie(res, cartItems) {
     });
 }
 
+/**
+ * Add new cart item to cookie, saves cookie, return an Array<cartItem>
+ *
+ * @param {Request} req
+ * @param {Response} res
+ *
+ * @return {Array<CartItem>}
+ */
+function addCartItemToCookie(req, res) {
+    const newItem = new CartItem(req.params.title, req.params.type);
+    const cookie = parseCartItemsFromCookie(req.cookies);
+    cookie.push(newItem);
+    saveCookie(res, cookie);
+    return cookie;
+}
+
 module.exports = {
-    addOneToQuantityOfItem, updateCookie,
+    saveCookie,
+    addCartItemToCookie,
+    parseCartItemsFromCookie,
 };

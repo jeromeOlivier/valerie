@@ -1,36 +1,38 @@
 // Description: This file contains the controllers for all GET requests.
 const asyncHandler = require("express-async-handler");
-const urlEndpointConfig = require("../data_models/url_endpoint_config");
-const urlProductTypes = require("../data_models/url_product_types");
-const db = require("../db_ops/db");
 const { getPageData, getPageLayout, getBlogData, getBookPreviewImages } = require("../services/page_services");
-const { getBook, getBookFormat, getWorkbooks } = require("../services/book_services");
-const { getCartItems, getQuantityOfItem, parseCartItemsFromCookie } = require("../services/cart_services");
-const fs = require("fs");
-const path = require("path");
-const { INTERNAL_SERVER_ERROR, INVALID_QUERY } = require("../constants/messages");
-
+const { getBook, getBookFormat, isValidTitleAndType } = require("../services/book_services");
+const { getQuantityOfItem, checkIfInCart } = require("../services/cart_services");
+const { parseCartItemsFromCookie } = require("../services/cookie_services")
 
 // GET BOOKS (entry point for all books)
-const book = asyncHandler(async(req, res) => getBook(req, res));
-// GET BOOK FORMAT (entry point for all book formats)
+const book = asyncHandler(async(req, res) => {
+    const { book, path } = await getBook(req, res);
+    const cartItems = parseCartItemsFromCookie(req.cookies);
+    const isInCart = checkIfInCart(cartItems, book.title, 'pdf')
+    res.render(path.full ? "layout" : "book", { main: "book", book, isInCart });
+});
 
+// GET BOOK FORMAT (entry point for all book formats)
 const book_format = asyncHandler(async(req, res) => {
-    // partial page load still requires the book data as its base
-    const validTitle = urlProductTypes.has(req.params.title.toLowerCase());
-    const validFormat = urlProductTypes.has(req.params.type.toLowerCase());
-    if (!validTitle || !validFormat) { return res.status(500).send(INVALID_QUERY); }
+    // for template consistency, use book data structure as the base
+    /**
+     *
+     * @type {Partial<Book>}
+     */
+    const book = { format: { } };
     book.format = await getBookFormat(req.params.title, req.params.type);
     const cartItems = parseCartItemsFromCookie(req.cookies);
-    const quantity = getQuantityOfItem(cartItems, req.params.title, req.params.type);
-    res.render("book_format", { book, quantity });
+    // if the book is already in the cart, disable the button
+    const isInCart = checkIfInCart(cartItems, req.params.title, req.params.type);
+    res.render("book_format", { book, isInCart });
 });
 
 // GET BLOG
 const blog = asyncHandler(async(req, res) => {
     await res.render("layout", { main: "blog", contact: contact });
 });
-const data_blog = asyncHandler(async(req, res) => getBlogData(req, res, urlEndpointConfig));
+const data_blog = asyncHandler(async(req, res) => getBlogData(req, res));
 
 // GET PREVIEWS
 const preview = asyncHandler(async(req, res) => {
@@ -40,12 +42,12 @@ const preview = asyncHandler(async(req, res) => {
 });
 
 // GET PAGES
-const index = asyncHandler(async(req, res) => getPageLayout(req, res, urlEndpointConfig));
-const data_index = asyncHandler(async(req, res) => getPageData(req, res, urlEndpointConfig));
-const contact = asyncHandler(async(req, res) => getPageLayout(req, res, urlEndpointConfig));
-const data_contact = asyncHandler(async(req, res) => getPageData(req, res, urlEndpointConfig));
-const service = asyncHandler(async(req, res) => getPageLayout(req, res, urlEndpointConfig));
-const data_service = asyncHandler(async(req, res) => getPageData(req, res, urlEndpointConfig));
+const index = asyncHandler(async(req, res) => getPageLayout(req, res));
+const data_index = asyncHandler(async(req, res) => getPageData(req, res));
+const contact = asyncHandler(async(req, res) => getPageLayout(req, res));
+const data_contact = asyncHandler(async(req, res) => getPageData(req, res));
+const service = asyncHandler(async(req, res) => getPageLayout(req, res));
+const data_service = asyncHandler(async(req, res) => getPageData(req, res));
 
 module.exports = {
     index,

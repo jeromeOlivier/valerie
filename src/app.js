@@ -24,38 +24,44 @@ app.set("view engine", "ejs");
 // configure middleware
 app.use(compression());
 app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://checkout.stripe.com/"],
-      connectSrc: ["'self'", "https://checkout.stripe.com/"],
-      frameSrc: ["'self'", "https://checkout.stripe.com/"],
-    },
-  }),
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: [
+                "'self'",
+                "https://checkout.stripe.com/",
+                "'./js/htmx.js'",
+                "'unsafe-inline'",
+                "'./js/scripts.js'",
+            ],
+            connectSrc: ["'self'", "https://checkout.stripe.com/"],
+            frameSrc: ["'self'", "https://checkout.stripe.com/"],
+        },
+    }),
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, // limit each IP to 100 requests per windowMs
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 200, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 app.use(cookieParser({
-  maxAge: 1000 * 60 * 60 * 24 * 7,
-  sameSite: "Strict",
-  secure: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    sameSite: "Strict",
+    secure: true,
 }));
 
 // routes
 app.use("/", routes);
 
 // db shutdown on process exit
-process.on('SIGTERM', shutDown);
-process.on('SIGINT', shutDown);
+process.on("SIGTERM", shutDown);
+process.on("SIGINT", shutDown);
 
 // initialize server
 const port = process.env.PORT || "3000";
 const host = process.env.HOST || "0.0.0.0";
-app.listen(port, host, () => console.log(`Server running on port ${port}`));
+app.listen(port, host, () => console.log(`Server running on port ${ port }`));
 // path: src/app.js
