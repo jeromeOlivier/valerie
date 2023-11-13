@@ -1,126 +1,83 @@
 // Purpose: Contains all the scripts used in the project.
-// NAVIGATION ------------------------------------------------------------------
-const eventMap = new Map();
-let areMobileEventsAdded = false;
 
-// OBSERVER
-function updateUI(path) {
-    console.log("inside updateUI. the path is:", path);
-    const books = new Set(["/word", "/excel", "/powerpoint", "/outlook"]);
-    if (books.has(path)) {
-        console.log("inside updateUI has path");
-        adjustNavigationUI();
-        launchPreviewModal();
-        toggleCanadaPostIconVisibility();
-        updateCartDotState();
+const TIMEOUT_DURATION = 250;
+const MOBILE_VIEW_WIDTH = 960;
+const RESIZE_WAIT_DURATION = 100;
+const detachedBooks = new Set(["/word", "/excel", "/powerpoint", "/outlook"]);
+const isValidBook = (path) => detachedBooks.has(path);
+
+function evaluatePathAndUpdateUI(path) {
+    updateCartDotState();
+    if (isValidBook(path)) {
+        createPreviewModalEventListeners();
+        createCanadaPostIconToggle();
     } else if (path === "/") {
-        console.log("inside updateUI path /");
-        adjustNavigationUI();
-        applyScrollingEffectToBrands();
-        updateCartDotState();
-        removePreviewModalEventListeners();
+        createBrandScroller();
+        removePreviewModalEventListener();
     } else if (path === "/cart") {
-        console.log("inside updateUI path /cart");
-        adjustNavigationUI();
-        removePreviewModalEventListeners();
-        updateCartDotState();
+        removePreviewModalEventListener();
     }
 }
 
-const observer = new MutationObserver(() => {
-    const path = window.location.pathname;
-    updateUI(path);
-    observer.disconnect();
-});
+function handleEventCreation() {
+    const currentPath = window.location.pathname;
+    console.log('the path is', currentPath);
+    evaluatePathAndUpdateUI(currentPath);
+}
 
-observer.observe(document, { childList: true, subtree: true });
+function registerEventAfterDOMLoad() {
+    adjustMobileNavigationUI();
+    setTimeout(handleEventCreation, TIMEOUT_DURATION);
+}
 
-// EVENT LISTENERS
-// for full page load
-document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => {
-        const path = window.location.pathname;
-        updateUI(path);
-    }, 250);
-});
+function adjustMobileNavigationUI() {
+    const mobileViewActivated = isMobileView();
 
-// for htmx swap
-document.addEventListener("htmx:afterSwap", () => {
-    setTimeout(() => {
-        const path = window.location.pathname;
-        console.log("path", path);
-        updateUI(path);
-    }, 250);
-});
+    if(mobileViewActivated && !areMobileEventsAdded) {
+        createMobileEvents();
+    }
 
-// for resize
-window.addEventListener("resize", () => {
-    disableTransition();
-});
+    if(!mobileViewActivated && areMobileEventsAdded) {
+        removeMobileEvents();
+    }
+}
 
-// NAVIGATION
-// Adjusts the navigation UI based on the screen size.
-function adjustNavigationUI() {
-    // Selects the header
-    const logo = document.querySelector(".logo");
-    const nav = document.querySelector("nav");
-    const navItems = document.querySelectorAll(".menu > li");
-    // if in mobile view
-    if (window.innerWidth < 960 && !areMobileEventsAdded) {
-        if (logo) {
-            // check if an event has already been added to the logo.
-            const boundHandleClick = eventMap.get(logo);
-            if (!boundHandleClick) {
-                const boundHandleClick = function() {
-                    toggleVisibility(nav);
-                };
-                // If it is, we add a click event to toggle the navigation visibility.
-                logo.addEventListener("click", boundHandleClick);
-                // store the event in a map to be able to remove it later.
-                eventMap.set(logo, boundHandleClick);
-            }
-        }
-        if (navItems) {
-            // we also add eventListeners to the links to close the navigation when clicked.
-            navItems.forEach((item) => {
-                const boundHandleClick = function() {
-                    toggleVisibility(nav);
-                };
-                item.addEventListener("click", boundHandleClick);
-                // store the event in a map to be able to remove it later.
-                eventMap.set(item, boundHandleClick);
-            });
-            areMobileEventsAdded = true;
-        }
-    } else {
-        if (window.innerWidth > 960 && areMobileEventsAdded) {
-            // if in desktop view
-            if (logo) {
-                // we remove the click event from the logo.
-                const boundHandleClick = eventMap.get(logo);
-                if (boundHandleClick) {
-                    logo.removeEventListener("click", boundHandleClick);
-                    eventMap.delete(logo);
-                }
-            }
-            if (navItems) {
-                // we also remove the eventListeners to the individual links
-                navItems.forEach((item) => {
-                    const boundHandleClick = eventMap.get(item);
-                    if (boundHandleClick) {
-                        item.removeEventListener("click", boundHandleClick);
-                        eventMap.delete(item);
-                    }
-                });
-            }
-            areMobileEventsAdded = false;
-        }
+document.addEventListener("DOMContentLoaded", registerEventAfterDOMLoad);
+document.addEventListener("htmx:afterSwap", () => setTimeout(() => handleEventCreation(), TIMEOUT_DURATION));
+window.addEventListener("resize", temporarilyDisableTransitionOfMobileMenu);
+
+// MOBILE NAVIGATION MENU
+const eventMap = new Map();
+let areMobileEventsAdded = false;
+const logo = document.querySelector(".logo");
+const nav = document.querySelector("nav");
+const navItems = document.querySelectorAll(".menu > li");
+const isMobileView = () => window.innerWidth < MOBILE_VIEW_WIDTH;
+
+function handleNavItemClick() { toggleTransitionOfMobileMenu(nav); }
+
+function createMobileEvents() {
+    if (logo) {
+        logo.addEventListener("click", handleNavItemClick);
+        eventMap.set(logo, handleNavItemClick);
+    }
+    navItems.forEach((item) => {
+        item.addEventListener("click", handleNavItemClick);
+        eventMap.set(item, handleNavItemClick);
+    });
+    areMobileEventsAdded = true;
+}
+
+function removeMobileEvents() {
+    if (logo) {
+        logo.removeEventListener("click", handleNavItemClick);
+        eventMap.delete(logo);
     }
 }
 
 let resizeTimer;
 
-function disableTransition() {
+function temporarilyDisableTransitionOfMobileMenu() {
     const nav = document.querySelector("nav");
     nav && nav.classList.add("disable_transition");
     clearTimeout(resizeTimer);
@@ -128,24 +85,24 @@ function disableTransition() {
         if (nav) {
             nav.classList.remove("disable_transition");
         }
-        adjustNavigationUI();
-    }, 100);
+        adjustMobileNavigationUI();
+    }, RESIZE_WAIT_DURATION);
 }
 
-function toggleVisibility(item) {
+
+function toggleTransitionOfMobileMenu(item) {
     item.classList.toggle("slide_out");
     item.classList.toggle("slide_in");
 }
 
-// MODAL
+// BOOK PREVIEW MODAL
 const modalEventMap = new Map();
+const locatePreviewButton = () => document.querySelector("#preview-button");
 
-function launchPreviewModal() {
-    // Select button and associated modal.
-    const previewButton = document.querySelector("#preview-button");
-
+function createPreviewModalEventListeners() {
+    const previewButton = locatePreviewButton();
+    const preview = document.querySelector("dialog#preview");
     const previewButtonClickHandler = () => {
-        const preview = document.querySelector("dialog#preview");
         preview.showModal();
         document.body.style.overflow = "hidden";
         navigatePreviewModal();
@@ -156,18 +113,23 @@ function launchPreviewModal() {
                     preview.close();
                     document.body.style.overflow = "auto";
                     // remove event listener
-                    document.removeEventListener("click", closeModal);
+                    document.removeEventListener("click", closeModalHandler);
                 }
             };
             document.addEventListener("click", closeModalHandler);
             // storing the closeModal event
             modalEventMap.set(document, closeModalHandler);
-        }, 100);
+        }, RESIZE_WAIT_DURATION);
     };
 
     previewButton.addEventListener("click", previewButtonClickHandler);
     // storing the preview click event
     modalEventMap.set(previewButton, previewButtonClickHandler);
+}
+
+function removePreviewModalEventListener() {
+    const previewButton = locatePreviewButton();
+    modalEventMap.delete(previewButton);
 }
 
 // Add click events to the preview modal to change the image
@@ -199,15 +161,6 @@ function navigatePreviewModal() {
     });
 }
 
-function removePreviewModalEventListeners() {
-    // removing te added event listeners
-    for (const [element, handler] of modalEventMap) {
-        element.removeEventListener("click", handler);
-    }
-    // clearing the map
-    modalEventMap.clear();
-}
-
 // define the area outside a modal
 function checkClickOutsideModal(modal, event) {
     const top = modal.top > event.clientY;
@@ -219,7 +172,7 @@ function checkClickOutsideModal(modal, event) {
 
 // SCROLLING
 // Check if the user has set their system to use reduced motion
-const applyScrollingEffectToBrands = () => {
+function createBrandScroller() {
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -233,10 +186,10 @@ const applyScrollingEffectToBrands = () => {
             scroller.appendChild(duplicate);
         });
     }
-};
+}
 
 // TOGGLE CANADA POST
-function toggleCanadaPostIconVisibility() {
+function createCanadaPostIconToggle() {
     const canadaPost = document.querySelector("#post-logo");
     const pdfButton = document.querySelector("#pdf-format-tab");
     const paperButton = document.querySelector("#papier-format-tab");
@@ -251,33 +204,22 @@ function toggleCanadaPostIconVisibility() {
 }
 
 // CART
-// update the cart dot state on click
+// update the cart dot state on click triggered by other event listeners
 function updateCartDotState() {
-    const invisible = getTotalQuantityFromCookie();
+    const quantityOfCartItems = getQuantityOfCartItemsFromCookie();
     const cartDot = document.querySelector("#cherry");
-    console.log("invisible", invisible);
-    if (invisible > 0) {
+    if (quantityOfCartItems > 0) {
         cartDot.classList.remove("invisible");
     } else {
         cartDot.classList.add("invisible");
     }
 }
 
-document.addEventListener("click", () => {
-    const addToCart = document.querySelector("#add_to_cart");
-    addToCart.addEventListener("click", () => {
-        updateCartDotState();
-    });
-    const deleteButton = document.querySelectorAll(".delete");
-    deleteButton.forEach((button) => {
-        button.addEventListener("click", () => {
-            updateCartDotState();
-        });
-    });
-});
-
-// CART HELPER FUNCTION
-function getTotalQuantityFromCookie() {
+/**
+ *
+ * @return {number}
+ */
+function getQuantityOfCartItemsFromCookie() {
     const cookieName = "items=";
     // is there a better way of getting cookies? count number of times "title" appears in cookie?
     const array = decodeURIComponent(document.cookie);
