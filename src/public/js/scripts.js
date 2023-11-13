@@ -44,7 +44,7 @@ function adjustMobileNavigationUI() {
 
 document.addEventListener("DOMContentLoaded", registerEventAfterDOMLoad);
 document.addEventListener("htmx:afterSwap", () => setTimeout(() => handleEventCreation(), TIMEOUT_DURATION));
-window.addEventListener("resize", temporarilyDisableTransitionOfMobileMenu);
+window.addEventListener("resize", () => temporarilyDisableTransitionOfMobileMenu, adjustMobileNavigationUI );
 
 // MOBILE NAVIGATION MENU
 const eventMap = new Map();
@@ -55,6 +55,7 @@ const navItems = document.querySelectorAll(".menu > li");
 const isMobileView = () => window.innerWidth < MOBILE_VIEW_WIDTH;
 
 function handleNavItemClick() { toggleTransitionOfMobileMenu(nav); }
+
 
 function createMobileEvents() {
     if (logo) {
@@ -73,6 +74,8 @@ function removeMobileEvents() {
         logo.removeEventListener("click", handleNavItemClick);
         eventMap.delete(logo);
     }
+    navItems.forEach((item) => item.removeEventListener("click", handleNavItemClick));
+    areMobileEventsAdded = false;
 }
 
 let resizeTimer;
