@@ -507,21 +507,11 @@ dialog::backdrop {
     }
 }
 
-/*#quantity {*/
-/*    background-color : var(--white);*/
-/*    border           : solid var(--grey) var(--stroke);*/
-/*    padding          : .25rem .5rem;*/
-/*}*/
-
 @media(max-width: 480px) {
     .cart_item_description {
-        /*align-items: center;*/
-        margin-left: 1rem;
+        margin-left: 1vw;
     }
 
-    /*.cart_item_detail:first-child {*/
-    /*    margin-left: auto;*/
-    /*}*/
     .cart_item {
         grid-template : 1fr / auto 1fr;
         gap: 1rem;
