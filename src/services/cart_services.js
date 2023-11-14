@@ -12,7 +12,6 @@ const {
 } = require("../data_models");
 
 const { isValidTerm, isValidQuantity } = require("./utility_services");
-const { updateCookie, parseCartItemsFromCookie } = require("./cookie_services");
 const item = require("../data_models/path");
 const { type } = require("node:os");
 
@@ -77,20 +76,6 @@ async function getPriceByNameAndType(items) {
         throw new Error(`fetch price failed: ${ e }`);
     }
 }
-
-// /**
-//  * Description: This function returns the number of items in the cart for the given title and format.
-//  * @param {Array<CartItem>} items
-//  * @param {string} title
-//  * @param {string} format
-//  * @returns {number}
-//  */
-// function getQuantityOfItem(items, title, format) {
-//     if (!items || items.length === 0) return 0;
-//     const item = items.find((i) => i.title === title.toLowerCase() && i.type === format);
-//     if (item) { return item.quantity; }
-//     return 0;
-// }
 
 /**
  * Determines whether any cart item is in paper format.

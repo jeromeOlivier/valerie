@@ -15,8 +15,6 @@ const {
     CartItem,
 } = require("../data_models");
 
-const { getQuantityOfItem } = require("./cart_services");
-const { parseCartItemsFromCookie } = require("./cookie_services");
 const { isValidQuery, fetchUrlEndpointConfiguration, isValidPath } = require("./utility_services");
 
 const fs = require("fs");
@@ -196,15 +194,15 @@ async function fetchBookByTitle(title) {
     }
 }
 
-/**
- * Description: This function checks if the book exists.
- * @param {Book} book
- * @return {Book}
- */
-function isValidBook(book) {
-    if (book && book.title) throw new Error(NOT_FOUND);
-    return book;
-}
+// /**
+//  * Description: This function checks if the book exists.
+//  * @param {Book} book
+//  * @return {Book}
+//  */
+// function isValidBook(book) {
+//     if (book && book.title) throw new Error(NOT_FOUND);
+//     return book;
+// }
 
 /**
  * Description: This function returns the workbooks for the given book.

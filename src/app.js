@@ -45,11 +45,7 @@ const limiter = rateLimit({
     max: 200, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
-app.use(cookieParser({
-    maxAge: 1000 * 60 * 60 * 24 * 7,
-    sameSite: "Strict",
-    secure: true,
-}));
+app.use(cookieParser());
 
 // routes
 app.use("/", routes);
