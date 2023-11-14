@@ -78,18 +78,28 @@ async function getPriceByNameAndType(items) {
     }
 }
 
+// /**
+//  * Description: This function returns the number of items in the cart for the given title and format.
+//  * @param {Array<CartItem>} items
+//  * @param {string} title
+//  * @param {string} format
+//  * @returns {number}
+//  */
+// function getQuantityOfItem(items, title, format) {
+//     if (!items || items.length === 0) return 0;
+//     const item = items.find((i) => i.title === title.toLowerCase() && i.type === format);
+//     if (item) { return item.quantity; }
+//     return 0;
+// }
+
 /**
- * Description: This function returns the number of items in the cart for the given title and format.
- * @param {Array<CartItem>} items
- * @param {string} title
- * @param {string} format
- * @returns {number}
+ * Determines whether any cart item is in paper format.
+ *
+ * @param {Array<CartItem>} cartItems - The array containing cart items.
+ * @return {boolean} - True if there is any cart item in paper format, false otherwise.
  */
-function getQuantityOfItem(items, title, format) {
-    if (!items || items.length === 0) return 0;
-    const item = items.find((i) => i.title === title.toLowerCase() && i.type === format);
-    if (item) { return item.quantity; }
-    return 0;
+function isAnyCartItemPaperFormat(cartItems) {
+    return cartItems.some(item => item.type.toLowerCase() === "papier");
 }
 
 /**
@@ -146,17 +156,6 @@ function getCartTotals(cartItems) {
     return cart;
 }
 
-async function updateCartItem(req, res) {
-    const newItem = { title: req.param.title, type: req.param.type, quantity: req.body.quantity }
-    const parsedItems = parseCartItemsFromCookie(req.cookies);
-    parsedItems.map(item => newItem.title === item.title && newItem.type === item.type ? newItem : item);
-    updateCookie(req, parsedItems);
-    const cartItems = await getCartItems(parsedItems);
-    const cart = getCartTotals(cartItems);
-    res.render("")
-    // })
-}
-
 /**
  *
  * @param {Array<CartItem>} cartItems
@@ -173,7 +172,7 @@ function checkIfInCart(cartItems, title, type) {
 
 module.exports = {
     getCartItems,
-    getQuantityOfItem,
+    isAnyCartItemPaperFormat,
     removeOneItemFromCart,
     getCartTotals,
     checkIfInCart,

@@ -30,9 +30,7 @@ app.use(
             scriptSrc: [
                 "'self'",
                 "https://checkout.stripe.com/",
-                "'./js/htmx.js'",
-                "'unsafe-inline'",
-                "'./js/scripts.js'",
+                "'unsafe-inline'"
             ],
             connectSrc: ["'self'", "https://checkout.stripe.com/"],
             frameSrc: ["'self'", "https://checkout.stripe.com/"],

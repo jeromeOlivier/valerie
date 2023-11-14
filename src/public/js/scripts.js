@@ -1,10 +1,21 @@
 // Purpose: Contains all the scripts used in the project.
 
-const TIMEOUT_DURATION = 250;
+/* CONSTANTS AND VARIABLES */
+const TIMEOUT_DURATION = 350;
 const MOBILE_VIEW_WIDTH = 960;
-const RESIZE_WAIT_DURATION = 100;
+const RESIZE_WAIT_DURATION = 200;
+
+const logo = document.querySelector(".logo");
+const nav = document.querySelector("nav");
+const navItems = document.querySelectorAll(".menu > li");
+
+const eventMap = new Map();
+const modalEventMap = new Map();
 const detachedBooks = new Set(["/word", "/excel", "/powerpoint", "/outlook"]);
-const isValidBook = (path) => detachedBooks.has(path);
+
+let areMobileEventsAdded = false;
+
+function isValidBook(path) { return detachedBooks.has(path); }
 
 function evaluatePathAndUpdateUI(path) {
     updateCartDotState();
@@ -21,41 +32,49 @@ function evaluatePathAndUpdateUI(path) {
 
 function handleEventCreation() {
     const currentPath = window.location.pathname;
-    console.log('the path is', currentPath);
     evaluatePathAndUpdateUI(currentPath);
 }
 
+/**
+ * Registers an event to be executed after the DOM has finished loading.
+ *
+ * This method calls the `adjustMobileNavigationUI` function and then uses
+ * the `setTimeout` function to schedule the `handleEventCreation` function
+ * to be executed after a specified duration.
+ *
+ * @return {undefined} This method does not return any value.
+ */
 function registerEventAfterDOMLoad() {
     adjustMobileNavigationUI();
     setTimeout(handleEventCreation, TIMEOUT_DURATION);
 }
 
+/**
+ * Adjusts the mobile navigation UI based on the current view and event status.
+ *
+ * @return {undefined}
+ */
 function adjustMobileNavigationUI() {
     const mobileViewActivated = isMobileView();
 
-    if(mobileViewActivated && !areMobileEventsAdded) {
+    if (mobileViewActivated && !areMobileEventsAdded) {
         createMobileEvents();
     }
 
-    if(!mobileViewActivated && areMobileEventsAdded) {
+    if (!mobileViewActivated && areMobileEventsAdded) {
         removeMobileEvents();
     }
 }
 
-document.addEventListener("DOMContentLoaded", registerEventAfterDOMLoad);
+document.addEventListener("DOMContentLoaded", registerEventAfterDOMLoad());
 document.addEventListener("htmx:afterSwap", () => setTimeout(() => handleEventCreation(), TIMEOUT_DURATION));
-window.addEventListener("resize", () => temporarilyDisableTransitionOfMobileMenu, adjustMobileNavigationUI );
+window.addEventListener("resize", () => temporarilyDisableTransitionOfMobileMenu(), adjustMobileNavigationUI());
 
 // MOBILE NAVIGATION MENU
-const eventMap = new Map();
-let areMobileEventsAdded = false;
-const logo = document.querySelector(".logo");
-const nav = document.querySelector("nav");
-const navItems = document.querySelectorAll(".menu > li");
-const isMobileView = () => window.innerWidth < MOBILE_VIEW_WIDTH;
 
-function handleNavItemClick() { toggleTransitionOfMobileMenu(nav); }
+function isMobileView() { return window.innerWidth < MOBILE_VIEW_WIDTH; }
 
+function handleNavItemClick() { return toggleTransitionOfMobileMenu(nav); }
 
 function createMobileEvents() {
     if (logo) {
@@ -92,15 +111,13 @@ function temporarilyDisableTransitionOfMobileMenu() {
     }, RESIZE_WAIT_DURATION);
 }
 
-
 function toggleTransitionOfMobileMenu(item) {
     item.classList.toggle("slide_out");
     item.classList.toggle("slide_in");
 }
 
 // BOOK PREVIEW MODAL
-const modalEventMap = new Map();
-const locatePreviewButton = () => document.querySelector("#preview-button");
+function locatePreviewButton() { return document.querySelector("#preview-button"); }
 
 function createPreviewModalEventListeners() {
     const previewButton = locatePreviewButton();
@@ -165,6 +182,13 @@ function navigatePreviewModal() {
 }
 
 // define the area outside a modal
+/**
+ * Checks if a click event occurred outside a modal element.
+ *
+ * @param {object} modal - The modal element.
+ * @param {object} event - The click event object.
+ * @return {boolean} - True if the click event occurred outside the modal element, otherwise false.
+ */
 function checkClickOutsideModal(modal, event) {
     const top = modal.top > event.clientY;
     const bottom = modal.bottom < event.clientY;
@@ -219,8 +243,9 @@ function updateCartDotState() {
 }
 
 /**
+ * Retrieves the quantity of cart items from the cookie.
  *
- * @return {number}
+ * @return {number} The quantity of cart items.
  */
 function getQuantityOfCartItemsFromCookie() {
     const cookieName = "items=";
