@@ -8,6 +8,7 @@ require("dotenv").config();
 const path = require("path");
 const fs = require("fs");
 const rateLimit = require("express-rate-limit");
+const fetch = require("node-fetch");
 // internal dependencies
 const routes = require("./routes/index");
 const { log } = require("util");

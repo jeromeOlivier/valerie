@@ -5,7 +5,7 @@ const {
     getCartTotals,
     isAnyCartItemPaperFormat,
 } = require("../services/cart_services");
-const { validatePostcode } = require("../services/postcode_services");
+const { formatPostcode } = require("../services/postcode_services");
 
 const { CartItem } = require("../data_models/cart");
 const { isValidTerm } = require("../services/utility_services");
@@ -41,20 +41,16 @@ const removeItem = asyncHandler(async(req, res) => {
     const cartItemsAfterRemoval = removeOneItemFromCart(cartItemsFromCookie, req.params.title, req.params.type);
     // update the cookie
     saveCookie(res, cartItemsAfterRemoval);
-    const cartItems = await getCartItems(cartItemsAfterRemoval)
+    const cartItems = await getCartItems(cartItemsAfterRemoval);
     const cart = await getCartTotals(cartItems);
     const requirePostcode = isAnyCartItemPaperFormat(cartItems);
     res.render("cart", { cartItems, cart, requirePostcode });
 });
 
 const postcode = asyncHandler(async(req, res) => {
-    const isValidPostcode = validatePostcode(req.body.postcode);
-    if (!isValidPostcode) {
-        throw new Error("Invalid postcode");
-    }
-    console.log("validated");
-    res.send("postcode validated");
-})
+    const isValidPostcode = formatPostcode(req.body.postcode);
+
+});
 
 module.exports = {
     findAllItems,
