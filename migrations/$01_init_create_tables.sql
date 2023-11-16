@@ -10,7 +10,7 @@ CREATE TABLE books
     border        VARCHAR(255) NOT NULL COMMENT 'css border color for book cover image',
     image         VARCHAR(255) NOT NULL COMMENT 'book cover image url',
     description   TEXT         NOT NULL COMMENT 'web page content description of the book',
-    workbook_desc TEXT         COMMENT 'if book has workbooks, add workbook preamble'
+    workbook_desc TEXT COMMENT 'if book has workbooks, add workbook preamble'
 );
 
 # formats are toggled on the website and used for purchase decisions (pdf or physical)
@@ -44,6 +44,7 @@ CREATE TABLE book_formats
     size     VARCHAR(255)   NOT NULL COMMENT 'size in MBs for pdfs, or physical dimensions for paper',
     format   INT            NOT NULL COMMENT 'format id',
     pages    INT            NOT NULL COMMENT 'number of pages',
+    weight   INT            NULL COMMENT 'physical weight',
     language INT            NOT NULL COMMENT 'language id will only be french for now',
     market   INT            NOT NULL COMMENT 'market ids will only be canada for physical, or international for pdfs',
     price    DECIMAL(10, 2) NOT NULL COMMENT 'price in dollars',
@@ -80,7 +81,7 @@ CREATE TABLE customers
     address  VARCHAR(255) COMMENT 'address of customer',
     city     VARCHAR(255) COMMENT 'city of customer',
     province VARCHAR(255) COMMENT 'province of customer',
-    postcode VARCHAR(255) COMMENT 'postcode of customer',
+    postcode VARCHAR(255) COMMENT 'get_shipping_estimate of customer',
     country  VARCHAR(255) COMMENT 'country of customer',
     CHECK (
             (address IS NOT NULL AND city IS NOT NULL AND
@@ -127,9 +128,9 @@ CREATE TABLE payments
 # BLOGS
 CREATE TABLE blogs
 (
-    id      INT AUTO_INCREMENT PRIMARY KEY,
-    blog_title   VARCHAR(255) NOT NULL UNIQUE COMMENT 'title of the blog',
-    date    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'date of blog',
-    content TEXT         NOT NULL COMMENT 'content of the blog',
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    blog_title VARCHAR(255) NOT NULL UNIQUE COMMENT 'title of the blog',
+    date       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'date of blog',
+    content    TEXT         NOT NULL COMMENT 'content of the blog',
     UNIQUE KEY (blog_title, date)
 );

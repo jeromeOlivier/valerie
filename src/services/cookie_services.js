@@ -22,12 +22,13 @@ function parseCartItemsFromCookie(cookies) {
  * This function updates the "items" cookie with the provided cart items.
  *
  * @param {Object} res - The response object which allows to set cookies.
- * @param {Array} cartItems - An array of cart items to be set in the "items" cookie.
+ * @param {array | string} data - data to be set in the cookie.
+ * @param {string} key - key to be used to refer to the data being saved
  *
  * @returns {Object} - Returns the response object with the updated "items" cookie.
  */
-function saveCookie(res, cartItems) {
-    return res.cookie("items", JSON.stringify(cartItems), {
+function updateCookie(res, data, key) {
+    return res.cookie(`${key}`, JSON.stringify(data), {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         sameSite: "Strict",
         secure: true,
@@ -46,12 +47,12 @@ function addCartItemToCookie(req, res) {
     const newItem = new CartItem(req.params.title, req.params.type);
     const cookie = parseCartItemsFromCookie(req.cookies);
     cookie.push(newItem);
-    saveCookie(res, cookie);
+    updateCookie(res, cookie, 'items');
     return cookie;
 }
 
 module.exports = {
-    saveCookie,
+    updateCookie,
     addCartItemToCookie,
     parseCartItemsFromCookie,
 };

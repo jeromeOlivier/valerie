@@ -12,8 +12,8 @@ const {
 } = require("../data_models");
 
 const { isValidTerm, isValidQuantity } = require("./utility_services");
-const item = require("../data_models/path");
-const { type } = require("node:os");
+const cartItems = require("compression");
+const { parseCartItemsFromCookie } = require("./cookie_services");
 
 /**
  * Gets all items in the cart based on values in the cookie items attribute
@@ -127,9 +127,10 @@ function removeOneItemFromCart(oldCartItems, title, type) {
  * Calculates the totals excluding shipping.
  *
  * @param {Array<CartItem>} cartItems - An array containing the items in the shopping cart.
+ * @param {string} shipping - optional shipping
  * @returns {Cart}
  */
-function getCartTotals(cartItems) {
+function getCartTotals(cartItems, shipping = '0') {
     const cart = {};
     cart.subtotal = cartItems.reduce((acc, cur) => {
         const total = parseFloat(cur.price);
@@ -137,7 +138,8 @@ function getCartTotals(cartItems) {
         return acc;
     }, 0).toFixed(2);
     cart.taxes = (((Number(cart.subtotal) * 100) * 0.14975) / 100).toFixed(2);
-    cart.total = (Number(cart.subtotal) + Number(cart.taxes)).toFixed(2);
+    cart.shipping = shipping;
+    cart.total = (Number(cart.subtotal) + Number(cart.taxes) + Number(cart.shipping)).toFixed(2);
     return cart;
 }
 
@@ -149,10 +151,29 @@ function getCartTotals(cartItems) {
  * @returns {boolean}
  */
 function checkIfInCart(cartItems, title, type) {
-    console.log('cartItems', cartItems);
-    console.log('title', title);
-    console.log('type', type);
     return cartItems.some(item => item.title === title.toLowerCase() && item.type === type.toLowerCase());
+}
+
+/**
+ * Calculates the total weight of items based on the given cookies.
+ *
+ * @param {string} cookies - The cookies containing the cart items.
+ * @return {Promise<{numberOfItems: number, weight: number}>} - A promise that resolves to an object containing the total weight of the items and the number of items.
+ */
+async function calculateTotalWeightOfItems(cookies) {
+    // get all the titles that are of type papier
+    const titles = parseCartItemsFromCookie(cookies)
+    // fetch the weight for all the papier titles
+    const papierTitles = titles.filter(item => item.type.toLowerCase() === "papier").map(item => item.title);
+    const [weights] = await db.query(`
+        SELECT b.title, bf.weight, f.name AS type
+        FROM book_formats bf
+        JOIN books b ON bf.book_id = b.id
+            JOIN formats f ON bf.format = f.id
+        WHERE title IN (${papierTitles.map(title => `"${title}"`).join(", ")}) AND f.name = 'papier'
+    `);
+    const totalWeight = weights.reduce((acc, cur) => acc + cur.weight, 0);
+    return { weight: totalWeight, numberOfItems: weights.length }
 }
 
 module.exports = {
@@ -161,4 +182,5 @@ module.exports = {
     removeOneItemFromCart,
     getCartTotals,
     checkIfInCart,
+    calculateTotalWeightOfItems,
 };

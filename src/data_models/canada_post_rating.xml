@@ -1,0 +1,12 @@
+<mailing-scenario xmlns="http://www.canadapost.ca/ws/ship/rate-v4">
+    <customer-number>1234567</customer-number>
+    <parcel-characteristics>
+        <weight>1</weight>
+    </parcel-characteristics>
+    <origin-postal-code>K2B8J6</origin-postal-code>
+    <destination>
+        <domestic>
+            <postal-code>J0E1X0</postal-code>
+        </domestic>
+    </destination>
+</mailing-scenario>

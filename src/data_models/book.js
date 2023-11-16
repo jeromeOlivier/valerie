@@ -39,16 +39,18 @@ class BookFormat {
      * @param {string} type
      * @param {string} size
      * @param {number} pages
+     * @param {number} [weight]
      * @param {string} language
      * @param {string} market
      * @param {number} price
      */
-    constructor(title, date, type, size, pages, language, market, price) {
+    constructor(title, date, type, size, pages, weight, language, market, price) {
         this.title = title;
         this.date = date;
         this.type = type;
         this.size = size;
         this.pages = pages;
+        this.weight = weight;
         this.language = language;
         this.market = market;
         this.price = price;
@@ -59,15 +61,15 @@ class BookFormat {
  * @class
  */
 class Workbook {
-  /**
-   * @constructor
-   * @param {string} title - Title of the workbook
-   * @param {string} description - Description of the workbook
-   */
-  constructor(title, description) {
-    this.title = title;
-    this.description = description;
-  }
+    /**
+     * @constructor
+     * @param {string} title - Title of the workbook
+     * @param {string} description - Description of the workbook
+     */
+    constructor(title, description) {
+        this.title = title;
+        this.description = description;
+    }
 }
 
 module.exports = { Book, BookFormat, Workbook };

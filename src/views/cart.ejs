@@ -5,7 +5,7 @@
         </div>
         <div class="cart">
             <div id="cart_items">
-                <% if (typeof cartItems === 'undefined' || cartItems.length === 0) { %>
+                <% if (typeof cartItems === "undefined" || cartItems.length === 0) { %>
                     <div class="cart_item empty_cart margin_top_3rem">
                         <p>Votre panier est vide</p>
                     </div>
@@ -57,23 +57,26 @@
                     <div id="post_code">
                         <% console.log('requirePostcode', requirePostcode) %>
                         <div>Pour connaître le coût de livraison, indiquer votre code postal:</div>
-                        <form hx-post="cart/postcode" id="post_code_form">
-                            <input id="post_code_input" maxlength="7">
+                        <form hx-post="cart/shipping_estimate" hx-target="main" id="post_code_form">
+                            <input id="post_code_input" name="postcode" maxlength="7" required>
                             <button id="post_code_submit_button" class="main_button blue
                             small" type="submit">soumettre
                             </button>
                         </form>
                     </div>
                     <div class="cart_totals">
-                        <% if (typeof cart !== 'undefined') { %>
+                        <% if (typeof totals !== 'undefined') { %>
                             <div id="cart_amounts">
                                 <div>sous-total:</div>
-                                <div><%= cart.subtotal %></div>
+                                <div><%= totals.subtotal || '' %></div>
                                 <div>taxes:</div>
-                                <div><%= cart.taxes %></div>
-
+                                <div><%= totals.taxes || '' %></div>
+                                <% if (totals.shipping !== undefined && totals.shipping > 0 ) { %>
+                                    <div>livraison:</div>
+                                    <div><%= totals.shipping ? totals.shipping : '' %></div>
+                                <% } %>
                                 <div class="bold">total:</div>
-                                <div class="bold"><%= cart.total %></div>
+                                <div class="bold"><%= totals.total || '' %></div>
                             </div>
                             <button class="orange_button">Passer à la caisse</button>
                         <% } %>
@@ -81,19 +84,20 @@
                 </div>
             <% } else { %>
                 <div class="cart_totals">
-                        <% if (typeof cart !== 'undefined') { %>
-                            <div id="cart_amounts">
-                                <div>sous-total:</div>
-                                <div><%= cart.subtotal %></div>
-                                <div>taxes:</div>
-                                <div><%= cart.taxes %></div>
-
-                                <div class="bold">total:</div>
-                                <div class="bold"><%= cart.total %></div>
-                            </div>
-                            <button class="orange_button">Passer à la caisse</button>
+                    <div id="cart_amounts">
+                        <div>sous-total:</div>
+                        <div><%= totals.subtotal || '' %></div>
+                        <div>taxes:</div>
+                        <div><%= totals.taxes || "" %></div>
+                        <% if (totals.shipping !== undefined && totals.shipping > 0 ) { %>
+                            <div>livraison:</div>
+                            <div><%= totals.shipping || '' %></div>
                         <% } %>
+                        <div class="bold">total:</div>
+                        <div class="bold"><%= totals.total || '' %></div>
                     </div>
+                    <button class="orange_button">Passer à la caisse</button>
+                </div>
             <% } %>
         </div>
     </div>

@@ -1,0 +1,49 @@
+<price-quotes xmlns="http://www.canadapost.ca/ws/ship/rate-v4">
+    <price-quote>
+        <service-code>DOM.RP</service-code>
+        <service-link rel="service" href="https://ct.soa-gw.canadapost.ca/rs/ship/service/DOM.RP?country=CA"
+                      media-type="application/vnd.cpc.ship.rate-v4+xml"/>
+        <service-name>Regular Parcel</service-name>
+        <price-details>
+            <base>12.12</base>
+            <taxes>
+                <gst percent="5.000">0.71</gst>
+                <pst percent="9.975">1.42</pst>
+                <hst>0.00</hst>
+            </taxes>
+<!--            <due>16.38</due>-->
+            <options>
+                <option>
+                    <option-code>DC</option-code>
+                    <option-name>Delivery confirmation</option-name>
+                    <option-price>0</option-price>
+                    <qualifier>
+                        <included>true</included>
+                    </qualifier>
+                </option>
+            </options>
+            <adjustments>
+                <adjustment>
+                    <adjustment-code>FUELSC</adjustment-code>
+                    <adjustment-name>Fuel surcharge</adjustment-name>
+                    <adjustment-cost>3.16</adjustment-cost>
+                    <qualifier>
+                        <percent>28.5</percent>
+                    </qualifier>
+                </adjustment>
+                <adjustment>
+                    <adjustment-code>V1DISC</adjustment-code>
+                    <adjustment-name>SMB Savings</adjustment-name>
+                    <adjustment-cost>-1.03</adjustment-cost>
+                </adjustment>
+            </adjustments>
+        </price-details>
+        <weight-details/>
+        <service-standard>
+            <am-delivery>false</am-delivery>
+            <guaranteed-delivery>false</guaranteed-delivery>
+            <expected-transit-time>2</expected-transit-time>
+            <expected-delivery-date>2023-11-17</expected-delivery-date>
+        </service-standard>
+    </price-quote>
+</price-quotes>
