@@ -1,3 +1,12 @@
+module.exports = {
+    isValidPath,
+    isValidQuery,
+    isValidTerm,
+    isValidQuantity,
+    fetchUrlEndpointConfiguration,
+    transformToTitleCase,
+};
+// dependencies
 const {
   url_endpoint_config,
   url_product_types,
@@ -62,17 +71,9 @@ function fetchUrlEndpointConfiguration(req) {
 //  * @param {Array<CartItem>} cartItems
 //  * @returns {Array<CartItem>}
 //  */
-// function capitalizeTitles(cartItems) {
-//     return cartItems.map(item => {
-//         const capitalizedTitle = item.title.charAt(0).toUpperCase() + item.title.slice(1);
-//         return new CartItem(capitalizedTitle, item.type, item.quantity);
-//     });
-// }
-
-module.exports = {
-    isValidPath,
-    isValidQuery,
-    isValidTerm,
-    isValidQuantity,
-    fetchUrlEndpointConfiguration,
-};
+function transformToTitleCase(cartItems) {
+    return cartItems.map(item => {
+        const capitalizedTitle = item.title.charAt(0).toUpperCase() + item.title.slice(1);
+        return new CartItem(capitalizedTitle, item.type, item.price);
+    });
+}

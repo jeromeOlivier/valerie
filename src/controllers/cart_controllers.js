@@ -1,79 +1,79 @@
 const asyncHandler = require("express-async-handler");
-const {
-    getCartItems,
-    removeOneItemFromCart,
-    getCartTotals,
-    isAnyCartItemPaperFormat,
-    calculateTotalWeightOfItems,
-} = require("../services/cart_services");
-const {
-    formatPostcode,
-    calculateShippingUsingPostcode } = require("../services/postcode_services");
-
+const { removeOneItemFromCart, collectDataToBuildCart, } = require("../services/cart_services");
+const { getPostcodeFromRequestBodyOrCookie } = require("../services/postcode_services");
 const { isValidTerm } = require("../services/utility_services");
 const { updateCookie, addCartItemToCookie, parseCartItemsFromCookie } = require("../services/cookie_services");
 
-// GET
+/**
+ * Finds all items in the cart and renders the appropriate view based on the request URL.
+ *
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the rendering is complete.
+ */
 const find_all_items = asyncHandler(async(req, res) => {
     const cartItemsFromCookies = parseCartItemsFromCookie(req.cookies);
-    const cartItems = await getCartItems(cartItemsFromCookies);
-    // generate flag if paper format is present
-    let requirePostcode = isAnyCartItemPaperFormat(cartItems);
-    // if postcode already present, calculate shipping
-    const isValidPostcode = formatPostcode(req);
-    let totals = {};
-    console.log('isValidPostcode', isValidPostcode);
-    if (isValidPostcode) {
-        const shipping = await calculateShippingUsingPostcode(req, isValidPostcode);
-        totals = getCartTotals(cartItems, shipping)
-        requirePostcode = false;
-    }
-    if (isValidPostcode === undefined) {
-        requirePostcode = true;
-    }
+    const collectedData = await collectDataToBuildCart(cartItemsFromCookies, req);
+
     if (req.url === "/data_cart") {
-        res.render("cart", { cartItems, totals, requirePostcode });
+        res.render("cart", { ...collectedData });
     } else {
-        res.render("layout", { main: "cart", cartItems, totals, requirePostcode });
+        res.render("layout", { main: "cart", ...collectedData });
     }
 });
 
-// POST
+/**
+ * Adds an item to the cart before updating the action button
+ *
+ * @async
+ * @param {Object} req - The Request object.
+ * @param {Object} res - The Response object.
+ * @returns {void}
+ */
 const add_item = asyncHandler(async(req, res) => {
     addCartItemToCookie(req, res);
     const isInCart = true;
+
     res.render("book_format_add_button", { isInCart });
 });
 
-// DELETE
+/**
+ * Controller to remove an item from the cart and then return the cart
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise} - A promise that resolves after removing the item from the cart and rendering the "cart" view.
+ * @throws {Error} - If the parameters req.params.title or req.params.type are not valid.
+ */
 const remove_item = asyncHandler(async(req, res) => {
     if (!isValidTerm(req.params.title) || !isValidTerm(req.params.type)) {
         throw new Error("invalid parameters");
     }
     const cartItemsFromCookie = parseCartItemsFromCookie(req.cookies);
     const cartItemsAfterRemoval = removeOneItemFromCart(cartItemsFromCookie, req.params.title, req.params.type);
-    // update the cookie
     updateCookie(res, cartItemsAfterRemoval, "items");
-    const cartItems = await getCartItems(cartItemsAfterRemoval);
-    const cart = await getCartTotals(cartItems);
-    const requirePostcode = isAnyCartItemPaperFormat(cartItems);
-    res.render("cart", { cartItems, cart, requirePostcode });
+    const collectedData = await collectDataToBuildCart(cartItemsAfterRemoval, req);
+
+    res.render("cart", { ...collectedData });
 });
 
+/**
+ * Controller for receiving the postcode and returning cart with shipping estimate
+ *
+ * @async
+ * @function get_shipping_estimate
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @returns {void}
+ */
 const get_shipping_estimate = asyncHandler(async(req, res) => {
-    const isValidPostcode = formatPostcode(req);
-    if (!isValidPostcode) {
-        res.render("invalid_postcode");
-    }
-    updateCookie(res, isValidPostcode, "postcode");
-    // calculate weight and number of items to ship
-    const totalShipping = await calculateShippingUsingPostcode(req, isValidPostcode);
-    // collect info to rebuild the cart
-    const cartItemsFromCookies = parseCartItemsFromCookie(req.cookies);
-    const cartItems = await getCartItems(cartItemsFromCookies);
-    const totals = getCartTotals(cartItems, totalShipping);
-    const requirePostcode = false;
-    res.render("cart", { cartItems, totals, requirePostcode });
+    const postcode = getPostcodeFromRequestBodyOrCookie(req);
+    if (!postcode) { res.render("invalid_postcode"); }
+    updateCookie(res, postcode, "postcode");
+    const cartItems = parseCartItemsFromCookie(req.cookies);
+    const collectedData = await collectDataToBuildCart(cartItems, req);
+
+    res.render("cart", { ...collectedData });
 });
 
 module.exports = {
@@ -82,3 +82,5 @@ module.exports = {
     remove_item,
     get_shipping_estimate,
 };
+
+// path: src/controllers/cart_controllers.js

@@ -55,7 +55,6 @@
             <% if (requirePostcode) { %>
                 <div id="cart_summary">
                     <div id="post_code">
-                        <% console.log('requirePostcode', requirePostcode) %>
                         <div>Pour connaître le coût de livraison, indiquer votre code postal:</div>
                         <form hx-post="cart/shipping_estimate" hx-target="main" id="post_code_form">
                             <input id="post_code_input" name="postcode" maxlength="7" required>
@@ -65,7 +64,7 @@
                         </form>
                     </div>
                     <div class="cart_totals">
-                        <% if (typeof totals !== 'undefined') { %>
+                        <% if (totals) { %>
                             <div id="cart_amounts">
                                 <div>sous-total:</div>
                                 <div><%= totals.subtotal || '' %></div>
@@ -84,6 +83,7 @@
                 </div>
             <% } else { %>
                 <div class="cart_totals">
+                    <% if (totals) { %>
                     <div id="cart_amounts">
                         <div>sous-total:</div>
                         <div><%= totals.subtotal || '' %></div>
@@ -96,6 +96,7 @@
                         <div class="bold">total:</div>
                         <div class="bold"><%= totals.total || '' %></div>
                     </div>
+                    <% } %>
                     <button class="orange_button">Passer à la caisse</button>
                 </div>
             <% } %>

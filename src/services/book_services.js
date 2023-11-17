@@ -1,79 +1,63 @@
 // Description: This file contains the functions for getting the book data.
 // constants
-const { NOT_FOUND, INVALID_QUERY } = require("../constants/messages");
+module.exports = {
+    getBook,
+    getBookFormat,
+    isValidTitleAndType,
+};
+// dependencies
+const { INVALID_QUERY } = require("../constants/messages");
 const { IMAGE_PATH } = require("../constants/links");
 const db = require("../db_ops/db");
-
-const {
-    url_endpoint_config,
-    url_product_types,
-    Book,
-    Workbook,
-    BookFormat,
-    Path,
-    Cart,
-    CartItem,
-} = require("../data_models");
-
+const { url_product_types, Book, Workbook, BookFormat, Path } = require("../data_models");
 const { isValidQuery, fetchUrlEndpointConfiguration, isValidPath } = require("./utility_services");
-
 const fs = require("fs");
-const path = require("path");
+const path = require("node:path");
 
 /**
- * Description: This function returns the book data for the given path.
+ * This function returns the book data for the given path.
  * @param req
  * @param res
  * @returns {Promise<Book>, Path}
  */
 async function getBook(req, res) {
-    // validate the query parameters
-    if (isValidQuery(req)) {
-        // find the path in the urlEndpointConfig array, assign the matching values to path variable
-        /**
-         * @type {Path}
-         */
-        const path = fetchUrlEndpointConfiguration(req);
-        // if path is null, send an error message
-        if (!isValidPath(path)) { return res.status(500).send(INVALID_QUERY); }
-        // get book data (book, book_format and preview images)
-        try {
-            /**
-             * @type {Book}
-             */
-            const book = await getBookData(path);
-            return { book, path };
-        } catch (error) {
-            res.status(500).send(error.message);
-        }
-    } else {
+    if (!isValidQuery(req)) {
         res.status(500).send(INVALID_QUERY);
+        return;
+    }
+    const path = fetchUrlEndpointConfiguration(req);
+    if (!isValidPath(path)) {
+        res.status(500).send(INVALID_QUERY);
+        return;
+    }
+    try {
+        const book = await getBookData(path);
+        return { book, path };
+    } catch (error) {
+        res.status(500).send(error.message);
     }
 }
 
 /**
- * Description: This function returns the book data for the given path.
+ * This function returns the book data for the given path.
  * @param {Path} path
  * @returns {Promise<Book>}
  */
 const getBookData = async(path) => {
-    /**
-     * @type {Book}
-     */
     const book = await fetchBookByTitle(path.title);
-    // get the book format data for the given title and pdf format
-    book.format = await getBookFormat(book.title);
-    // establish the quantity of books in user's cart
-    // get the workbooks for the book if they exist
-    await handleWorkbooks(book);
-    // get the book cover image
-    book.preview_images = await getBookPreviewImages(book.title);
-    // return the book data
+    const [bookFormat, workbooks, bookPreviewImages] = await Promise.all([
+        getBookFormat(book.title), handleWorkbooks(book), getBookPreviewImages(book.title),
+    ]);
+
+    book.format = bookFormat;
+    book.workbooks = workbooks;
+    book.preview_images = bookPreviewImages;
+
     return book;
 };
 
 /**
- * Description: This function returns relevant data for the given title and format.
+ * This function returns relevant data for the given title and format.
  * @param title
  * @param format
  * @returns {Promise<BookFormat>}
@@ -96,43 +80,47 @@ async function getBookFormat(title, format = "pdf") {
                  JOIN formats f ON f.id = bf.format
                  JOIN languages l ON l.id = bf.language
                  JOIN market_coverage m ON m.id = bf.market
-        WHERE b.title = '${ title }'
-          AND f.name = '${ format }';
-    `);
+        WHERE b.title = ?
+          AND f.name = ?;
+    `, [title, format]);
     if (!query) throw new Error(INVALID_QUERY);
     // create a new BookFormat object
-    return new BookFormat(query.title, query.date, query.type, query.size, query.pages, query.language, query.market, query.price);
+    return new BookFormat(query.title, query.date, query.type, query.size, query.pages, undefined, query.language, query.market, query.price);
 }
 
 /**
- * Description: This function returns the workbooks for the given title.
+ * This function returns the workbooks for the given title.
  * @param title
  * @returns {Promise<Array<Workbook>>}
  */
 async function getWorkbooks(title) {
     // get the workbooks for the book
-    const [query] = await db.query(
-        `SELECT wb.title       AS title,
+    const [query] = await db.query(`
+         SELECT wb.title       AS title,
                 wb.seq_order   AS sequence,
                 wp.description AS description,
                 wp.path        AS path,
                 wp.level       AS level
          FROM books b
-                  JOIN workbooks wb ON wb.book_id = b.id
-                  JOIN workbook_previews wp ON wb.id = wp.workbook_id
-         WHERE b.title = '${ title }'
-         ORDER BY b.id, sequence, path + '.';`);
+            JOIN workbooks wb ON wb.book_id = b.id
+            JOIN workbook_previews wp ON wb.id = wp.workbook_id
+         WHERE b.title = ?
+         ORDER BY b.id, sequence, path + '.';`, [title]);
+
+    // If no workbooks returned for the book, handle accordingly
+    if (!query || query.length === 0) {
+        // handle this case
+    }
 
     // group the workbooks by title, add the description and level to the content array
-    // and sort the content array by path
-    return query.reduce((accumulator, current) => {
+    return query.reduce((accumulator, currentWorkbook) => {
         // find an object in accumulator array having the same title as the current object
-        let obj = accumulator.find(item => item.title === current.title);
+        let obj = accumulator.find(item => item.title === currentWorkbook.title);
 
         if (!obj) {
             // if such an object does not exist in accumulator yet, create one
             obj = {
-                title: current.title,
+                title: currentWorkbook.title,
                 content: [],
             };
             // and push it to the accumulator
@@ -141,19 +129,16 @@ async function getWorkbooks(title) {
 
         // push the description to the content array of the found (or just created) object
         obj.content.push({
-            description: current.description,
-            level: current.level,
+            description: currentWorkbook.description,
+            level: currentWorkbook.level,
         });
-
-        // sort the content array by path
-        obj.content.sort((a, b) => a.path - b.path);
 
         return accumulator;
     }, []);
 }
 
 /**
- * Description: This function returns an array of image paths for the given title.
+ * This function returns an array of image paths for the given title.
  * @param title
  * @returns {Promise<Array<Book.preview_images>>}
  */
@@ -181,8 +166,8 @@ async function getBookPreviewImages(title) {
 }
 
 /**
- * Description: This function returns the book data for the given title.
- * @param title
+ * This function returns the book data for the given title.
+ * @param {string} title
  * @returns {Promise<Book>}
  */
 async function fetchBookByTitle(title) {
@@ -194,33 +179,25 @@ async function fetchBookByTitle(title) {
     }
 }
 
-// /**
-//  * Description: This function checks if the book exists.
-//  * @param {Book} book
-//  * @return {Book}
-//  */
-// function isValidBook(book) {
-//     if (book && book.title) throw new Error(NOT_FOUND);
-//     return book;
-// }
-
 /**
- * Description: This function returns the workbooks for the given book.
- * @param book
+ * This function returns the workbooks for the given book.
+ * @param {Book} book
  * @returns {Promise<Array<Workbook>> | Array<>}
  */
 async function handleWorkbooks(book) {
     return book.workbooks = book.workbook_desc ? await getWorkbooks(book.title) : [];
 }
 
+/**
+ * Checks if a given title and format is valid.
+ *
+ * @param {string} title - The title of the product.
+ * @param {string} format - The format of the product.
+ *
+ * @return {boolean} Returns true if both the title and format are valid, false otherwise.
+ */
 function isValidTitleAndType(title, format) {
     const validTitle = url_product_types.has(title.toLowerCase());
     const validFormat = url_product_types.has(format.toLowerCase());
     return validTitle && validFormat;
 }
-
-module.exports = {
-    getBook,
-    getBookFormat,
-    isValidTitleAndType,
-};

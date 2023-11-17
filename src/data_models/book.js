@@ -73,4 +73,5 @@ class Workbook {
 }
 
 module.exports = { Book, BookFormat, Workbook };
+
 // path: src/data_models/book.js

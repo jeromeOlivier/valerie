@@ -1,16 +1,16 @@
-const {
-  url_endpoint_config,
-  url_product_types,
-  Book,
-  Workbook,
-  BookFormat,
-  Path,
-  Cart,
-  CartItem,
-} = require("../data_models");
+module.exports = {
+    updateCookie,
+    addCartItemToCookie,
+    parseCartItemsFromCookie,
+};
+// dependencies
+const { CartItem } = require("../data_models");
+
+// constant to hold the max age of a cookie
+const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
 
 /**
- * Description: This function returns the cart items array of the cookie.
+ * Returns the cart items array of the cookie.
  * @param cookies
  * @returns {Array<CartItem>}
  */
@@ -19,17 +19,17 @@ function parseCartItemsFromCookie(cookies) {
 }
 
 /**
- * This function updates the "items" cookie with the provided cart items.
+ * This function updates the cookie with the provided data and key.
  *
- * @param {Object} res - The response object which allows to set cookies.
+ * @param {Response} res - The response object which allows to set cookies.
  * @param {array | string} data - data to be set in the cookie.
  * @param {string} key - key to be used to refer to the data being saved
  *
- * @returns {Object} - Returns the response object with the updated "items" cookie.
+ * @returns {Object} - Returns the response object with the new, or updated key.
  */
 function updateCookie(res, data, key) {
     return res.cookie(`${key}`, JSON.stringify(data), {
-        maxAge: 1000 * 60 * 60 * 24 * 7,
+        maxAge: ONE_WEEK_IN_MS,
         sameSite: "Strict",
         secure: true,
     });
@@ -50,9 +50,3 @@ function addCartItemToCookie(req, res) {
     updateCookie(res, cookie, 'items');
     return cookie;
 }
-
-module.exports = {
-    updateCookie,
-    addCartItemToCookie,
-    parseCartItemsFromCookie,
-};

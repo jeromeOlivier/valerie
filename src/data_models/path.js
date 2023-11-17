@@ -17,3 +17,5 @@ class Path {
 }
 
 module.exports = Path;
+
+// path: src/data_models/path.js

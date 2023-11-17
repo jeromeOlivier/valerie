@@ -1,18 +1,12 @@
-const {
-  url_endpoint_config,
-  url_product_types,
-  Book,
-  Workbook,
-  BookFormat,
-  Path,
-  Cart,
-  CartItem,
-} = require("../data_models");
+module.exports = {
+    getPageLayout,
+    getPageData,
+    getBlogData,
+};
 
+const { url_endpoint_config } = require("../data_models");
 const { INTERNAL_SERVER_ERROR, INVALID_QUERY } = require("../constants/messages");
 
-const fs = require("fs");
-const path = require("path");
 
 /**
  * Description: This function returns the page layout for the given path.
@@ -71,6 +65,13 @@ async function getPageData(req, res) {
     }
 }
 
+/**
+ * Retrieves blog data based on the request URL.
+ *
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @return {Promise<void>} - A promise that resolves after rendering the appropriate blog data or error page.
+ */
 async function getBlogData(req, res) {
     if (req && typeof req.url === "string") {
         try {
@@ -87,9 +88,3 @@ async function getBlogData(req, res) {
         res.status(400).send(INVALID_QUERY);
     }
 }
-
-module.exports = {
-    getPageLayout,
-    getPageData,
-    getBlogData,
-};

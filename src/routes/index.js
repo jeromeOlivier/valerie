@@ -4,10 +4,6 @@ const router = express.Router();
 const page = require("../controllers/page_controllers");
 const cart = require("../controllers/cart_controllers");
 
-const { Path } = require("../data_models/path");
-const { Book, BookFormat, Workbook } = require("../data_models/book");
-const { Cart, CartItem } = require("../data_models/cart");
-
 // GET CONTENT WITH LAYOUT (whole page)
 router.get("/", page.index);
 router.get("/blog", page.blog);

@@ -1,19 +1,14 @@
+module.exports = {
+    removeOneItemFromCart,
+    checkIfInCart,
+    calculateTotalWeightOfItems,
+    collectDataToBuildCart,
+};
+// dependencies
 const db = require("../db_ops/db");
-
-const {
-    url_endpoint_config,
-    url_product_types,
-    Book,
-    Workbook,
-    BookFormat,
-    Path,
-    Cart,
-    CartItem,
-} = require("../data_models");
-
-const { isValidTerm, isValidQuantity } = require("./utility_services");
-const cartItems = require("compression");
-const { parseCartItemsFromCookie } = require("./cookie_services");
+const { CartItem, Total } = require("../data_models");
+const { isValidTerm, transformToTitleCase } = require("./utility_services");
+const { calculateShippingUsingPostcode, getPostcodeFromRequestBodyOrCookie } = require("./postcode_services");
 
 /**
  * Gets all items in the cart based on values in the cookie items attribute
@@ -21,41 +16,27 @@ const { parseCartItemsFromCookie } = require("./cookie_services");
  * @returns {Promise<Array<CartItem>>}
  */
 async function getCartItems(cartItems) {
-    // if cart is empty, render the cart page with an empty cart
-    if (cartItems.length === 0) {
-        return [];
-    }
-    // if cart is not empty, validate the items
+    if (cartItems.length === 0) { return []; }
     const validItems = validateCartItems(cartItems);
-    // if all items are valid, get the price for each item from the database
     const cartItemsWithPrices = await getPriceByNameAndType(validItems);
-    // uppercase the first letter of each title
-    const cartItemsWithFormattedTitles = cartItemsWithPrices.map(item => {
-        const title = item.title.charAt(0).toUpperCase() + item.title.slice(1);
-        return { ...item, title: title };
-    });
-    console.log('cartItemsWithFormattedTitles', cartItemsWithFormattedTitles);
-    // add new total attribute to each item object with the price * quantity
-    return cartItemsWithFormattedTitles.map((item) => {
-        return { ...item };
-    });
+    return transformToTitleCase(cartItemsWithPrices);
 }
 
 /**
- *
- * @param {Array<CartItem>} items - The array of items to get prices for.
- * @returns {Promise<Array<CartItem>> || []} - A promise that resolves to an array of items with their corresponding
- * prices.
+ * Retrieves the price for each item specified by name and type.
+ * @param {Array<CartItem>} cartItems - An array of cart items with name and type properties.
+ * @return {Promise<Array<CartItem>>} - A promise that resolves to an array of cart items with price property.
+ * @throws {Error} - If fetching the price fails.
  */
-async function getPriceByNameAndType(items) {
+async function getPriceByNameAndType(cartItems) {
     // prepare the WHERE clause for the SQL query
     let whereClause;
-    if (items.length === 0) {
+    if (cartItems.length === 0) {
         return [];
-    } else if (items.length === 1) {
-        whereClause = `(b.title = "${ items[0].title.trim() }" AND f.name = "${ items[0].type.trim() }")`;
+    } else if (cartItems.length === 1) {
+        whereClause = `(b.title = "${ cartItems[0].title.trim() }" AND f.name = "${ cartItems[0].type.trim() }")`;
     } else {
-        whereClause = items.map(item =>
+        whereClause = cartItems.map(item =>
             `(b.title = "${ item.title.trim() }" AND f.name = "${ item.type.trim() }")`).join(" OR ");
     }
     // get the price for each item
@@ -68,7 +49,7 @@ async function getPriceByNameAndType(items) {
             WHERE ${ whereClause }
         `);
         // map the prices to the items
-        return items.map(item => {
+        return cartItems.map(item => {
             const matchingItem = prices.find(p => p.title.toLowerCase() === item.title.toLowerCase() && p.type.toLowerCase() === item.type.toLowerCase());
             return { ...item, price: matchingItem.price };
         });
@@ -88,9 +69,11 @@ function isAnyCartItemPaperFormat(cartItems) {
 }
 
 /**
+ * Validates an array of cart items.
  *
- * @param {Array<CartItem>}cartItems
- * @returns {Array<CartItem>}
+ * @param {Array<CartItem>} cartItems - The array of cart items to be validated.
+ * @return {Array<CartItem>} - The array containing only valid cart items.
+ * @throws {Error} - If an error occurs during validation.
  */
 function validateCartItems(cartItems) {
     const validItems = [];
@@ -124,31 +107,54 @@ function removeOneItemFromCart(oldCartItems, title, type) {
 }
 
 /**
- * Calculates the totals excluding shipping.
+ * Calculates the total values of a shopping cart.
  *
- * @param {Array<CartItem>} cartItems - An array containing the items in the shopping cart.
- * @param {string} shipping - optional shipping
- * @returns {Cart}
+ * @param {Array<CartItem>} cartItems - An array of cart item objects.
+ * @param {boolean} includesPaperFormat - Flag indicating whether the cart includes paper format items.
+ * @param {string} postcode - The postal code used for calculating shipping (if applicable).
+ * @returns {Promise<Total>} A promise that resolves to an object containing the cart totals.
+ * @throws {Error} If unable to calculate the cart totals.
  */
-function getCartTotals(cartItems, shipping = '0') {
-    const cart = {};
-    cart.subtotal = cartItems.reduce((acc, cur) => {
+async function getCartTotals(cartItems, includesPaperFormat, postcode) {
+    const shipping = includesPaperFormat ? await calculateShippingUsingPostcode(cartItems, postcode) : "";
+    const totals = {};
+    totals.subtotal = cartItems.reduce((acc, cur) => {
         const total = parseFloat(cur.price);
         acc += total;
         return acc;
     }, 0).toFixed(2);
-    cart.taxes = (((Number(cart.subtotal) * 100) * 0.14975) / 100).toFixed(2);
-    cart.shipping = shipping;
-    cart.total = (Number(cart.subtotal) + Number(cart.taxes) + Number(cart.shipping)).toFixed(2);
-    return cart;
+    totals.taxes = (((Number(totals.subtotal) * 100) * 0.14975) / 100).toFixed(2);
+    totals.shipping = shipping;
+    totals.total = (Number(totals.subtotal) + Number(totals.taxes) + Number(totals.shipping)).toFixed(2);
+    return totals;
 }
 
 /**
+ * Calculates the total cost of the cart items and returns the result along with a boolean indicating whether or not a
+ * postcode is required for delivery.
  *
- * @param {Array<CartItem>} cartItems
- * @param {string} title
- * @param {string} type
- * @returns {boolean}
+ * @param {Array<CartItem>} cartItems - The list of items in the cart.
+ * @param {string} postcode - The postcode for delivery.
+ *
+ * @return {Promise<{requirePostcode: boolean, totals: Total}>} - A promise with an object containing the totals and
+ *     requiresPostcode fields. The totals field is a promise for the total cost of the cart items. The
+ *     requiresPostcode field is a boolean indicating if a postcode is required for delivery, based on the cart items
+ */
+async function returnCartTotalsWithBoolean(cartItems, postcode) {
+    const includesPaperFormat = isAnyCartItemPaperFormat(cartItems);
+    const totals = await getCartTotals(cartItems, includesPaperFormat, postcode);
+    const requirePostcode = includesPaperFormat && postcode === undefined;
+    return { totals, requirePostcode };
+}
+
+/**
+ * Checks if an item with the specified title and type is present in the cart items.
+ *
+ * @param {Array} cartItems - An array of objects representing items in the cart.
+ * @param {string} title - The title of the item to check.
+ * @param {string} type - The type of the item to check.
+ * @return {boolean} - Returns true if an item with the specified title and type is found in the cart,
+ *                    otherwise returns false.
  */
 function checkIfInCart(cartItems, title, type) {
     return cartItems.some(item => item.title === title.toLowerCase() && item.type === type.toLowerCase());
@@ -157,30 +163,37 @@ function checkIfInCart(cartItems, title, type) {
 /**
  * Calculates the total weight of items based on the given cookies.
  *
- * @param {string} cookies - The cookies containing the cart items.
- * @return {Promise<{numberOfItems: number, weight: number}>} - A promise that resolves to an object containing the total weight of the items and the number of items.
+ * @param {Array<CartItem>} cartItems - cart items.
+ * @return {Promise<{weight: number, numberOfItems: number}>} - A promise that resolves to an object containing the
+ *     total weight of the items and the number of items.
  */
-async function calculateTotalWeightOfItems(cookies) {
-    // get all the titles that are of type papier
-    const titles = parseCartItemsFromCookie(cookies)
-    // fetch the weight for all the papier titles
-    const papierTitles = titles.filter(item => item.type.toLowerCase() === "papier").map(item => item.title);
+async function calculateTotalWeightOfItems(cartItems) {
+    // fetch the weight for all the items of type 'papier'
+    const papierTitles = cartItems.filter(item => item.type.toLowerCase() === "papier").map(item => item.title);
     const [weights] = await db.query(`
         SELECT b.title, bf.weight, f.name AS type
         FROM book_formats bf
-        JOIN books b ON bf.book_id = b.id
-            JOIN formats f ON bf.format = f.id
-        WHERE title IN (${papierTitles.map(title => `"${title}"`).join(", ")}) AND f.name = 'papier'
+                 JOIN books b ON bf.book_id = b.id
+                 JOIN formats f ON bf.format = f.id
+        WHERE title IN (${ papierTitles.map(title => `"${ title }"`).join(", ") })
+          AND f.name = 'papier'
     `);
     const totalWeight = weights.reduce((acc, cur) => acc + cur.weight, 0);
-    return { weight: totalWeight, numberOfItems: weights.length }
+    // numberOfItems is used to select between envelope and box for shipping
+    return { weight: totalWeight, numberOfItems: weights.length };
 }
 
-module.exports = {
-    getCartItems,
-    isAnyCartItemPaperFormat,
-    removeOneItemFromCart,
-    getCartTotals,
-    checkIfInCart,
-    calculateTotalWeightOfItems,
-};
+/**
+ * Collects data to build a shopping cart.
+ *
+ * @param {Array<CartItem>} items - The request object containing cookies and the request body.
+ * @param {Request} req - The request object containing cookies and the request body.
+ * @return {Promise<{totals: Total, cartItems: Array<CartItem>, requirePostcode: boolean}>} - A promise resolving to an
+ *     object containing the shopping cart data.
+ */
+async function collectDataToBuildCart(items, req) {
+    const cartItems = await getCartItems(items);
+    const postcode = getPostcodeFromRequestBodyOrCookie(req);
+    const { totals, requirePostcode } = await returnCartTotalsWithBoolean(cartItems, postcode);
+    return { cartItems, totals, requirePostcode };
+}

@@ -34,5 +34,25 @@ class CartItem {
     }
 }
 
-module.exports = { Cart, CartItem };
+/**
+ * @class
+ */
+class Total {
+    /**
+     * @param {string} subtotal
+     * @param {string} taxes
+     * @param {string} shipping
+     * @param {string} total
+     */
+    constructor(subtotal, taxes, shipping, total) {
+        this.subtotal = subtotal;
+        this.taxes = taxes;
+        this.shipping = shipping;
+        this.total = total;
+    }
+}
+
+module.exports = { Cart, CartItem, Total };
+
+// path: src/data_models/cart.js
 

@@ -24,4 +24,5 @@ const url_endpoint_config = [
   { path: "/data_word", file: "data_word", title: "Word", full: false },
 ];
 module.exports = url_endpoint_config;
+
 // path: src/data_models/url_endpoint_config.js
