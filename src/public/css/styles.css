@@ -684,7 +684,8 @@ dialog#preview {
 /* interactions */
 button {
     align-items         : center;
-    border-radius       : 2rem;
+    /*border-radius       : 2rem;*/
+    border-radius       : .45rem;
     border-style        : solid;
     border-width        : var(--stroke_double);
     color               : var(--white);
@@ -693,8 +694,9 @@ button {
     font-family         : var(--font_regular);
     font-size           : 1.05rem;
     height              : fit-content;
+    /*padding             : .7rem 1.2rem;*/
     justify-content     : center;
-    padding             : .7rem 1.2rem;
+    padding             : .33rem 1rem;
     transition-duration : 500ms;
     width               : fit-content;
 }
@@ -1009,8 +1011,8 @@ div#format_specs {
 .blue_background { background : var(--grad_main); }
 
 .off_white_background { background : var(--off_white); }
-.white_background { background : var(--white); }
 
+.white_background { background : var(--white); }
 
 
 .htmx-settling .excel-background:before,
