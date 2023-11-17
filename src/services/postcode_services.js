@@ -17,7 +17,7 @@ function getPostcodeFromRequestBodyOrCookie(req) {
     const data = req.body.postcode || req.cookies.postcode;
     // remove spaces, single and double quotation marks
     if (!data) { return undefined; }
-    const postcode = data.replace(/[\s"']/, "").toUpperCase();
+    const postcode = data.replace(/[\s"']/g, "").toUpperCase();
     // validate structure
     const regex = /^[A-Z][0-9][A-Z][0-9][A-Z][0-9]$/;
     const isValid = regex.test(postcode);
