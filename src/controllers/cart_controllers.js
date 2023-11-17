@@ -68,7 +68,10 @@ const remove_item = asyncHandler(async(req, res) => {
  */
 const get_shipping_estimate = asyncHandler(async(req, res) => {
     const postcode = getPostcodeFromRequestBodyOrCookie(req);
-    if (!postcode) { res.render("invalid_postcode"); }
+    if (!postcode) {
+        res.render("invalid_postcode");
+        return;
+    }
     updateCookie(res, postcode, "postcode");
     const cartItems = parseCartItemsFromCookie(req.cookies);
     const collectedData = await collectDataToBuildCart(cartItems, req);

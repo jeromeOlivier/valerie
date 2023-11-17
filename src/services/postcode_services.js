@@ -85,16 +85,19 @@ async function fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weight) {
  * @return {Promise<string>} - A promise that resolves to the total shipping cost.
  */
 async function calculateShippingUsingPostcode(cartItems, postcode) {
-    if (postcode === undefined) return "";
-    const weightAndItems = await calculateTotalWeightOfItems(cartItems);
-    // get the shipping estimate
-    const shippingEstimate = await fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weightAndItems.weight);
-    // calculate total based on canada post estimate plus $3 or $5 envelope
-    let totalShipping;
-    if (weightAndItems.numberOfItems > 1) {
-        totalShipping = (((Number(shippingEstimate) * 100) + 500) / 100).toFixed(2);
+    if (postcode === undefined) {
+        return "";
     } else {
-        totalShipping = (((Number(shippingEstimate) * 100) + 300) / 100).toFixed(2);
+        const weightAndItems = await calculateTotalWeightOfItems(cartItems);
+        // get the shipping estimate
+        const shippingEstimate = await fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weightAndItems.weight);
+        // calculate total based on canada post estimate plus $3 or $5 envelope
+        let totalShipping;
+        if (weightAndItems.numberOfItems > 1) {
+            totalShipping = (((Number(shippingEstimate) * 100) + 500) / 100).toFixed(2);
+        } else {
+            totalShipping = (((Number(shippingEstimate) * 100) + 300) / 100).toFixed(2);
+        }
+        return totalShipping;
     }
-    return totalShipping;
 }

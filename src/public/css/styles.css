@@ -63,7 +63,7 @@
     --font_semibold             : iSemi, Arial, sans-serif;
     --font_thin                 : iThin, Arial, sans-serif;
     --grad_excel                : linear-gradient(137.51deg, #237045 0.86%, #17766F 43.85%, #98438A 100%);
-    --grad_main                 : linear-gradient(137.51deg, #1D375B 0%, #0F6D70 50%, #945F39 100%);
+    --grad_main                 : linear-gradient(137.51deg, #262C4A 0%, #134E6B 50%, #148572 100%);
     --grad_outlook              : linear-gradient(137.51deg, #987A3C 0%, #218567 70.8%, #21689E 100%);
     --grad_powerpoint           : linear-gradient(137.51deg, #BE3435 20.72%, #708743 64.63%, #00AC96 100%);
     --grad_service              : linear-gradient(137.51deg, #33102E 0%, #771028 25%, #D36F2B 75%, #CEA114 100%);
@@ -435,16 +435,16 @@ dialog::backdrop {
 #cart_summary {
     /*display               : grid;*/
     /*grid : auto 1fr / auto;*/
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    display         : flex;
+    flex-direction  : row;
+    justify-content : space-between;
 }
 
 @media (max-width : 960px) {
     #cart_summary {
         /*grid        : auto / 1fr 1fr;*/
-        flex-direction: column;
-        flex-basis: fit-content;
+        flex-basis     : fit-content;
+        flex-direction : column;
     }
 }
 
@@ -924,6 +924,14 @@ textarea {
     place-items    : center;
 }
 
+.absolute_center {
+    align-items     : center;
+    display         : grid;
+    height          : 100svh;
+    justify-content : center;
+    width           : 100%;
+}
+
 .round-corner {
     border-radius : 0.5rem;
 }
@@ -947,20 +955,6 @@ textarea {
 .inline { display : inline; }
 
 .inline-block { display : inline-block; }
-
-/*table#format-specs > tbody {*/
-/*    border-spacing : 0 1rem;*/
-/*    max-width      : 25rem;*/
-/*    table-layout   : auto;*/
-/*}*/
-
-/*@media (max-width : 480px) {*/
-/*    table#format-specs > tbody {*/
-/*        width : 100%;*/
-/*        max-width: 100%;*/
-
-/*    }*/
-/*}*/
 
 div#format_specs {
     background-color      : var(--white);
@@ -1014,8 +1008,9 @@ div#format_specs {
 /* backgrounds */
 .blue_background { background : var(--grad_main); }
 
+.off_white_background { background : var(--off_white); }
+.white_background { background : var(--white); }
 
-.white-background { background : var(--off_white); }
 
 
 .htmx-settling .excel-background:before,

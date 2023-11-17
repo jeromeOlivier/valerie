@@ -2,7 +2,6 @@ module.exports = {
     isValidPath,
     isValidQuery,
     isValidTerm,
-    isValidQuantity,
     fetchUrlEndpointConfiguration,
     transformToTitleCase,
 };
@@ -10,11 +9,7 @@ module.exports = {
 const {
   url_endpoint_config,
   url_product_types,
-  Book,
-  Workbook,
-  BookFormat,
   Path,
-  Cart,
   CartItem,
 } = require("../data_models");
 
