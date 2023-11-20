@@ -116,8 +116,8 @@ const getShippingEstimate = asyncHandler(async(req, res) => {
  *
  * @async
  * @function initiate_shopping_session
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
  * @return {void} - renders either the paper or pdf form view
  */
 const initiateShoppingSession = asyncHandler(async(req, res) => {
@@ -138,7 +138,11 @@ const initiateShoppingSession = asyncHandler(async(req, res) => {
             collectDataToBuildCart(cartItems, req),
         ]);
         const paperFormat = isAnyCartItemPaperFormat(cart.cartItems);
-        res.render(paperFormat ? 'paper_form' : 'pdf_form', { user, ...cart });
+        if (req.url === '/cart/checkout') {
+            res.render(paperFormat ? 'paper_form' : 'pdf_form', { user, ...cart });
+        } else {
+            res.render("layout", { main: paperFormat ? 'paper_form' : 'pdf_form', user, ...cart });
+        }
     } catch (error) {
         res.render("error_page", { message: error.message });
     }

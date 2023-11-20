@@ -31,6 +31,7 @@ router.get("/preview/:title", page.preview);
 // CART ENDPOINTS
 router.get("/data_cart", cart.findAllCartItems)
 router.get("/cart/", cart.findAllCartItems);
+router.get("/checkout", cart.initiateShoppingSession);
 router.post("/cart/add/:title/:type", cart.addItemToCart);
 router.post("/cart/shipping_estimate", cart.getShippingEstimate);
 router.delete("/cart/delete/:title/:type", cart.removeItemFromCart);

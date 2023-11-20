@@ -12,7 +12,7 @@ const { calculateTotalWeightOfItems, isAnyCartItemPaperFormat } = require("./car
  * Formats the given postcode and updates the specified cookie value with the formatted postcode.
  *
  * @param {Request} req - The request object that contains the postcode to be formatted.
- * @return {string } - The formatted postcode, or undefined if the postcode is invalid.
+ * @return {string} - The formatted postcode, or undefined if the postcode is invalid.
  */
 function getPostcodeFromRequestBodyOrCookie(req) {
     const data = req.body.postcode || req.cookies.postcode;
@@ -84,7 +84,7 @@ async function fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weight) {
 /**
  * Calculate the shipping cost based on the given postcode.
  *
- * @param {Array<CartItem>} cartItems - cart items.
+ * @param {Array.<CartItem>} cartItems - cart items.
  * @param {string} postcode - The postcode to calculate the shipping for.
  * @return {Promise<string>} - A promise that resolves to the total shipping cost.
  */
@@ -110,7 +110,7 @@ async function calculateShippingUsingPostcode(cartItems, postcode) {
  * Checks if postcode is required based on the cart items and the provided postcode.
  * Returns true if postcode is required, false otherwise.
  *
- * @param {Array<CartItem>} cartItems - An array of cart items.
+ * @param {Array.<CartItem>} cartItems - An array of cart items.
  * @param {string} postcode - The postcode provided by the user.
  *
  * @returns {boolean} - Returns true if postcode is required, false otherwise.

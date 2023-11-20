@@ -694,8 +694,8 @@ dialog#preview {
 button {
     align-items         : center;
     border-radius       : .45rem;
-    border-style        : solid;
-    border-width        : var(--stroke_double);
+    border        : none;
+    /*border-width        : var(--stroke_double);*/
     color               : var(--white);
     cursor              : pointer;
     display             : flex;
@@ -734,7 +734,7 @@ a {
 
 button.main_button {
     background   : var(--btn_blue_main);
-    border-color : var(--btn_blue_stoke);
+    /*border-color : var(--btn_blue_stoke);*/
 }
 
 button.main_button.small {
@@ -749,7 +749,7 @@ button:hover {
 
 button.red_button {
     background   : var(--btn_red_main);
-    border-color : var(--btn_red_stoke);
+    /*border-color : var(--btn_red_stoke);*/
 }
 
 button.red_button.delete {
@@ -761,14 +761,14 @@ button.red_button:hover { background : var(--btn_red_main_hover); }
 
 button.orange_button {
     background   : var(--btn_orange_main);
-    border-color : var(--btn_orange_stoke);
+    /*border-color : var(--btn_orange_stoke);*/
 }
 
 button.orange_button:hover { background : var(--btn_orange_main_hover); }
 
 .orange_button:disabled, .orange_button:disabled:hover {
     background   : var(--btn_orange_main_disabled);
-    border-color : var(--btn_orange_stoke_disabled);
+    /*border-color : var(--btn_orange_stoke_disabled);*/
     color        : var(--btn_orange_text_disabled);
     cursor       : default;
 }

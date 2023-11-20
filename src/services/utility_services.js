@@ -63,8 +63,8 @@ function fetchUrlEndpointConfiguration(req) {
 // TEXT MANIPULATION
 // /**
 //  * Description: This function returns strings with the first letter capitalized.
-//  * @param {Array<CartItem>} cartItems
-//  * @returns {Array<CartItem>}
+//  * @param {Array.<CartItem>} cartItems
+//  * @returns {Array.<CartItem>}
 //  */
 function transformToTitleCase(cartItems) {
     return cartItems.map(item => {

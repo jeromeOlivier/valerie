@@ -17,8 +17,8 @@ const {
 
 /**
  * Gets all items in the cart based on values in the cookie items attribute
- * @param {Array<CartItem>} cartItems
- * @returns {Promise<Array<CartItem>>}
+ * @param {Array.<CartItem>} cartItems
+ * @returns {Promise<Array.<CartItem>>}
  */
 async function getCartItems(cartItems) {
     if (cartItems.length === 0) { return []; }
@@ -29,8 +29,8 @@ async function getCartItems(cartItems) {
 
 /**
  * Retrieves the price for each item specified by name and type.
- * @param {Array<CartItem>} cartItems - An array of cart items with name and type properties.
- * @return {Promise<Array<CartItem>>} - A promise that resolves to an array of cart items with price property.
+ * @param {Array.<CartItem>} cartItems - An array of cart items with name and type properties.
+ * @return {Promise<Array.<CartItem>>} - A promise that resolves to an array of cart items with price property.
  * @throws {Error} - If fetching the price fails.
  */
 async function getPriceByNameAndType(cartItems) {
@@ -66,7 +66,7 @@ async function getPriceByNameAndType(cartItems) {
 /**
  * Determines whether any cart item is in paper format.
  *
- * @param {Array<CartItem>} cartItems - The array containing cart items.
+ * @param {Array.<CartItem>} cartItems - The array containing cart items.
  * @return {boolean} - True if there is any cart item in paper format, false otherwise.
  */
 function isAnyCartItemPaperFormat(cartItems) {
@@ -76,8 +76,8 @@ function isAnyCartItemPaperFormat(cartItems) {
 /**
  * Validates an array of cart items.
  *
- * @param {Array<CartItem>} cartItems - The array of cart items to be validated.
- * @return {Array<CartItem>} - The array containing only valid cart items.
+ * @param {Array.<CartItem>} cartItems - The array of cart items to be validated.
+ * @return {Array.<CartItem>} - The array containing only valid cart items.
  * @throws {Error} - If an error occurs during validation.
  */
 function validateCartItems(cartItems) {
@@ -98,10 +98,10 @@ function validateCartItems(cartItems) {
 /**
  * Removes a cart item that matches both parameters
  *
- * @param {Array<CartItem>} oldCartItems
+ * @param {Array.<CartItem>} oldCartItems
  * @param {string} title - The title of the item to be removed.
  * @param {string} type - The format type of the item to be removed.
- * @returns {Array<CartItem>}
+ * @returns {Array.<CartItem>}
  */
 function removeOneItemFromCart(oldCartItems, title, type) {
     const newCartItems = oldCartItems.filter(item => item.title !== title || item.type !== type);
@@ -114,7 +114,7 @@ function removeOneItemFromCart(oldCartItems, title, type) {
 /**
  * Calculates the total values of a shopping cart.
  *
- * @param {Array<CartItem>} cartItems - An array of cart item objects.
+ * @param {Array.<CartItem>} cartItems - An array of cart item objects.
  * @param {boolean} includesPaperFormat - Flag indicating whether the cart includes paper format items.
  * @param {string} postcode - The postal code used for calculating shipping (if applicable).
  * @returns {Promise<Total>} A promise that resolves to an object containing the cart totals.
@@ -137,7 +137,7 @@ async function getCartTotals(cartItems, includesPaperFormat, postcode) {
 /**
  * Calculates the total cost of the cart items and returns the result.
  *
- * @param {Array<CartItem>} cartItems - The list of items in the cart.
+ * @param {Array.<CartItem>} cartItems - The list of items in the cart.
  * @param {string} postcode - The postcode for delivery.
  *
  * @return {Promise<Total>} - Totals is a promise for the total cost of the cart items.
@@ -163,7 +163,7 @@ function checkIfInCart(cartItems, title, type) {
 /**
  * Calculates the total weight of items based on the given cookies.
  *
- * @param {Array<CartItem>} cartItems - cart items.
+ * @param {Array.<CartItem>} cartItems - cart items.
  * @return {Promise<{weight: number, numberOfItems: number}>} - A promise that resolves to an object containing the
  *     total weight of the items and the number of items.
  */
@@ -186,7 +186,7 @@ async function calculateTotalWeightOfItems(cartItems) {
 /**
  * Collects user postcode (if it already exists),  to build a shopping cart.
  *
- * @param {Array<CartItem>} items - The request object containing cookies and the request body.
+ * @param {Array.<CartItem>} items - The request object containing cookies and the request body.
  * @param {Request} req - The request object containing cookies and the request body.
  * @return {Promise<Cart>} - A promise resolving to an
  *     object containing the shopping cart data.

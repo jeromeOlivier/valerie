@@ -3,6 +3,7 @@ module.exports = {
     createCustomerInDatabase,
 };
 const db = require("../db_ops/db");
+const { Customer } = require("../data_models/customer");
 
 async function getCustomerFromDatabase(sessionId) {
     return await db.query(`
@@ -20,6 +21,14 @@ async function getCustomerFromDatabase(sessionId) {
     `, [sessionId]);
 }
 
+/**
+ * Creates a new customer in the database and associates it with the provided session ID.
+ *
+ * @param {string} sessionId - The session ID to associate the customer with.
+ * @param {string} [postcode=""] - The postcode of the customer. Optional, default is an empty string.
+ * @returns {Promise<Customer>} A Promise that resolves to the created customer record.
+ * @throws {Error} If an error occurs during the database operations.
+ */
 async function createCustomerInDatabase(sessionId, postcode = "") {
     const conn = await db.getConnection();
 
@@ -47,9 +56,11 @@ async function createCustomerInDatabase(sessionId, postcode = "") {
 
         await conn.query("COMMIT");
 
-        return await conn.query(`
+        const query = await conn.query(`
             SELECT * FROM customers WHERE id = ?
         `, [customerId]);
+        const data = query[0];
+        return new Customer(data.email, data.name, data.address, data.city, data.province, data.postcode, data.country);
 
     } catch (error) {
         await conn.query("ROLLBACK");

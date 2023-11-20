@@ -91,7 +91,7 @@ async function getBookFormat(title, format = "pdf") {
 /**
  * This function returns the workbooks for the given title.
  * @param title
- * @returns {Promise<Array<Workbook>>}
+ * @returns {Promise<Array.<Workbook>>}
  */
 async function getWorkbooks(title) {
     // get the workbooks for the book
@@ -140,7 +140,7 @@ async function getWorkbooks(title) {
 /**
  * This function returns an array of image paths for the given title.
  * @param title
- * @returns {Promise<Array<Book.preview_images>>}
+ * @returns {Promise<Array.<Book.preview_images>>}
  */
 async function getBookPreviewImages(title) {
     // generate the absolute path to the directory for the book's images
@@ -182,7 +182,7 @@ async function fetchBookByTitle(title) {
 /**
  * This function returns the workbooks for the given book.
  * @param {Book} book
- * @returns {Promise<Array<Workbook>> | Array<>}
+ * @returns {Promise<Array.<Workbook>> | Array.<>}
  */
 async function handleWorkbooks(book) {
     return book.workbooks = book.workbook_desc ? await getWorkbooks(book.title) : [];

@@ -13,7 +13,7 @@ const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
 /**
  * Returns the cart items array of the cookie.
  * @param cookies
- * @returns {Array<CartItem>}
+ * @returns {Array.<CartItem>}
  */
 function parseCartItemsFromCookie(cookies) {
     return cookies ? JSON.parse(cookies.items || "[]") : [];
@@ -42,7 +42,7 @@ function updateCookie(res, data, key) {
  * @param {Request} req
  * @param {Response} res
  *
- * @return {Array<CartItem>}
+ * @return {Array.<CartItem>}
  */
 function addCartItemToCookie(req, res) {
     const newItem = new CartItem(req.params.title, req.params.type);
