@@ -927,8 +927,12 @@ textarea {
     align-items: end;
 }
 
-.full-height {
+.full_height {
     height : 100vh;
+}
+
+.full_width {
+    width: 100%;
 }
 
 .long-text {

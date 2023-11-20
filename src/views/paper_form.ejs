@@ -6,25 +6,57 @@
             <label for="name" class="block margin_top_2rem margin_bottom_1rem">Votre nom tel qu'il est spécifié sur
                 votre mode de paiement</label>
             <input id="name" type="text" name="name" class="white_box" required />
-            <% if (amount === 1) { %>
-                <label for="email"
-                       class="block margin_top_2rem margin_bottom_1rem">Votre courriel pour l'envoie du manuel
-                </label>
-            <% } else { %>
-                <label for="email"
-                       class="block margin_top_2rem margin_bottom_1rem">Votre courriel pour l'envoie des manuels
-                </label>
-            <% } %>
+
+            <label for="email"
+                   class="block margin_top_2rem margin_bottom_1rem">Courriel
+            </label>
             <input id="email" type="email" name="email" class="white_box" required />
+
             <label for="confirm_email"
-                       class="block margin_top_2rem margin_bottom_1rem">Confirmer votre courriel
-                </label>
+                   class="block margin_top_2rem margin_bottom_1rem">Confirmer votre courriel
+            </label>
             <input id="confirm_email" type="email" name="confirm_email" class="white_box" required />
-            <div class="block margin_top_2rem label">Résumé de votre panier <% if(amount > 1) { %>
-                                                         (<%= amount %> manuels)
-                    <% } else { %>
-                                                         (<%= amount %> manuel)
-            <% } %></div>
+
+            <label for="address"
+                   class="block margin_top_2rem margin_bottom_1rem">Adresse
+            </label>
+            <input id="address" type="text" name="address" class="white_box" required />
+
+            <label for="city"
+                   class="block margin_top_2rem margin_bottom_1rem">Ville ou municipalité
+            </label>
+            <input id="city" type="text" name="city" class="white_box" required />
+
+            <label for="province"
+                   class="block margin_top_2rem margin_bottom_1rem">Province
+            </label>
+            <select id="province" name="province" class="white_box padding_1rem full_width">
+                <option>Sélectionner province/territoire</option>
+                <option value="AB">Alberta</option>
+                <option value="BC">Colombie-Britannique</option>
+                <option value="MB">Manitoba</option>
+                <option value="NB">Nouveau-Brunswick</option>
+                <option value="NL">Terre-Neuve-et-Labrador</option>
+                <option value="NS">Nouvelle-Écosse</option>
+                <option value="NT">Territoires du Nord-Ouest</option>
+                <option value="NU">Nunavut</option>
+                <option value="ON">Ontario</option>
+                <option value="PE">Île-du-Prince-Édouard</option>
+                <option value="QC">Québec</option>
+                <option value="SK">Saskatchewan</option>
+                <option value="YT">Yukon</option>
+            </select>
+
+            <label for="country" class="margin_top_2rem margin_bottom_1rem">Pays</label>
+            <div class="white_box full_width padding_1rem">Canada</div>
+
+            <div class="block margin_top_2rem label">Résumé de votre panier
+                <% if(amount > 1) { %>
+                    (<%= amount; %> manuels)
+                <% } else { %>
+                    (<%= amount; %> manuel)
+                <% } %>
+            </div>
             <div class="flex_row_space_between white_box padding_1rem margin_top_1rem">
                 <div class="flex_row_start">
                     <% cartItems.forEach((item) => {
@@ -60,7 +92,8 @@
                     <button class="orange_button margin_top_2rem"
                             disabled="disabled"
                             hx-post="/payment"
-                    >Payer</button>
+                    >Payer
+                    </button>
                 </div>
             </div>
         </form>

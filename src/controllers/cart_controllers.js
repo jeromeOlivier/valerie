@@ -137,8 +137,6 @@ const initiateShoppingSession = asyncHandler(async(req, res) => {
             existingSessionId ? getCustomerFromDatabase(uuid) : createCustomerInDatabase(uuid, postcode),
             collectDataToBuildCart(cartItems, req),
         ]);
-        console.log('user', user);
-        console.log('cart', cart);
         const paperFormat = isAnyCartItemPaperFormat(cart.cartItems);
         res.render(paperFormat ? 'paper_form' : 'pdf_form', { user, ...cart });
     } catch (error) {
