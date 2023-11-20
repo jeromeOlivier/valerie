@@ -9,9 +9,12 @@
             </div>
         </div>
         <h2 class="margin_top_3rem margin_bottom_1rem">Acheter le manuel <%= book.title %></h2>
-        <p style="color: red;">The textbooks are available as a downloadable PDF or physical copy. After making
-            your purchase, a link to download the PDF will be sent to you via email. Physical copies are shipped via
-            Canada Post and only available within Canada.</p>
+        <p>Les manuels sont offerts en format numérique PDF ou en format
+            papier avec une reliure en spirale. Dès que vous complétez l’achat d’un
+            manuel numérique PDF, vous recevrez un lien pour le téléchargement du
+            fichier. Ce lien sera valide pour 24 heures. Lorsque vous achetez un
+            manuel en format papier, celui-ci vous sera envoyé par la poste pourvu
+            que votre adresse soit au Canada.</p>
         <div id="tabs" class="center margin_top_3rem" hx-target="#tabs" hx-swap="innerHTML">
             <%- include('book_format.ejs') %>
         </div>
@@ -34,9 +37,9 @@
                     <p><%- paragraph; %></p><br><br>
                 <% }); %>
             </div>
-                <!-- add html entity for bullet points -->
-                <% book.workbooks.forEach(workbook => { %>
-            <div class="white_box padding_2rem margin_bottom_2rem">
+            <!-- add html entity for bullet points -->
+            <% book.workbooks.forEach(workbook => { %>
+                <div class="white_box padding_2rem margin_bottom_2rem">
                     <h3><%= workbook.title %></h3>
                     <% workbook.content.forEach(item => {
                     if (item.level === 1) { %>
@@ -45,12 +48,12 @@
                         <div class="subsection">&#10513; <%= item.description %></div>
                     <% } %>
                     <% }) %>
-            </div>
-                <% }) %>
+                </div>
+            <% }) %>
         <% } %>
         <div id="contact"></div>
         <h2 class="margin_bottom_1rem margin_top_5rem">Contactez-moi</h2>
-        <p style="color: red">For more information, feel free to contact me using the form below</p>
+        <p>Pour plus d’information, je vous invite à utiliser le formulaire suivant</p>
         <form class="margin_bottom_4rem">
             <label for="courriel" class="block margin_top_2rem margin_bottom_1rem">Courriel</label>
             <input id="courriel" type="email" class="white_box" placeholder="mon@couriel.com" />

@@ -2,30 +2,56 @@
     <div class="content_container">
         <h1 class="margin_top_5rem center">Caisse</h1>
         <% const amount = cartItems.length; %>
+        <% const customer = user[0][0]; %>
         <form class="margin_bottom_4rem">
             <label for="name" class="block margin_top_2rem margin_bottom_1rem">Votre nom tel qu'il est spécifié sur
                 votre mode de paiement</label>
-            <input id="name" type="text" name="name" class="white_box" required />
+            <input id="name"
+                   type="text"
+                   name="name"
+                   class="white_box"
+                   value="<%= customer.name || '' %>"
+                   required />
 
             <label for="email"
                    class="block margin_top_2rem margin_bottom_1rem">Courriel
             </label>
-            <input id="email" type="email" name="email" class="white_box" required />
+            <input id="email"
+                   type="email"
+                   name="email"
+                   class="white_box"
+                   value="<%= customer.email || '' %>"
+                   required />
 
             <label for="confirm_email"
-                   class="block margin_top_2rem margin_bottom_1rem">Confirmer votre courriel
+                   class="block margin_top_2rem margin_bottom_1rem">Confirmez votre courriel
             </label>
-            <input id="confirm_email" type="email" name="confirm_email" class="white_box" required />
+            <input id="confirm_email"
+                   type="email"
+                   name="confirm_email"
+                   class="white_box"
+                   value="<%= customer.email || '' %>"
+                   required />
 
             <label for="address"
                    class="block margin_top_2rem margin_bottom_1rem">Adresse
             </label>
-            <input id="address" type="text" name="address" class="white_box" required />
+            <input id="address"
+                   type="text"
+                   name="address"
+                   class="white_box"
+                   value="<%= customer.address || '' %>"
+                   required />
 
             <label for="city"
                    class="block margin_top_2rem margin_bottom_1rem">Ville ou municipalité
             </label>
-            <input id="city" type="text" name="city" class="white_box" required />
+            <input id="city"
+                   type="text"
+                   name="city"
+                   class="white_box"
+                   value="<%= customer.city || '' %>"
+                   required />
 
             <label for="province"
                    class="block margin_top_2rem margin_bottom_1rem">Province
@@ -49,6 +75,17 @@
 
             <label for="country" class="margin_top_2rem margin_bottom_1rem">Pays</label>
             <div class="white_box full_width padding_1rem">Canada</div>
+
+            <label for="postcode"
+                   class="block margin_top_2rem margin_bottom_1rem">Code postal
+            </label>
+            <%= console.log(customer) %>
+            <input id="postcode"
+                   type="text"
+                   name="postcode"
+                   class="white_box"
+                   value="<%= customer.postcode || '' %>"
+                   required />
 
             <div class="block margin_top_2rem label">Résumé de votre panier
                 <% if(amount > 1) { %>
