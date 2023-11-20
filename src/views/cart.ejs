@@ -77,27 +77,33 @@
                                 <div class="bold">total:</div>
                                 <div class="bold"><%= totals.total || '' %></div>
                             </div>
-                            <button class="orange_button">Passer à la caisse</button>
+                            <button class="orange_button" hx-get="/cart/checkout" hx-target="main">Passer à la caisse
+                            </button>
                         <% } %>
                     </div>
                 </div>
             <% } else { %>
                 <div class="cart_totals">
                     <% if (totals) { %>
-                    <div id="cart_amounts">
-                        <div>sous-total:</div>
-                        <div><%= totals.subtotal || '' %></div>
-                        <div>taxes:</div>
-                        <div><%= totals.taxes || "" %></div>
-                        <% if (totals.shipping !== undefined && totals.shipping > 0 ) { %>
-                            <div>livraison:</div>
-                            <div><%= totals.shipping || '' %></div>
-                        <% } %>
-                        <div class="bold">total:</div>
-                        <div class="bold"><%= totals.total || '' %></div>
-                    </div>
+                        <div id="cart_amounts">
+                            <div>sous-total:</div>
+                            <div><%= totals.subtotal || '' %></div>
+                            <div>taxes:</div>
+                            <div><%= totals.taxes || "" %></div>
+                            <% if (totals.shipping !== undefined && totals.shipping > 0 ) { %>
+                                <div>livraison:</div>
+                                <div><%= totals.shipping || '' %></div>
+                            <% } %>
+                            <div class="bold">total:</div>
+                            <div class="bold"><%= totals.total || '' %></div>
+                        </div>
                     <% } %>
-                    <button class="orange_button">Passer à la caisse</button>
+                    <button class="orange_button"
+                            hx-get="/cart/checkout"
+                            hx-target="main"
+                            hx-push-url="/checkout">
+                        Passer à la caisse
+                    </button>
                 </div>
             <% } %>
         </div>

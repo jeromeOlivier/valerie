@@ -1,0 +1,69 @@
+<div class="full_width_container off_white_background">
+    <div class="content_container">
+        <h1 class="margin_top_5rem center">Caisse</h1>
+        <% const amount = cartItems.length; %>
+        <form class="margin_bottom_4rem">
+            <label for="name" class="block margin_top_2rem margin_bottom_1rem">Votre nom tel qu'il est spécifié sur
+                votre mode de paiement</label>
+            <input id="name" type="text" name="name" class="white_box" required />
+            <% if (amount === 1) { %>
+                <label for="email"
+                       class="block margin_top_2rem margin_bottom_1rem">Votre courriel pour l'envoie du manuel
+                </label>
+            <% } else { %>
+                <label for="email"
+                       class="block margin_top_2rem margin_bottom_1rem">Votre courriel pour l'envoie des manuels
+                </label>
+            <% } %>
+            <input id="email" type="email" name="email" class="white_box" required />
+            <label for="confirm_email"
+                       class="block margin_top_2rem margin_bottom_1rem">Confirmer votre courriel
+                </label>
+            <input id="confirm_email" type="email" name="confirm_email" class="white_box" required />
+            <div class="block margin_top_2rem label">Résumé de votre panier <% if(amount > 1) { %>
+                                                         (<%= amount %> manuels)
+                    <% } else { %>
+                                                         (<%= amount %> manuel)
+            <% } %></div>
+            <div class="flex_row_space_between white_box padding_1rem margin_top_1rem">
+                <div class="flex_row_start">
+                    <% cartItems.forEach((item) => {
+                        const title = item.title.toLowerCase();
+                        const type = item.type.toLowerCase(); %>
+                    <div class="flex_column_start margin_right_1rem">
+                        <div class="cart_item_image">
+                            <img src="/img/svg/<%= `${ title }_cover.svg`; %>"
+                                 alt="couverture <%= item.title; %>">
+                        </div>
+                        <div class="bold center"><%= item.title %></div>
+                        <div class="center"><%= `${ type }` %></div>
+                    </div>
+                    <% }); %>
+                </div>
+                <div class="flex_column_end">
+                    <div class="cart_amounts">
+                        <% if (totals) { %>
+                            <div id="cart_amounts">
+                                <div>sous-total:</div>
+                                <div><%= totals.subtotal || '' %></div>
+                                <div>taxes:</div>
+                                <div><%= totals.taxes || "" %></div>
+                                <% if (totals.shipping !== undefined && totals.shipping > 0 ) { %>
+                                    <div>livraison:</div>
+                                    <div><%= totals.shipping || '' %></div>
+                                <% } %>
+                                <div class="bold">total:</div>
+                                <div class="bold"><%= totals.total || '' %></div>
+                            </div>
+                        <% } %>
+                    </div>
+                    <button class="orange_button margin_top_2rem"
+                            disabled="disabled"
+                            hx-post="/payment"
+                    >Payer</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

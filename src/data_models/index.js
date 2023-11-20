@@ -3,6 +3,7 @@ const url_product_types = require("./url_product_types");
 const { Book, Workbook, BookFormat } = require("./book");
 const { Path } = require("./path");
 const { Cart, CartItem, Total } = require("./cart");
+const { Customer } = require("./customer");
 
 module.exports = {
   url_endpoint_config,
@@ -14,6 +15,5 @@ module.exports = {
   Cart,
   CartItem,
   Total,
+  Customer,
 };
-
-// path: src/data_models/index.js

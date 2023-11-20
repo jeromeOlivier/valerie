@@ -2,12 +2,13 @@ module.exports = {
     updateCookie,
     addCartItemToCookie,
     parseCartItemsFromCookie,
+    checkIfSessionIdAlreadyExists,
 };
 // dependencies
 const { CartItem } = require("../data_models");
 
 // constant to hold the max age of a cookie
-const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
+const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
 
 /**
  * Returns the cart items array of the cookie.
@@ -28,8 +29,8 @@ function parseCartItemsFromCookie(cookies) {
  * @returns {Object} - Returns the response object with the new, or updated key.
  */
 function updateCookie(res, data, key) {
-    return res.cookie(`${key}`, JSON.stringify(data), {
-        maxAge: ONE_WEEK_IN_MS,
+    return res.cookie(`${ key }`, JSON.stringify(data), {
+        maxAge: ONE_DAY_IN_MS,
         sameSite: "Strict",
         secure: true,
     });
@@ -47,6 +48,17 @@ function addCartItemToCookie(req, res) {
     const newItem = new CartItem(req.params.title, req.params.type);
     const cookie = parseCartItemsFromCookie(req.cookies);
     cookie.push(newItem);
-    updateCookie(res, cookie, 'items');
+    updateCookie(res, cookie, "items");
     return cookie;
+}
+
+/**
+ * Checks if a session ID already exists in the cookies.
+ *
+ * @param {Object} cookies - The cookies object containing session ID.
+ *
+ * @return { string | boolean } - The session ID if it exists, or false if it doesn't exist.
+ */
+function checkIfSessionIdAlreadyExists(cookies) {
+    return cookies.session_id ? JSON.parse(cookies.session_id) : false;
 }

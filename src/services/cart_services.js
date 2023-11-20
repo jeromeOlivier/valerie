@@ -3,12 +3,17 @@ module.exports = {
     checkIfInCart,
     calculateTotalWeightOfItems,
     collectDataToBuildCart,
+    isAnyCartItemPaperFormat,
 };
 // dependencies
 const db = require("../db_ops/db");
-const { CartItem, Total } = require("../data_models");
+const { CartItem, Total, Cart } = require("../data_models");
 const { isValidTerm, transformToTitleCase } = require("./utility_services");
-const { calculateShippingUsingPostcode, getPostcodeFromRequestBodyOrCookie } = require("./postcode_services");
+const {
+    calculateShippingUsingPostcode,
+    getPostcodeFromRequestBodyOrCookie,
+    checkIfPostcodeIsRequired,
+} = require("./postcode_services");
 
 /**
  * Gets all items in the cart based on values in the cookie items attribute
@@ -130,21 +135,16 @@ async function getCartTotals(cartItems, includesPaperFormat, postcode) {
 }
 
 /**
- * Calculates the total cost of the cart items and returns the result along with a boolean indicating whether or not a
- * postcode is required for delivery.
+ * Calculates the total cost of the cart items and returns the result.
  *
  * @param {Array<CartItem>} cartItems - The list of items in the cart.
  * @param {string} postcode - The postcode for delivery.
  *
- * @return {Promise<{requirePostcode: boolean, totals: Total}>} - A promise with an object containing the totals and
- *     requiresPostcode fields. The totals field is a promise for the total cost of the cart items. The
- *     requiresPostcode field is a boolean indicating if a postcode is required for delivery, based on the cart items
+ * @return {Promise<Total>} - Totals is a promise for the total cost of the cart items.
  */
-async function returnCartTotalsWithBoolean(cartItems, postcode) {
+async function returnCartTotals(cartItems, postcode) {
     const includesPaperFormat = isAnyCartItemPaperFormat(cartItems);
-    const totals = await getCartTotals(cartItems, includesPaperFormat, postcode);
-    const requirePostcode = includesPaperFormat && postcode === undefined;
-    return { totals, requirePostcode };
+    return await getCartTotals(cartItems, includesPaperFormat, postcode);
 }
 
 /**
@@ -184,16 +184,17 @@ async function calculateTotalWeightOfItems(cartItems) {
 }
 
 /**
- * Collects data to build a shopping cart.
+ * Collects user postcode (if it already exists),  to build a shopping cart.
  *
  * @param {Array<CartItem>} items - The request object containing cookies and the request body.
  * @param {Request} req - The request object containing cookies and the request body.
- * @return {Promise<{totals: Total, cartItems: Array<CartItem>, requirePostcode: boolean}>} - A promise resolving to an
+ * @return {Promise<Cart>} - A promise resolving to an
  *     object containing the shopping cart data.
  */
 async function collectDataToBuildCart(items, req) {
     const cartItems = await getCartItems(items);
     const postcode = getPostcodeFromRequestBodyOrCookie(req);
-    const { totals, requirePostcode } = await returnCartTotalsWithBoolean(cartItems, postcode);
-    return { cartItems, totals, requirePostcode };
+    const requirePostcode = checkIfPostcodeIsRequired(cartItems, postcode);
+    const totals = await returnCartTotals(cartItems, postcode);
+    return new Cart(cartItems, totals, requirePostcode);
 }

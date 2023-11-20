@@ -34,10 +34,10 @@
                     <p><%- paragraph; %></p><br><br>
                 <% }); %>
             </div>
-            <div>
                 <!-- add html entity for bullet points -->
                 <% book.workbooks.forEach(workbook => { %>
-                    <h3 class="margin_top_2rem"><%= workbook.title %></h3>
+            <div class="white_box padding_2rem margin_bottom_2rem">
+                    <h3><%= workbook.title %></h3>
                     <% workbook.content.forEach(item => {
                     if (item.level === 1) { %>
                         <div class="section">&#8901; <%= item.description %></div>
@@ -45,19 +45,19 @@
                         <div class="subsection">&#10513; <%= item.description %></div>
                     <% } %>
                     <% }) %>
-                <% }) %>
             </div>
+                <% }) %>
         <% } %>
         <div id="contact"></div>
         <h2 class="margin_bottom_1rem margin_top_5rem">Contactez-moi</h2>
         <p style="color: red">For more information, feel free to contact me using the form below</p>
         <form class="margin_bottom_4rem">
             <label for="courriel" class="block margin_top_2rem margin_bottom_1rem">Courriel</label>
-            <input id="courriel" type="email" class="grey_border" placeholder="mon@couriel.com" />
+            <input id="courriel" type="email" class="white_box" placeholder="mon@couriel.com" />
             <label for="subject" class="block margin_top_2rem margin_bottom_1rem">Sujet</label>
-            <input id="subject" type="text" class="grey_border" required value="Manuel <%= book.title %>" />
+            <input id="subject" type="text" class="white_box" required value="Manuel <%= book.title %>" />
             <label for="message" class="block margin_top_2rem margin_bottom_1rem">Message</label>
-            <textarea id="message" rows="10" class="grey_border" required></textarea>
+            <textarea id="message" rows="10" class="white_box" required></textarea>
             <button class="main_button margin_top_2rem">Envoyer</button>
         </form>
     </div>

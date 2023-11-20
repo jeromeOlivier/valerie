@@ -1,11 +1,12 @@
 module.exports = {
     getPostcodeFromRequestBodyOrCookie,
     calculateShippingUsingPostcode,
+    checkIfPostcodeIsRequired,
 };
 
 const fetch = require("node-fetch");
 const xml2js = require("xml2js");
-const { calculateTotalWeightOfItems } = require("./cart_services");
+const { calculateTotalWeightOfItems, isAnyCartItemPaperFormat } = require("./cart_services");
 
 /**
  * Formats the given postcode and updates the specified cookie value with the formatted postcode.
@@ -32,12 +33,13 @@ function getPostcodeFromRequestBodyOrCookie(req) {
  *
  * @param {string} postcode - The destination postal code.
  * @param {number} weight - The weight of the parcel in grams.
- * @returns {Promise<number>} - The shipping price in CAD or an error if the request fails.
+ * @returns {Promise<number> | boolean} - The shipping price in CAD or false fails.
  */
 async function fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weight) {
     // API URL
     const url = "https://ct.soa-gw.canadapost.ca/rs/ship/price";
     const grams = weight / 1000;
+
     // XML Body data
     const data = `
         <mailing-scenario xmlns="http://www.canadapost.ca/ws/ship/rate-v4">
@@ -48,7 +50,7 @@ async function fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weight) {
             <origin-postal-code>${ process.env.CANADA_POST_ORIGIN_POSTCODE }</origin-postal-code>
             <destination>
                 <domestic>
-                    <postal-code>${ postcode.match(/[A-Z0-9]+/) }</postal-code>
+                    <postal-code>${ postcode.match(/[A-Z0-9]{6}/) }</postal-code>
                 </domestic>
             </destination>
         </mailing-scenario>
@@ -72,8 +74,10 @@ async function fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weight) {
         const regularParcel = serviceData.filter(service => service["service-code"][0] === "DOM.RP")[0];
         const [shippingPrice] = regularParcel["price-details"][0]["due"];
         return shippingPrice;
+    } else if(response.status >= 500 && response.status < 600) {
+        throw new Error(`Le service de Postes Canada est actuellement indisponible. Veuillez réessayer plus tard.`);
     } else {
-        console.error(`Canada Post Error: status(${ response.status }), ${ response }`);
+        throw new Error(`Échec de récupération du coût de livraison.: HTTP ${response.status}`);
     }
 }
 
@@ -100,4 +104,17 @@ async function calculateShippingUsingPostcode(cartItems, postcode) {
         }
         return totalShipping;
     }
+}
+
+/**
+ * Checks if postcode is required based on the cart items and the provided postcode.
+ * Returns true if postcode is required, false otherwise.
+ *
+ * @param {Array<CartItem>} cartItems - An array of cart items.
+ * @param {string} postcode - The postcode provided by the user.
+ *
+ * @returns {boolean} - Returns true if postcode is required, false otherwise.
+ */
+function checkIfPostcodeIsRequired(cartItems, postcode) {
+    return isAnyCartItemPaperFormat(cartItems) && postcode === undefined;
 }

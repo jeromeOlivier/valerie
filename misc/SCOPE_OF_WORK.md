@@ -29,7 +29,7 @@ Users: visiting her site can do any of the following:
 
 5. on the shopping totals page
      1. delete / update their shopping totals items
-     2. get shipping estimate based on user's get_shipping_estimate
+     2. get shipping estimate based on user's getShippingEstimate
      3. click to the 'pay now' page
 6. pay now page
      1. based on type of purchase (pdf or paper) enter required coordinates

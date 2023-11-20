@@ -3,18 +3,14 @@
  */
 class Cart {
     /**
-     * @param {CartItem[]} items
-     * @param {number} [subtotal]
-     * @param {number} [shipping]
-     * @param {number} [taxes]
-     * @param {number} [total]
+     * @param {CartItem[]} cartItems
+     * @param {Total} [totals]
+     * @param {boolean} [requirePostcode]
      */
-    constructor(items, subtotal, shipping, taxes, total) {
-        this.items = items;
-        this.subtotal = subtotal;
-        this.shipping = shipping;
-        this.taxes = taxes;
-        this.total = total;
+    constructor(cartItems, totals, requirePostcode) {
+        this.cartItems = cartItems;
+        this.totals = totals;
+        this.requirePostcode = requirePostcode;
     }
 }
 
@@ -52,7 +48,7 @@ class Total {
     }
 }
 
-module.exports = { Cart, CartItem, Total };
+module.exports = { Cart, CartItem, Total,  };
 
 // path: src/data_models/cart.js
 

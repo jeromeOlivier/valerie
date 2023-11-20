@@ -8,7 +8,7 @@ SET @form_pdf = (SELECT id FROM formats WHERE name = 'pdf');
 SET @form_papier = (SELECT id FROM formats WHERE name = 'papier');
 SET @lang_fr = (SELECT id FROM languages WHERE name = 'français');
 SET @mark_int = (SELECT id FROM market_coverage WHERE name = 'à l\'international');
-SET @mark_cad = (SELECT id FROM market_coverage WHERE name = 'seulement au Canada');
+SET @mark_cad = (SELECT id FROM market_coverage WHERE name = 'Canada seulement');
 
 INSERT INTO book_formats (book_id, pub_date, size, format, pages, weight, language, market, price)
 VALUES (@id_word, '2022-09-04', '8.5" x 11"', @form_papier, 259, 639, @lang_fr, @mark_cad, 44.95),

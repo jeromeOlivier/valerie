@@ -76,19 +76,13 @@ CREATE TABLE workbooks
 CREATE TABLE customers
 (
     id       INT AUTO_INCREMENT PRIMARY KEY,
-    email    VARCHAR(255) NOT NULL COMMENT 'email address of customer does not need to be unique',
-    name     VARCHAR(255) NOT NULL COMMENT 'name of customer',
+    email    VARCHAR(255) COMMENT 'email address of customer does not need to be unique',
+    name     VARCHAR(255) COMMENT 'name of customer',
     address  VARCHAR(255) COMMENT 'address of customer',
     city     VARCHAR(255) COMMENT 'city of customer',
     province VARCHAR(255) COMMENT 'province of customer',
-    postcode VARCHAR(255) COMMENT 'get_shipping_estimate of customer',
-    country  VARCHAR(255) COMMENT 'country of customer',
-    CHECK (
-            (address IS NOT NULL AND city IS NOT NULL AND
-             province IS NOT NULL AND postcode IS NOT NULL AND
-             country IS NOT NULL) OR
-            (address IS NULL AND city IS NULL AND province IS NULL AND
-             postcode IS NULL AND country IS NULL) )
+    postcode VARCHAR(255) COMMENT 'getShippingEstimate of customer',
+    country  VARCHAR(255) COMMENT 'country of customer'
 );
 
 # ORDERING

@@ -17,6 +17,7 @@ let areMobileEventsAdded = false;
 
 function isValidBook(path) { return detachedBooks.has(path); }
 
+// functions activated depending on browser url
 function evaluatePathAndUpdateUI(path) {
     updateCartDotState();
     if (isValidBook(path)) {
@@ -25,8 +26,12 @@ function evaluatePathAndUpdateUI(path) {
     } else if (path === "/") {
         createBrandScroller();
         removePreviewModalEventListener();
-    } else if (path === "/cart") {
+    }
+    if (path === "/cart") {
         removePreviewModalEventListener();
+        ifCartIsEmptyDisableButton();
+    } else if (path === "/checkout") {
+        ifCheckoutFormIsNotCompleteDisableButton();
     }
 }
 
@@ -66,12 +71,16 @@ function adjustMobileNavigationUI() {
     }
 }
 
+// general event listeners for page load and htmx DOM swaps
 document.addEventListener("DOMContentLoaded", registerEventAfterDOMLoad());
-document.addEventListener("htmx:afterSwap", () => setTimeout(() => handleEventCreation(), TIMEOUT_DURATION));
-window.addEventListener("resize", () => temporarilyDisableTransitionOfMobileMenu(), adjustMobileNavigationUI());
+document.addEventListener("htmx:afterSwap", () => {
+    setTimeout(() => handleEventCreation(), TIMEOUT_DURATION)
+});
+window.addEventListener("resize", () => {
+    temporarilyDisableTransitionOfMobileMenu()
+}, adjustMobileNavigationUI());
 
 // MOBILE NAVIGATION MENU
-
 function isMobileView() { return window.innerWidth < MOBILE_VIEW_WIDTH; }
 
 function handleNavItemClick() { return toggleTransitionOfMobileMenu(nav); }
@@ -117,7 +126,9 @@ function toggleTransitionOfMobileMenu(item) {
 }
 
 // BOOK PREVIEW MODAL
-function locatePreviewButton() { return document.querySelector("#preview-button"); }
+function locatePreviewButton() {
+    return document.querySelector("#preview-button");
+}
 
 function createPreviewModalEventListeners() {
     const previewButton = locatePreviewButton();
@@ -182,13 +193,6 @@ function navigatePreviewModal() {
 }
 
 // define the area outside a modal
-/**
- * Checks if a click event occurred outside a modal element.
- *
- * @param {object} modal - The modal element.
- * @param {object} event - The click event object.
- * @return {boolean} - True if the click event occurred outside the modal element, otherwise false.
- */
 function checkClickOutsideModal(modal, event) {
     const top = modal.top > event.clientY;
     const bottom = modal.bottom < event.clientY;
@@ -197,8 +201,7 @@ function checkClickOutsideModal(modal, event) {
     return top || bottom || left || right;
 }
 
-// SCROLLING
-// Check if the user has set their system to use reduced motion
+// SCROLLING OF BRANDS
 function createBrandScroller() {
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
@@ -215,7 +218,7 @@ function createBrandScroller() {
     }
 }
 
-// TOGGLE CANADA POST
+// TOGGLE CANADA POST ANIMATION
 function createCanadaPostIconToggle() {
     const canadaPost = document.querySelector("#post-logo");
     const pdfButton = document.querySelector("#pdf-format-tab");
@@ -230,8 +233,7 @@ function createCanadaPostIconToggle() {
     });
 }
 
-// CART
-// update the cart dot state on click triggered by other event listeners
+// CART ICON
 function updateCartDotState() {
     const quantityOfCartItems = getQuantityOfCartItemsFromCookie();
     const cartDot = document.querySelector("#cherry");
@@ -242,23 +244,41 @@ function updateCartDotState() {
     }
 }
 
-/**
- * Retrieves the quantity of cart items from the cookie.
- *
- * @return {number} The quantity of cart items.
- */
 function getQuantityOfCartItemsFromCookie() {
     const cookieName = "items=";
     // is there a better way of getting cookies? count number of times "title" appears in cookie?
-    const array = decodeURIComponent(document.cookie);
-    console.log(array);
-    if (array === "" || array === "items=[]") {
-        return 0;
+    const cookies = decodeURIComponent(document.cookie).split(";");
+
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        if (cookie.indexOf(cookieName) === 0) {
+            const items = JSON.parse(cookie.substring(cookieName.length));
+            return items.length;
+        }
     }
-    const amount = array
-        .slice(cookieName.length)
-        .split(";")
-        .map(cookie => cookie.trim());
-    console.log(amount);
-    return amount.length;
+    return 0;
+}
+
+// CART
+function ifCartIsEmptyDisableButton() {
+    const cartButton = document.querySelector("button");
+    cartButton.disabled = getQuantityOfCartItemsFromCookie() === 0;
+}
+
+// CHECKOUT
+function ifCheckoutFormIsNotCompleteDisableButton() {
+    const form = document.querySelector("form");
+    const inputs = Array.from(document.querySelectorAll("input"));
+    const checkoutButton = document.querySelector("button");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const email = document.querySelector("#email");
+    const confirmEmail = document.querySelector("#confirm_email");
+
+    form.addEventListener("input", (event) => {
+        const isFormFilled = inputs.every(input => input.value.trim() !== "");
+        const isEmailsValid = emailRegex.test(email.value.trim())
+            && emailRegex.test(confirmEmail.value.trim())
+            && (confirmEmail.value.trim() === email.value.trim());
+        checkoutButton.disabled = !(isFormFilled && isEmailsValid);
+    });
 }

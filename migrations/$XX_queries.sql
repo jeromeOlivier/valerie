@@ -14,3 +14,4 @@ JOIN formats f ON f.id = bf.format
 JOIN languages l ON l.id = bf.language
 JOIN market_coverage m ON m.id = bf.market
 WHERE b.title = 'Word' AND f.name = 'pdf';
+

@@ -1,12 +1,5 @@
 /* TYPEFACES */
 @font-face {
-    font-family : "iThin";
-    src         : url("../font/iThin.woff2") format("woff2");
-    font-weight : 100;
-    font-style  : normal;
-}
-
-@font-face {
     font-family : "iLite";
     src         : url("../font/iLite.woff2") format("woff2");
     font-weight : 300;
@@ -61,7 +54,6 @@
     --font_lite                 : iLite, Arial, sans-serif;
     --font_regular              : iReg, Arial, sans-serif;
     --font_semibold             : iSemi, Arial, sans-serif;
-    --font_thin                 : iThin, Arial, sans-serif;
     --grad_excel                : linear-gradient(137.51deg, #237045 0.86%, #17766F 43.85%, #98438A 100%);
     --grad_main                 : linear-gradient(137.51deg, #262C4A 0%, #134E6B 50%, #148572 100%);
     --grad_outlook              : linear-gradient(137.51deg, #987A3C 0%, #218567 70.8%, #21689E 100%);
@@ -84,6 +76,16 @@
 }
 
 /* MARGINS */
+.margin_1rem { margin : 1rem; }
+
+.margin_2rem { margin : 2rem; }
+
+.margin_3rem { margin : 3rem; }
+
+.margin_4rem { margin : 4rem; }
+
+.margin_5rem { margin : 5rem; }
+
 .margin_top_1rem { margin-top : 1rem; }
 
 .margin_top_2rem { margin-top : 2rem; }
@@ -103,6 +105,26 @@
 .margin_bottom_4rem { margin-bottom : 4rem; }
 
 .margin_bottom_5rem { margin-bottom : 5rem; }
+
+.margin_right_1rem { margin-right : 1rem; }
+
+.margin_right_2rem { margin-right : 2rem; }
+
+.margin_right_3rem { margin-right : 3rem; }
+
+.margin_right_4rem { margin-right : 4rem; }
+
+.margin_right_5rem { margin-right : 5rem; }
+
+.margin_left_1rem { margin-left : 1rem; }
+
+.margin_left_2rem { margin-left : 2rem; }
+
+.margin_left_3rem { margin-left : 3rem; }
+
+.margin_left_4rem { margin-left : 4rem; }
+
+.margin_left_5rem { margin-left : 5rem; }
 
 /* PADDINGS */
 .padding_0 { padding : 0; }
@@ -161,10 +183,9 @@
 * {
     box-sizing  : border-box;
     color       : var(--txt);
-    font-family : var(--font_lite);
+    font-family : var(--font_regular);
     font-size   : 1rem;
     font-style  : normal;
-    font-weight : 400;
     line-height : 1.5;
     margin      : 0;
     padding     : 0;
@@ -224,7 +245,7 @@ p {
     margin-bottom : 1rem;
 }
 
-label {
+label, .label {
     font-family : var(--font_semibold);
 }
 
@@ -269,25 +290,17 @@ nav > ul > li {
 }
 
 .semi_bold {
-    font-family : var(--font_semibold);
+    font-family : var(--font_regular);
     font-weight : 600;
 }
 
 .section {
-    font-family  : var(--font_lite);
-    font-size    : 1rem;
-    font-style   : normal;
-    font-weight  : 700;
     margin       : .5rem 0 .125rem;
     padding-left : 1rem;
 
 }
 
 .subsection {
-    font-family   : var(--font_lite);
-    font-size     : 1rem;
-    font-style    : normal;
-    font-weight   : 700;
     margin-bottom : .125rem;
     padding-left  : 3rem;
 }
@@ -296,12 +309,10 @@ nav > ul > li {
 .img { display : block; }
 
 /* decorations */
-.grey_border {
-    border : solid var(--stroke) var(--grey);
-}
-
-.blue_border {
-    border : solid var(--stroke) var(--btn_blue_stoke);
+.white_box {
+    background-color : var(--white);
+    border           : solid var(--stroke) var(--grey);
+    border-radius    : 0.5rem;
 }
 
 /* behaviors */
@@ -556,11 +567,6 @@ dialog::backdrop {
         margin-left : 1vw;
     }
 
-    .cart_item {
-        gap           : 1rem;
-        grid-template : 1fr / auto 1fr;
-    }
-
     .cart_item_detail {
         justify-content : flex-start;
     }
@@ -574,6 +580,7 @@ dialog::backdrop {
     }
 
     .cart_item {
+                gap           : 1rem;
         grid-template : 1fr / 1fr 1.618fr;
     }
 
@@ -581,6 +588,8 @@ dialog::backdrop {
         margin-left : auto;
     }
 }
+
+/* CHECKOUT */
 
 /* PREVIEW */
 dialog#preview {
@@ -684,7 +693,6 @@ dialog#preview {
 /* interactions */
 button {
     align-items         : center;
-    /*border-radius       : 2rem;*/
     border-radius       : .45rem;
     border-style        : solid;
     border-width        : var(--stroke_double);
@@ -694,7 +702,6 @@ button {
     font-family         : var(--font_regular);
     font-size           : 1.05rem;
     height              : fit-content;
-    /*padding             : .7rem 1.2rem;*/
     justify-content     : center;
     padding             : .33rem 1rem;
     transition-duration : 500ms;
@@ -759,7 +766,7 @@ button.orange_button {
 
 button.orange_button:hover { background : var(--btn_orange_main_hover); }
 
-button#add_to_cart.orange_button.disabled {
+.orange_button:disabled, .orange_button:disabled:hover {
     background   : var(--btn_orange_main_disabled);
     border-color : var(--btn_orange_stoke_disabled);
     color        : var(--btn_orange_text_disabled);
@@ -889,10 +896,35 @@ textarea {
     justify-content : space-between;
 }
 
-.flex-col-space-between {
+.flex_column_space_between {
     display         : flex;
     flex-direction  : column;
     justify-content : space-between;
+}
+
+.flex_row_start {
+    display        : flex;
+    flex-direction : row;
+    justify-content: start;
+}
+
+.flex_column_start {
+    display        : flex;
+    flex-direction : column;
+    justify-content: start;
+}
+
+.flex_row_end {
+    display        : flex;
+    flex-direction : row;
+    justify-content: end;
+}
+
+.flex_column_end {
+    display        : flex;
+    flex-direction : column;
+    justify-content: end;
+    align-items: end;
 }
 
 .full-height {
@@ -1010,10 +1042,7 @@ div#format_specs {
 /* backgrounds */
 .blue_background { background : var(--grad_main); }
 
-.off_white_background { background : var(--off_white); }
-
-.white_background { background : var(--white); }
-
+/*.off_white_background { background : var(--off_white); }*/
 
 .htmx-settling .excel-background:before,
 .htmx-settling .service-background:before,
@@ -1110,7 +1139,6 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 }
 
 .head-shot-caption > p {
-    font-family : var(--font_thin);
     font-size   : 1rem;
     line-height : .5rem;
     margin-top  : 0;
@@ -1166,8 +1194,6 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 }
 
 .book-grid > div {
-    background     : var(--white);
-    border-radius  : 0.68rem;
     display        : flex;
     flex-direction : column;
     gap            : 1rem;

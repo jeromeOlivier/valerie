@@ -29,11 +29,12 @@ router.get("/format/:title/:type", page.book_format);
 router.get("/preview/:title", page.preview);
 
 // CART ENDPOINTS
-router.get("/data_cart", cart.find_all_items)
-router.get("/cart/", cart.find_all_items);
-router.post("/cart/add/:title/:type", cart.add_item);
-router.post("/cart/shipping_estimate", cart.get_shipping_estimate);
-router.delete("/cart/delete/:title/:type", cart.remove_item);
+router.get("/data_cart", cart.findAllCartItems)
+router.get("/cart/", cart.findAllCartItems);
+router.post("/cart/add/:title/:type", cart.addItemToCart);
+router.post("/cart/shipping_estimate", cart.getShippingEstimate);
+router.delete("/cart/delete/:title/:type", cart.removeItemFromCart);
+router.get('/cart/checkout', cart.initiateShoppingSession);
 
 module.exports = router;
 // path: src/routes/index.js
