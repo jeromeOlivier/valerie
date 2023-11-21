@@ -2,7 +2,6 @@
     <div class="content_container">
         <h1 class="margin_top_5rem center">Caisse</h1>
         <% const amount = cartItems.length; %>
-        <% const customer = user[0][0]; %>
         <form class="margin_bottom_4rem">
             <label for="name" class="block margin_top_2rem margin_bottom_1rem">Votre nom tel qu'il est spécifié sur
                 votre mode de paiement</label>
@@ -79,7 +78,6 @@
             <label for="postcode"
                    class="block margin_top_2rem margin_bottom_1rem">Code postal
             </label>
-            <%= console.log(customer) %>
             <input id="postcode"
                    type="text"
                    name="postcode"

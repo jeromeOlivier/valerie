@@ -20,6 +20,7 @@ const {
     checkIfSessionIdAlreadyExists,
 } = require("../services/cookie_services");
 const { getCustomerFromDatabase, createCustomerInDatabase } = require("../services/user_services");
+const { Customer, Cart } = require("../data_models");
 
 /**
  * Finds all items in the cart and renders the appropriate view based on the request URL.
@@ -71,7 +72,7 @@ const addItemToCart = asyncHandler(async(req, res) => {
  */
 const removeItemFromCart = asyncHandler(async(req, res) => {
     if (!isValidTerm(req.params.title) || !isValidTerm(req.params.type)) {
-        res.render('cart_error');
+        res.render("cart_error");
         return;
     }
     try {
@@ -128,20 +129,18 @@ const initiateShoppingSession = asyncHandler(async(req, res) => {
         const uuid = existingSessionId ? existingSessionId : uuidv4();
         updateCookie(res, uuid, "session_id");
         /**
-         * Represents a user.
-         *
-         * @type {Customer} - type Customer
-         * @type {Cart} - object containing cartItems, totals, requirePostcode
+         * Executes and waits for the promises to resolve/reject and then destructure it.
+         * @returns {Promise<[Customer, Cart]>}
          */
-        const [user, cart] = await Promise.all([
+        const [customer, cart] = await Promise.all([
             existingSessionId ? getCustomerFromDatabase(uuid) : createCustomerInDatabase(uuid, postcode),
             collectDataToBuildCart(cartItems, req),
         ]);
         const paperFormat = isAnyCartItemPaperFormat(cart.cartItems);
-        if (req.url === '/cart/checkout') {
-            res.render(paperFormat ? 'paper_form' : 'pdf_form', { user, ...cart });
+        if (req.url === "/cart/checkout") {
+            res.render(paperFormat ? "paper_form" : "pdf_form", { customer, ...cart });
         } else {
-            res.render("layout", { main: paperFormat ? 'paper_form' : 'pdf_form', user, ...cart });
+            res.render("layout", { main: paperFormat ? "paper_form" : "pdf_form", customer, ...cart });
         }
     } catch (error) {
         res.render("error_page", { message: error.message });
@@ -150,7 +149,7 @@ const initiateShoppingSession = asyncHandler(async(req, res) => {
 
 const redirect = (req, res) => {
     res.status(200).json({ redirect: "/bounce" });
-}
+};
 
 module.exports = {
     findAllCartItems,

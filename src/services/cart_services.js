@@ -1,3 +1,8 @@
+/**
+ * cart_services module
+ * @module services/cart_services
+ */
+
 module.exports = {
     removeOneItemFromCart,
     checkIfInCart,

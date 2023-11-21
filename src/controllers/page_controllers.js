@@ -1,3 +1,8 @@
+/**
+ * cart_controller module
+ * @module controllers/page_controllers
+ */
+
 const asyncHandler = require("express-async-handler");
 const { getPageData, getPageLayout, getBlogData, getBookPreviewImages } = require("../services/page_services");
 const { getBook, getBookFormat, isValidTitleAndType } = require("../services/book_services");

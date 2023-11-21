@@ -1,3 +1,8 @@
+/**
+ * utility_services module
+ * @module services/utility_services
+ */
+
 module.exports = {
     isValidPath,
     isValidQuery,

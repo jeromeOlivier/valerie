@@ -1,3 +1,8 @@
+/**
+ * postcode_services module
+ * @module services/postcode_services
+ */
+
 module.exports = {
     getPostcodeFromRequestBodyOrCookie,
     calculateShippingUsingPostcode,

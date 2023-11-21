@@ -1,4 +1,11 @@
-// purpose: main entry point for the application
+/**
+ * This variable represents a module that provides a framework for building web applications in Node.js.
+ * It encapsulates various HTTP utility methods and middleware for handling HTTP requests and responses.
+ *
+ * @module express
+ * @requires express
+ */
+
 // external dependencies
 const express = require("express");
 const helmet = require("helmet");

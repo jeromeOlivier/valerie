@@ -1,3 +1,8 @@
+/**
+ * page_services module
+ * @module services/page_services
+ */
+
 module.exports = {
     getPageLayout,
     getPageData,

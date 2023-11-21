@@ -1,3 +1,8 @@
+/**
+ * cookie_services module
+ * @module services/cookie_services
+ */
+
 module.exports = {
     updateCookie,
     addCartItemToCookie,

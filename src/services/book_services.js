@@ -1,4 +1,8 @@
-// Description: This file contains the functions for getting the book data.
+/**
+ * book_services module
+ * @module services/book_services
+ */
+
 // constants
 module.exports = {
     getBook,

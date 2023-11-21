@@ -1,12 +1,18 @@
+/**
+ * user_services module
+ * @module services/user_services
+ */
+
 module.exports = {
     getCustomerFromDatabase,
     createCustomerInDatabase,
 };
 const db = require("../db_ops/db");
 const { Customer } = require("../data_models/customer");
+const { query } = require("express");
 
 async function getCustomerFromDatabase(sessionId) {
-    return await db.query(`
+    const query = await db.query(`
         SELECT sessions.id,
                customers.email,
                customers.name,
@@ -19,6 +25,7 @@ async function getCustomerFromDatabase(sessionId) {
                  JOIN customers ON sessions.customer_id = customers.id
         WHERE sessions.id = ?
     `, [sessionId]);
+    return query[0][0];
 }
 
 /**
@@ -36,7 +43,7 @@ async function createCustomerInDatabase(sessionId, postcode = "") {
         await conn.query("START TRANSACTION");
 
         // Save the result of the INSERT operation.
-        const insertResult = await conn.query(`
+        await conn.query(`
             INSERT INTO customers (postcode)
             VALUES (?)
         `, [postcode ? postcode.match(/[A-Z0-9]{6}/) : ""]);
@@ -59,7 +66,9 @@ async function createCustomerInDatabase(sessionId, postcode = "") {
         const query = await conn.query(`
             SELECT * FROM customers WHERE id = ?
         `, [customerId]);
-        const data = query[0];
+
+        const data = query[0][0];
+        console.log('data', data);
         return new Customer(data.email, data.name, data.address, data.city, data.province, data.postcode, data.country);
 
     } catch (error) {
