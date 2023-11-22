@@ -100,16 +100,17 @@ async function getBookFormat(title, format = "pdf") {
 async function getWorkbooks(title) {
     // get the workbooks for the book
     const [query] = await db.query(`
-         SELECT wb.title       AS title,
-                wb.seq_order   AS sequence,
-                wp.description AS description,
-                wp.path        AS path,
-                wp.level       AS level
-         FROM books b
-            JOIN workbooks wb ON wb.book_id = b.id
-            JOIN workbook_previews wp ON wb.id = wp.workbook_id
-         WHERE b.title = ?
-         ORDER BY b.id, sequence, path + '.';`, [title]);
+        SELECT wb.title     AS title,
+               wb.description AS description,
+               wb.seq_order AS sequence,
+               wbc.content   AS content,
+               wbc.path      AS path,
+               wbc.level     AS level
+        FROM books b
+                 JOIN workbooks wb ON wb.book_id = b.id
+                 JOIN workbook_contents wbc ON wb.id = wbc.workbook_id
+        WHERE b.title = ?
+        ORDER BY b.id, sequence, path + '.';`, [title]);
 
     // If no workbooks returned for the book, handle accordingly
     if (!query || query.length === 0) {
@@ -125,15 +126,16 @@ async function getWorkbooks(title) {
             // if such an object does not exist in accumulator yet, create one
             obj = {
                 title: currentWorkbook.title,
-                content: [],
+                description: currentWorkbook.description,
+                contents: [],
             };
             // and push it to the accumulator
             accumulator.push(obj);
         }
 
         // push the description to the content array of the found (or just created) object
-        obj.content.push({
-            description: currentWorkbook.description,
+        obj.contents.push({
+            content: currentWorkbook.content,
             level: currentWorkbook.level,
         });
 

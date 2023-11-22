@@ -68,7 +68,6 @@ async function createCustomerInDatabase(sessionId, postcode = "") {
         `, [customerId]);
 
         const data = query[0][0];
-        console.log('data', data);
         return new Customer(data.email, data.name, data.address, data.city, data.province, data.postcode, data.country);
 
     } catch (error) {

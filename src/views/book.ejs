@@ -41,11 +41,12 @@
             <% book.workbooks.forEach(workbook => { %>
                 <div class="white_box padding_2rem margin_bottom_2rem">
                     <h3><%= workbook.title %></h3>
-                    <% workbook.content.forEach(item => {
+                    <div class="margin_top_1rem margin_bottom_2rem"><%= workbook.description %></div>
+                    <% workbook.contents.forEach(item => {
                     if (item.level === 1) { %>
-                        <div class="section">&#8901; <%= item.description %></div>
+                        <div class="section">&#8901; <%= item.content %></div>
                     <% } else { %>
-                        <div class="subsection">&#10513; <%= item.description %></div>
+                        <div class="subsection">&#10513; <%= item.content %></div>
                     <% } %>
                     <% }) %>
                 </div>
