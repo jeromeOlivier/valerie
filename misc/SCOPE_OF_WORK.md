@@ -29,7 +29,7 @@ Users: visiting her site can do any of the following:
 
 5. on the shopping totals page
      1. delete / update their shopping totals items
-     2. get shipping estimate based on user's getShippingEstimate
+     2. get shipping estimate based on customer's getShippingEstimate
      3. click to the 'pay now' page
 6. pay now page
      1. based on type of purchase (pdf or paper) enter required coordinates
@@ -41,7 +41,7 @@ Users: visiting her site can do any of the following:
      1. upon completing a successful transaction
           1. for pdf purchases, receive a download link
           2. for paper transaction, a tracking link
-          3. regardless of the purchase type, user receives an email with purchase details
+          3. regardless of the purchase type, customer receives an email with purchase details
 8. from the footer of each page, users can:
      1. click link to visit Mrs. Gervais's LinkedIn page
      2. click link to read the privacy policy for Mrs. Gervais
