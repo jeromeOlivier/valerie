@@ -9,13 +9,13 @@ module.exports = {
 };
 const db = require("../db_ops/db");
 const { Customer } = require("../data_models/customer");
-const { query } = require("express");
 
 async function getCustomerFromDatabase(sessionId) {
     const query = await db.query(`
         SELECT sessions.id,
+               customers.given_name,
+               customers.family_name,
                customers.email,
-               customers.name,
                customers.address,
                customers.city,
                customers.province,
@@ -68,7 +68,7 @@ async function createCustomerInDatabase(sessionId, postcode = "") {
         `, [customerId]);
 
         const data = query[0][0];
-        return new Customer(data.email, data.name, data.address, data.city, data.province, data.postcode, data.country);
+        return new Customer(data.given_name, data.family_name, data.email, data.address, data.city, data.province, data.postcode, data.country);
 
     } catch (error) {
         await conn.query("ROLLBACK");

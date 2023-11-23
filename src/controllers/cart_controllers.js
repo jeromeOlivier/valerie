@@ -19,7 +19,7 @@ const {
     parseCartItemsFromCookie,
     checkIfSessionIdAlreadyExists,
 } = require("../services/cookie_services");
-const { getCustomerFromDatabase, createCustomerInDatabase } = require("../services/user_services");
+const { getCustomerFromDatabase, createCustomerInDatabase } = require("../services/customer_services");
 const { Customer, Cart } = require("../data_models");
 
 /**
