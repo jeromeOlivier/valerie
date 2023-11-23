@@ -849,6 +849,10 @@ textarea {
     resize   : vertical;
 }
 
+select {
+    -webkit-appearance: none;
+}
+
 .link {
     cursor          : pointer;
     text-decoration : none;

@@ -3,28 +3,65 @@
         <h1 class="margin_top_5rem center">Caisse</h1>
         <% const amount = cartItems.length; %>
         <form class="margin_bottom_4rem">
-            <label for="name" class="block margin_top_2rem margin_bottom_1rem">Votre nom tel qu'il est spécifié sur
-                votre mode de paiement</label>
-            <input id="name" type="text" name="name" class="white_box" required />
-            <% if (amount === 1) { %>
-                <label for="email"
-                       class="block margin_top_2rem margin_bottom_1rem">Votre courriel pour l'envoi du manuel
-                </label>
-            <% } else { %>
-                <label for="email"
-                       class="block margin_top_2rem margin_bottom_1rem">Votre courriel pour l'envoi des manuels
-                </label>
-            <% } %>
-            <input id="email" type="email" name="email" class="white_box" required />
+            <label for="given_name" class="block margin_top_2rem margin_bottom_1rem">Votre prénom tel qu'il est spécifié
+                sur votre mode de paiement</label>
+            <input id="given_name"
+                   type="text"
+                   name="given_name"
+                   class="white_box"
+                   autocomplete="given-name"
+                   value="<%= customer.given_name || ""; %>"
+                   required />
+
+            <label for="family_name" class="block margin_top_2rem margin_bottom_1rem">Votre nom de famille tel qu'il est
+                spécifié sur votre mode de paiement</label>
+            <input id="family_name"
+                   type="text"
+                   name="family_name"
+                   class="white_box"
+                   autocomplete="family-name"
+                   value="<%= customer.family_name || ""; %>"
+                   required />
+
+            <label for="email" class="block margin_top_2rem margin_bottom_1rem">
+                <% if (amount === 1) { %>
+                    Votre courriel pour l'envoi du manuel
+                <% } else { %>
+                    Votre courriel pour l'envoi des manuels
+                <% } %>
+            </label>
+            <input id="email"
+                   type="email"
+                   name="email"
+                   class="white_box"
+                   autocomplete="email"
+                   value="<%= customer.email || ""; %>"
+                   required />
+            <input id="email"
+                   type="email"
+                   name="email"
+                   class="white_box"
+                   autocomplete="email"
+                   value="<%= customer.email || ""; %>"
+                   required />
             <label for="confirm_email"
-                       class="block margin_top_2rem margin_bottom_1rem">Confirmez votre courriel
-                </label>
-            <input id="confirm_email" type="email" name="confirm_email" class="white_box" required />
-            <div class="block margin_top_2rem label">Résumé de votre panier <% if(amount > 1) { %>
-                                                         (<%= amount %> manuels)
-                    <% } else { %>
-                                                         (<%= amount %> manuel)
-            <% } %></div>
+                   class="block margin_top_2rem margin_bottom_1rem">Confirmez votre courriel
+            </label>
+            <input id="confirm_email"
+                   type="email"
+                   name="confirm_email"
+                   class="white_box"
+                   autocomplete="email"
+                   value="<%= customer.email || ""; %>"
+                   required />
+
+            <div class="block margin_top_2rem label">Résumé de votre panier
+                <% if(amount > 1) { %>
+                    (<%= amount %> manuels)
+                <% } else { %>
+                    (<%= amount %> manuel)
+                <% } %>
+            </div>
             <div class="flex_row_space_between white_box padding_1rem margin_top_1rem">
                 <div class="flex_row_start">
                     <% cartItems.forEach((item) => {
@@ -60,7 +97,8 @@
                     <button class="orange_button margin_top_2rem"
                             disabled="disabled"
                             hx-post="/payment"
-                    >Payer</button>
+                    >Payer
+                    </button>
                 </div>
             </div>
         </form>
