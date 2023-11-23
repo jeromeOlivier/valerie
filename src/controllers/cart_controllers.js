@@ -11,7 +11,7 @@ const {
     collectDataToBuildCart,
     isAnyCartItemPaperFormat,
 } = require("../services/cart_services");
-const { getPostcodeFromRequestBodyOrCookie } = require("../services/postcode_services");
+const { getPostcodeFromRequestBodyOrCookie } = require("../services/postal_services");
 const { isValidTerm } = require("../services/utility_services");
 const {
     updateCookie,
@@ -147,9 +147,11 @@ const initiateShoppingSession = asyncHandler(async(req, res) => {
     }
 });
 
-const redirect = (req, res) => {
-    res.status(200).json({ redirect: "/bounce" });
-};
+// const redirect = (req, res) => {
+//     res.status(200).json({ redirect: "/bounce" });
+// };
+
+const confirmCustomerAddress = asyncHandler(async (req, res) => {});
 
 module.exports = {
     findAllCartItems,
@@ -157,5 +159,6 @@ module.exports = {
     removeItemFromCart,
     getShippingEstimate,
     initiateShoppingSession,
-    redirect,
+    // redirect,
+    confirmCustomerAddress,
 };

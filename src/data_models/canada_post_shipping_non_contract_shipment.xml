@@ -1,0 +1,43 @@
+<non-contract-shipment>
+    <requested-shipping-point>${ process.env.CANADA_POST_SHIPPING_POINT }</requested-shipping-point>
+    <delivery-spec>
+        <service-code>DOM.RP</service-code>
+        <sender>
+            <company>${ process.env.CANADA_POST_SENDER_COMPANY }</company>
+            <contact-phone>${ process.env.CANADA_POST_SENDER_PHONE }</contact-phone>
+            <address-details>
+                <address-line-1>${ process.env.CANADA_POST_SENDER_ADDRESS }</address-line-1>
+                <city>${ process.env.CANADA_POST_SENDER_CITY }</city>
+                <prov-state>${ process.env.CANADA_POST_SENDER_PROVINCE }</prov-state>
+                <postal-zip-code>${ process.env.CANADA_POST_SENDER_PROVINCE }</postal-zip-code>
+            </address-details>
+        </sender>
+        <destination>
+            <name>${ customer.name }</name>
+            <company> </company>
+            <address-details>
+                <address-line-1>${ customer.address }</address-line-1>
+                <city>${ customer.city }</city>
+                <prov-state>${ customer.province }</prov-state>
+                <country-code>${ customer.country }</country-code>
+                <postal-zip-code>${ customer.postcode }</postal-zip-code>
+            </address-details>
+        </destination>
+        <options>
+            <option>
+                <option-code>LAD</option-code>
+            </option>
+        </options>
+        <parcel-characteristics>
+            <weight>15</weight>
+            <dimensions>
+                <length>1</length>
+                <width>1</width>
+                <height>1</height>
+            </dimensions>
+        </parcel-characteristics>
+        <preferences>
+            <show-packing-instructions>false</show-packing-instructions>
+        </preferences>
+    </delivery-spec>
+</non-contract-shipment>

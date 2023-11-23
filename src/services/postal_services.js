@@ -7,6 +7,7 @@ module.exports = {
     getPostcodeFromRequestBodyOrCookie,
     calculateShippingUsingPostcode,
     checkIfPostcodeIsRequired,
+    confirmCustomerAddress,
 };
 
 const fetch = require("node-fetch");
@@ -52,7 +53,7 @@ async function fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weight) {
             <parcel-characteristics>
                 <weight>${ grams }</weight>
             </parcel-characteristics>
-            <origin-postal-code>${ process.env.CANADA_POST_ORIGIN_POSTCODE }</origin-postal-code>
+            <origin-postal-code>${ process.env.CANADA_POST_SENDER_POSTCODE }</origin-postal-code>
             <destination>
                 <domestic>
                     <postal-code>${ postcode.match(/[A-Z0-9]{6}/) }</postal-code>
@@ -84,6 +85,10 @@ async function fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weight) {
     } else {
         throw new Error(`Échec de récupération du coût de livraison.: HTTP ${response.status}`);
     }
+}
+
+async function confirmCustomerAddress(address) {
+
 }
 
 /**

@@ -123,5 +123,10 @@ router.get('/cart/checkout', cart.initiateShoppingSession);
  * POST endpoint to send postcode and receive a shipping estimate in return
  */
 router.post("/cart/shipping_estimate", cart.getShippingEstimate);
+/**
+ * POST endpoint to process payment with stripe
+ */
+router.post("cart/payment", cart.confirmCustomerAddress);
+
 
 module.exports = router;

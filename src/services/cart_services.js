@@ -18,7 +18,7 @@ const {
     calculateShippingUsingPostcode,
     getPostcodeFromRequestBodyOrCookie,
     checkIfPostcodeIsRequired,
-} = require("./postcode_services");
+} = require("./postal_services");
 
 /**
  * Gets all items in the cart based on values in the cookie items attribute

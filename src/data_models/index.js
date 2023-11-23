@@ -4,6 +4,7 @@ const { Book, Workbook, BookFormat } = require("./book");
 const { Path } = require("./path");
 const { Cart, CartItem, Total } = require("./cart");
 const { Customer } = require("./customer");
+const { Shipping } = require("./shipping");
 
 module.exports = {
   url_endpoint_config,

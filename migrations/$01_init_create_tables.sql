@@ -75,14 +75,15 @@ CREATE TABLE workbooks
 # physical orders require a full address
 CREATE TABLE customers
 (
-    id       INT AUTO_INCREMENT PRIMARY KEY,
-    email    VARCHAR(255) COMMENT 'email address of customer does not need to be unique',
-    name     VARCHAR(255) COMMENT 'name of customer',
-    address  VARCHAR(255) COMMENT 'address of customer',
-    city     VARCHAR(255) COMMENT 'city of customer',
-    province VARCHAR(255) COMMENT 'province of customer',
-    postcode VARCHAR(255) COMMENT 'getShippingEstimate of customer',
-    country  VARCHAR(255) COMMENT 'country of customer'
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    email       VARCHAR(255) COMMENT 'email address of customer does not need to be unique',
+    given_name  VARCHAR(255) COMMENT 'given name of customer',
+    family_name VARCHAR(255) COMMENT 'family name of customer',
+    address     VARCHAR(255) COMMENT 'address of customer',
+    city        VARCHAR(255) COMMENT 'city of customer',
+    province    VARCHAR(255) COMMENT 'province of customer',
+    postcode    VARCHAR(255) COMMENT 'getShippingEstimate of customer',
+    country     VARCHAR(255) COMMENT 'country of customer'
 );
 
 # ORDERING
