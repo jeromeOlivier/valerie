@@ -580,7 +580,7 @@ dialog::backdrop {
     }
 
     .cart_item {
-                gap           : 1rem;
+        gap           : 1rem;
         grid-template : 1fr / 1fr 1.618fr;
     }
 
@@ -694,22 +694,22 @@ dialog#preview {
 button {
     align-items         : center;
     /*border-radius       : .45rem;*/
-    border        : none;
+    border              : none;
     /*border-width        : var(--stroke_double);*/
+    border              : initial;
+    border-radius       : 6px;
     color               : var(--white);
     cursor              : pointer;
     display             : flex;
     font-family         : var(--font_regular);
     font-size           : 1.05rem;
+    /*padding             : .33rem 1rem;*/
     height              : fit-content;
     justify-content     : center;
-    /*padding             : .33rem 1rem;*/
+
+    padding             : 0.6rem 1rem;
     transition-duration : 500ms;
     width               : fit-content;
-
-    border: initial;
-padding: 0.6rem 1rem;
-border-radius: 6px;
 }
 
 a {
@@ -737,7 +737,7 @@ a {
 }
 
 button.main_button {
-    background   : var(--btn_blue_main);
+    background : var(--btn_blue_main);
     /*border-color : var(--btn_blue_stoke);*/
 }
 
@@ -752,7 +752,7 @@ button:hover {
 }
 
 button.red_button {
-    background   : var(--btn_red_main);
+    background : var(--btn_red_main);
     /*border-color : var(--btn_red_stoke);*/
 }
 
@@ -764,17 +764,17 @@ button.red_button.delete {
 button.red_button:hover { background : var(--btn_red_main_hover); }
 
 button.orange_button {
-    background   : var(--btn_orange_main);
+    background : var(--btn_orange_main);
     /*border-color : var(--btn_orange_stoke);*/
 }
 
 button.orange_button:hover { background : var(--btn_orange_main_hover); }
 
 .orange_button:disabled, .orange_button:disabled:hover {
-    background   : var(--btn_orange_main_disabled);
+    background : var(--btn_orange_main_disabled);
     /*border-color : var(--btn_orange_stoke_disabled);*/
-    color        : var(--btn_orange_text_disabled);
-    cursor       : default;
+    color      : var(--btn_orange_text_disabled);
+    cursor     : default;
 }
 
 button > svg { margin-left : .5rem; }
@@ -850,7 +850,10 @@ textarea {
 }
 
 select {
-    -webkit-appearance: none;
+    -moz-appearance    : none;
+    -webkit-appearance : none;
+    appearance         : none;
+    background         : url("../img/svg/selection_arrow.svg") 98% / 1% no-repeat;
 }
 
 .link {
@@ -911,28 +914,28 @@ select {
 }
 
 .flex_row_start {
-    display        : flex;
-    flex-direction : row;
-    justify-content: start;
+    display         : flex;
+    flex-direction  : row;
+    justify-content : start;
 }
 
 .flex_column_start {
-    display        : flex;
-    flex-direction : column;
-    justify-content: start;
+    display         : flex;
+    flex-direction  : column;
+    justify-content : start;
 }
 
 .flex_row_end {
-    display        : flex;
-    flex-direction : row;
-    justify-content: end;
+    display         : flex;
+    flex-direction  : row;
+    justify-content : end;
 }
 
 .flex_column_end {
-    display        : flex;
-    flex-direction : column;
-    justify-content: end;
-    align-items: end;
+    align-items     : end;
+    display         : flex;
+    flex-direction  : column;
+    justify-content : end;
 }
 
 .full_height {
@@ -940,7 +943,7 @@ select {
 }
 
 .full_width {
-    width: 100%;
+    width : 100%;
 }
 
 .long-text {
