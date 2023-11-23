@@ -14,7 +14,6 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const path = require("path");
 const fs = require("fs");
-const rateLimit = require("express-rate-limit");
 // internal dependencies
 const routes = require("./routes/index");
 const { log } = require("util");
@@ -47,11 +46,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 200, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
 app.use(cookieParser());
 
 // routes
