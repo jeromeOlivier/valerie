@@ -896,7 +896,6 @@ select {
     padding          : 0 3rem 3rem;
     position         : relative;
     transition       : height 0.5s ease-out;
-    /*border: var(--grey) var(--stroke) solid;*/
     width            : 90%;
     z-index          : 1;
 }

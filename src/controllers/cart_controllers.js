@@ -147,11 +147,9 @@ const initiateShoppingSession = asyncHandler(async(req, res) => {
     }
 });
 
-// const redirect = (req, res) => {
-//     res.status(200).json({ redirect: "/bounce" });
-// };
+const confirmCustomerAddress = asyncHandler(async (req, res) => {
 
-const confirmCustomerAddress = asyncHandler(async (req, res) => {});
+});
 
 module.exports = {
     findAllCartItems,
@@ -159,6 +157,5 @@ module.exports = {
     removeItemFromCart,
     getShippingEstimate,
     initiateShoppingSession,
-    // redirect,
     confirmCustomerAddress,
 };
