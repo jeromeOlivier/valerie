@@ -24,10 +24,10 @@ async function getPageLayout(req, res) {
         // if req is defined and req.url is a string, try to render the page
         try {
             // validate the query parameters over the whitelist to prevent injection
-            const isValid = url_endpoint_config.find(valid => valid.path === req.url);
-            if (isValid) {
+            const matchedPage = url_endpoint_config.find(valid => valid.path === req.url);
+            if (matchedPage) {
                 // if the page is valid, render the layout with the page's content
-                await res.render("layout", { main: isValid.file });
+                await res.render("layout", { main: matchedPage.view });
             } else {
                 // if request is not valid, render the layout with the index content
                 await res.render("layout", { main: "index" });
@@ -52,10 +52,10 @@ async function getPageData(req, res) {
     if (req && typeof req.url === "string") {
         try {
             // validate the query parameters over the whitelist to prevent injection
-            const valid = url_endpoint_config.find((page) => page.path === req.url);
-            if (valid) {
+            const matchedPage = url_endpoint_config.find((page) => page.path === req.url);
+            if (matchedPage) {
                 // if the page is valid, render the layout with the page's content
-                res.render(valid.file);
+                res.render(matchedPage.view);
             } else {
                 // if the page is not valid, render the layout with the index content
                 res.render("not_found");

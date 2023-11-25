@@ -7,7 +7,6 @@
 module.exports = {
     getBook,
     getBookFormat,
-    isValidTitleAndType,
 };
 // dependencies
 const { INVALID_QUERY } = require("../constants/messages");
@@ -25,6 +24,7 @@ const path = require("node:path");
  * @returns {Promise<Book>, Path}
  */
 async function getBook(req, res) {
+    console.log('req.url inside getBook', req.url);
     if (!isValidQuery(req)) {
         res.status(500).send(INVALID_QUERY);
         return;
@@ -161,7 +161,7 @@ async function getBookPreviewImages(title) {
                     // filter out non-webp files
                     files = files.filter((file) => (file.endsWith(".webp")));
                     // generate the relative path for each image
-                    const images = files.map((file) => `./${ IMAGE_PATH }/${ title }/${ file }`);
+                    const images = files.map((file) => `/${ IMAGE_PATH }/${ title }/${ file }`);
                     resolve(images);
                 }
             });

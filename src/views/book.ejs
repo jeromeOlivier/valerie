@@ -3,9 +3,9 @@
         <div class="center">
             <h1 class="white"><%= book.title; %></h1>
             <div class="main-book-container">
-                <img src="./img/svg/<%= book.image; %>" alt="couverture du manuel"
+                <img src="../img/svg/<%= book.image; %>" alt="couverture du manuel"
                      class="book-cover <%= book.border; %> ">
-                <img id="preview-button" src="./img/svg/preview.svg" alt="aperçu du manuel">
+                <img id="preview-button" src="../img/svg/preview.svg" alt="aperçu du manuel">
             </div>
         </div>
         <h2 class="margin_top_3rem margin_bottom_1rem">Acheter le manuel <%= book.title %></h2>
@@ -19,7 +19,7 @@
             <%- include('book_format.ejs') %>
         </div>
         <div class="center margin_top_1rem">
-            <img id="post-logo" class="hide-post" src="./img/svg/poste_canada.svg" alt="logo de Poste Canada"
+            <img id="post-logo" class="hide-post" src="../img/svg/poste_canada.svg" alt="logo de Poste Canada"
                  width="180px">
         </div>
         <h2 class="margin_top_3rem margin_bottom_1rem">À propos du manuel <%= book.title %></h2>

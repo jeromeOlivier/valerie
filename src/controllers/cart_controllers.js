@@ -35,7 +35,7 @@ const findAllCartItems = asyncHandler(async(req, res) => {
         const cartItemsFromCookies = parseCartItemsFromCookie(req.cookies);
         const collectedData = await collectDataToBuildCart(cartItemsFromCookies, req);
 
-        if (req.url === "/data_cart") {
+        if (req.url === "/data") {
             res.render("cart", { ...collectedData });
         } else {
             res.render("layout", { main: "cart", ...collectedData });
@@ -137,7 +137,7 @@ const initiateShoppingSession = asyncHandler(async(req, res) => {
             collectDataToBuildCart(cartItems, req),
         ]);
         const paperFormat = isAnyCartItemPaperFormat(cart.cartItems);
-        if (req.url === "/cart/checkout") {
+        if (req.url === "/data_caisse") {
             res.render(paperFormat ? "paper_form" : "pdf_form", { customer, ...cart });
         } else {
             res.render("layout", { main: paperFormat ? "paper_form" : "pdf_form", customer, ...cart });

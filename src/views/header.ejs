@@ -1,9 +1,9 @@
 <div class="navbar">
-    <img src="./img/svg/logo_black.svg" alt="Valérie Gervais" class='logo' width="240px" loading="lazy">
+    <img src="/img/svg/logo_black.svg" alt="Valérie Gervais" class='logo' width="240px" loading="lazy">
     <span id="cherry" class="invisible"></span>
-    <img id='totals-button' src="./img/svg/cart.svg" width='24px'
-         alt="totals" loading="lazy" hx-get="/data_cart" hx-target="main" hx-swap="innerHTML show:top"
-         hx-push-url="/cart">
+    <img id='totals-button' src="/img/svg/cart.svg" width='24px'
+         alt="panier" loading="lazy" hx-get="/panier/data" hx-target="main" hx-swap="innerHTML show:top"
+         hx-push-url="/panier">
     <nav>
         <ul class="menu">
             <li hx-target="main"
@@ -17,24 +17,24 @@
                 hx-push-url="/service">Service
             </li>
             <li hx-target="main"
-                hx-get="/data_word"
+                hx-get="/manuel/data_word"
                 hx-swap="innerHTML settle:150ms show:top"
-                hx-push-url="/word">Word
+                hx-push-url="/manuel/word">Word
             </li>
             <li hx-target="main"
-                hx-get="/data_excel"
+                hx-get="/manuel/data_excel"
                 hx-swap="innerHTML settle:150ms show:top"
-                hx-push-url="/excel">Excel
+                hx-push-url="/manuel/excel">Excel
             </li>
             <li hx-target="main"
-                hx-get="/data_powerpoint"
+                hx-get="/manuel/data_powerpoint"
                 hx-swap="innerHTML settle:150ms show:top"
-                hx-push-url="/powerpoint">PowerPoint
+                hx-push-url="/manuel/powerpoint">PowerPoint
             </li>
             <li hx-target="main"
-                hx-get="/data_outlook"
+                hx-get="/manuel/data_outlook"
                 hx-swap="innerHTML settle:150ms show:top"
-                hx-push-url="/outlook">Outlook
+                hx-push-url="/manuel/outlook">Outlook
             </li>
             <li hx-target="main"
                 hx-get="/data_blog"

@@ -5,7 +5,7 @@
 
 const asyncHandler = require("express-async-handler");
 const { getPageData, getPageLayout, getBlogData, getBookPreviewImages } = require("../services/page_services");
-const { getBook, getBookFormat, isValidTitleAndType } = require("../services/book_services");
+const { getBook, getBookFormat } = require("../services/book_services");
 const { checkIfInCart } = require("../services/cart_services");
 const { parseCartItemsFromCookie } = require("../services/cookie_services")
 
@@ -41,18 +41,6 @@ const book_format = asyncHandler(async(req, res) => {
 });
 
 /**
- * Renders the "blog" page.
- *
- * @param {Request} req - The request object.
- * @param {Response} res - The response object.
- * @returns {Promise<void>} Promise that resolves when rendering is complete.
- */
-const blog = asyncHandler(async(req, res) => {
-    await res.render("layout", { main: "blog", contact: contact });
-});
-const data_blog = asyncHandler(async(req, res) => getBlogData(req, res));
-
-/**
  * Generate a preview of book images for rendering.
  *
  * @param {Function} asyncHandler - A middleware function that handles async operations.
@@ -79,6 +67,18 @@ const contact = asyncHandler(async(req, res) => getPageLayout(req, res));
 const data_contact = asyncHandler(async(req, res) => getPageData(req, res));
 const service = asyncHandler(async(req, res) => getPageLayout(req, res));
 const data_service = asyncHandler(async(req, res) => getPageData(req, res));
+
+/**
+ * Renders the "blog" page.
+ *
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ * @returns {Promise<void>} Promise that resolves when rendering is complete.
+ */
+const blog = asyncHandler(async(req, res) => {
+    await res.render("layout", { main: "blog", contact: contact });
+});
+const data_blog = asyncHandler(async(req, res) => getBlogData(req, res));
 
 module.exports = {
     index,

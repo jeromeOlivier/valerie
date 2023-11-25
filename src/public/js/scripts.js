@@ -11,11 +11,11 @@ const navItems = document.querySelectorAll(".menu > li");
 
 const eventMap = new Map();
 const modalEventMap = new Map();
-const detachedBooks = new Set(["/word", "/excel", "/powerpoint", "/outlook"]);
+const bookPathSet = new Set(["/manuel/word", "/manuel/excel", "/manuel/powerpoint", "/manuel/outlook"]);
 
 let areMobileEventsAdded = false;
 
-function isValidBook(path) { return detachedBooks.has(path); }
+function isValidBook(path) { return bookPathSet.has(path); }
 
 // functions activated depending on browser url
 function evaluatePathAndUpdateUI(path) {
@@ -27,10 +27,10 @@ function evaluatePathAndUpdateUI(path) {
         createBrandScroller();
         removePreviewModalEventListener();
     }
-    if (path === "/cart") {
+    if (path === "/panier") {
         removePreviewModalEventListener();
         ifCartIsEmptyDisableButton();
-    } else if (path === "/checkout") {
+    } else if (path === "/panier/caisse") {
         ifCheckoutFormIsNotCompleteDisableButton();
     }
 }

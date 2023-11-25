@@ -50,5 +50,5 @@ class Total {
 
 module.exports = { Cart, CartItem, Total,  };
 
-// path: src/data_models/cart.js
+// path: src/data_models/cart_routes.js
 

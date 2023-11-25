@@ -1,14 +1,14 @@
 <button id="add_to_cart"
 <% if (!isInCart) { %>
-        hx-post="cart/add/<%= book.format.title.toLowerCase(); %>/<%= book.format.type; %>"
+        hx-post="/panier/add/<%= book.format.title.toLowerCase(); %>/<%= book.format.type; %>"
         hx-swap="outerHTML"
         hx-target="#add_to_cart"
         class="orange_button">
     Ajouter au panier
     <% } else { %>
-        hx-get="/data_cart"
+        hx-get="/panier/data"
         hx-swap="innerHTML show:top"
-        hx-push-url="/cart"
+        hx-push-url="/panier"
         hx-target="main"
         class="main_button">
         Voir le panier
