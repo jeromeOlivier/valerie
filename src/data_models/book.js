@@ -3,7 +3,7 @@
  */
 class Book {
     /**
-     * A book.
+     * A findBook.
      * @typedef {Object} Book
      * @param {string} title
      * @param {string} background
@@ -74,4 +74,4 @@ class Workbook {
 
 module.exports = { Book, BookFormat, Workbook };
 
-// path: src/data_models/book.js
+// path: src/data_models/findBook.js

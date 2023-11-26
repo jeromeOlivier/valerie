@@ -3,7 +3,7 @@
  */
 class Shipping {
     /**
-     * A book.
+     * A findBook.
      * @typedef {Object} Shipping
      * @param {number} weight
      * @param {number} length

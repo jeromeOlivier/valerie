@@ -8,6 +8,7 @@ module.exports = {
     calculateShippingUsingPostcode,
     checkIfPostcodeIsRequired,
     confirmCustomerAddress,
+    sanitizeShippingAddress,
 };
 
 const fetch = require("node-fetch");
@@ -16,7 +17,6 @@ const { calculateTotalWeightOfItems, isAnyCartItemPaperFormat } = require("./car
 
 /**
  * Formats the given postcode and updates the specified cookie value with the formatted postcode.
- *
  * @param {Request} req - The request object that contains the postcode to be formatted.
  * @return {string} - The formatted postcode, or undefined if the postcode is invalid.
  */
@@ -35,11 +35,11 @@ function getPostcodeFromRequestBodyOrCookie(req) {
 }
 
 /**
- * Fetches the shipping estimate based on the given postal code and weight.
- *
- * @param {string} postcode - The destination postal code.
+ * Fetches the shipping estimate based on the given postcode and weight.
+ * @param {string} postcode - The destination postcode.
  * @param {number} weight - The weight of the parcel in grams.
- * @returns {Promise<number> | boolean} - The shipping price in CAD or false fails.
+ * @return {Promise<number>} - The shipping price in CAD.
+ * @throws {Error} - If there is an error in fetching the shipping estimate.
  */
 async function fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weight) {
     // API URL
@@ -87,13 +87,19 @@ async function fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weight) {
     }
 }
 
-async function confirmCustomerAddress(address) {
+/**
+ * Confirms the customer's address.
+ *
+ * @param {Request} req - The request object.
+ * @param {Request} res - The response object.
+ * @return {Promise<void>} - A promise that resolves with no value.
+ */
+async function confirmCustomerAddress(req, res) {
 
 }
 
 /**
  * Calculate the shipping cost based on the given postcode.
- *
  * @param {Array.<CartItem>} cartItems - cart items.
  * @param {string} postcode - The postcode to calculate the shipping for.
  * @return {Promise<string>} - A promise that resolves to the total shipping cost.
@@ -119,12 +125,18 @@ async function calculateShippingUsingPostcode(cartItems, postcode) {
 /**
  * Checks if postcode is required based on the cart items and the provided postcode.
  * Returns true if postcode is required, false otherwise.
- *
  * @param {Array.<CartItem>} cartItems - An array of cart items.
  * @param {string} postcode - The postcode provided by the user.
- *
  * @returns {boolean} - Returns true if postcode is required, false otherwise.
  */
 function checkIfPostcodeIsRequired(cartItems, postcode) {
     return isAnyCartItemPaperFormat(cartItems) && postcode === undefined;
+}
+
+async function sanitizeShippingAddress(customer) {
+    // process address logic here
+    // if address sanitation makes changes, send confirmation to customer
+    // return
+    // else await saveCustomerInfo()
+    // return customer
 }

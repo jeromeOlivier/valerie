@@ -30,7 +30,7 @@ function evaluatePathAndUpdateUI(path) {
     if (path === "/panier") {
         removePreviewModalEventListener();
         ifCartIsEmptyDisableButton();
-    } else if (path === "/panier/caisse") {
+    } else if (path === "/caisse") {
         ifCheckoutFormIsNotCompleteDisableButton();
     }
 }

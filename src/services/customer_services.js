@@ -4,29 +4,12 @@
  */
 
 module.exports = {
-    getCustomerFromDatabase,
-    createCustomerInDatabase,
+    findCustomer,
+    createCustomer,
+    updateCustomer,
 };
 const db = require("../db_ops/db");
 const { Customer } = require("../data_models/customer");
-
-async function getCustomerFromDatabase(sessionId) {
-    const query = await db.query(`
-        SELECT sessions.id,
-               customers.given_name,
-               customers.family_name,
-               customers.email,
-               customers.address,
-               customers.city,
-               customers.province,
-               customers.postcode,
-               customers.country
-        FROM sessions
-                 JOIN customers ON sessions.customer_id = customers.id
-        WHERE sessions.id = ?
-    `, [sessionId]);
-    return query[0][0];
-}
 
 /**
  * Creates a new customer in the database and associates it with the provided session ID.
@@ -36,7 +19,7 @@ async function getCustomerFromDatabase(sessionId) {
  * @returns {Promise<Customer>} A Promise that resolves to the created customer record.
  * @throws {Error} If an error occurs during the database operations.
  */
-async function createCustomerInDatabase(sessionId, postcode = "") {
+async function createCustomer(sessionId, postcode = "") {
     const conn = await db.getConnection();
 
     try {
@@ -76,4 +59,35 @@ async function createCustomerInDatabase(sessionId, postcode = "") {
     } finally {
         conn.release();
     }
+}
+
+/**
+ * Finds a customer based on the given session ID.
+ *
+ * @param {number} sessionId - The ID of the session to search for.
+ * @return {Promise<Customer>} - A Promise that resolves to an object representing the found customer, or undefined if no
+ * customer was found.
+ */
+async function findCustomer(sessionId) {
+    const query = await db.query(`
+        SELECT sessions.id,
+               customers.given_name,
+               customers.family_name,
+               customers.email,
+               customers.address,
+               customers.city,
+               customers.province,
+               customers.postcode,
+               customers.country
+        FROM sessions
+                 JOIN customers ON sessions.customer_id = customers.id
+        WHERE sessions.id = ?
+    `, [sessionId]);
+    return query[0][0];
+    // return a customer object instead of an anonymous object
+}
+
+
+async function updateCustomer(customer) {
+    // save customer to the database
 }

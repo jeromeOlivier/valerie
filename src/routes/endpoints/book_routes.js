@@ -1,40 +1,22 @@
+/**
+ * module for book routes
+ * @module routes/endpoints/book_routes
+ */
 
-
-const page = require("../../controllers/page_controllers");
+const book = require("../../controllers/book_controllers");
 const bookRouter = require("express").Router();
 
-/**
- * GET endpoint for the book page using excel data in a full page load
- */
-bookRouter.get("/excel", page.book);
-/**
- * GET endpoint for the book page using outlook data in a full page load
- */
-bookRouter.get("/outlook", page.book);
-/**
- * GET endpoint for the book page using powerpoint data in a full page load
- */
-bookRouter.get("/powerpoint", page.book);
-/**
- * GET endpoint for the book page using word data in a full page load
- */
-bookRouter.get("/word", page.book);
-
-/**
- * GET endpoint for the excel page in an htmx DOM swap
- */
-bookRouter.get("/data_excel", page.book);
-/**
- * GET endpoint for the outlook page in an htmx DOM swap
- */
-bookRouter.get("/data_outlook", page.book);
-/**
- * GET endpoint for the powerpoint page in an htmx DOM swap
- */
-bookRouter.get("/data_powerpoint", page.book);
-/**
- * GET endpoint for the word page in an htmx DOM swap
- */
-bookRouter.get("/data_word", page.book);
+// full page requests
+bookRouter.get("/excel", book.findBook);
+bookRouter.get("/outlook", book.findBook);
+bookRouter.get("/powerpoint", book.findBook);
+bookRouter.get("/word", book.findBook);
+// htmx swap requests
+bookRouter.get("/swap_excel", book.findBook);
+bookRouter.get("/swap_outlook", book.findBook);
+bookRouter.get("/swap_powerpoint", book.findBook);
+bookRouter.get("/swap_word", book.findBook);
+// htmx swaps to display book formats
+bookRouter.get("/format/:title/:type", book.findBookFormat)
 
 module.exports = bookRouter;

@@ -56,7 +56,7 @@
                 <div id="cart_summary">
                     <div id="post_code">
                         <div>Pour connaître le coût de livraison, indiquer votre code postal:</div>
-                        <form hx-post="panier/shipping_estimate" hx-target="main" id="post_code_form">
+                        <form hx-post="postal/estimate" hx-target="main" id="post_code_form">
                             <input id="post_code_input" name="postcode" maxlength="7" required>
                             <button id="post_code_submit_button" class="main_button blue
                             small" type="submit">soumettre
@@ -99,9 +99,9 @@
                         </div>
                     <% } %>
                     <button class="orange_button"
-                            hx-get="/panier/data_caisse"
+                            hx-get="/caisse/swap"
                             hx-target="main"
-                            hx-push-url="/panier/caisse">
+                            hx-push-url="/caisse">
                         Passer à la caisse
                     </button>
                 </div>

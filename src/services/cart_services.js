@@ -5,7 +5,7 @@
 
 module.exports = {
     removeOneItemFromCart,
-    checkIfInCart,
+    confirmItemIsInCart,
     calculateTotalWeightOfItems,
     collectDataToBuildCart,
     isAnyCartItemPaperFormat,
@@ -161,7 +161,7 @@ async function returnCartTotals(cartItems, postcode) {
  * @return {boolean} - Returns true if an item with the specified title and type is found in the cart,
  *                    otherwise returns false.
  */
-function checkIfInCart(cartItems, title, type) {
+function confirmItemIsInCart(cartItems, title, type) {
     return cartItems.some(item => item.title === title.toLowerCase() && item.type === type.toLowerCase());
 }
 

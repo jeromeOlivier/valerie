@@ -1,35 +1,33 @@
 /**
- * utility_services module
+ * utility services module
  * @module services/utility_services
  */
 
 module.exports = {
-    isValidPath,
+    isValidPath: isValidConfiguration,
     isValidQuery,
     isValidTerm,
-    fetchUrlEndpointConfiguration,
+    findUrlEndpointConfiguration,
     transformToTitleCase,
+    isValidTitleAndType,
+    validatePaperForm,
+    validatePDFForm,
+    renderError500Page,
 };
-// dependencies
-const {
-  url_endpoint_config,
-  url_product_types,
-  Path,
-  CartItem,
-} = require("../data_models");
 
-// VALIDATORS
+const { url_endpoint_config, url_product_types, Configuration, CartItem } = require("../data_models");
+
 /**
- * Description: This function returns the path if it is valid.
- * @param {Path} path
- * @returns {Path}
+ * This function returns the configuration if it is valid.
+ * @param {Configuration} configuration
+ * @returns {Configuration}
  */
-function isValidPath(path) {
-    return (path && path.title) ? path : null;
+function isValidConfiguration(configuration) {
+    return (configuration && configuration.title) ? configuration : null;
 }
 
 /**
- * Description: This function returns true if the given request is valid.
+ * This function returns true if the given request is valid.
  * @param req
  * @returns {boolean}
  */
@@ -47,33 +45,50 @@ function isValidTerm(term) {
 }
 
 /**
- * validate quantity
- * @param quantity
- * @returns {boolean}
+ * This function returns the configuration for the requested url.
+ * @param {Request} req
+ * @returns {Configuration | null}
  */
-function isValidQuantity(quantity) {
-    return quantity > 0 && quantity <= 3;
+function findUrlEndpointConfiguration(req) {
+    return url_endpoint_config.find((endPoint) => endPoint.path === req.url) || null;
 }
 
-// SEARCH
 /**
- * Description: This function returns the configuration for a given request.
- * @param req
- * @returns {Path | null}
+ * Transforms the titles of cart items to title case.
+ *
+ * @param {Array} cartItems - The array of cart items.
+ * @return {Array} - The array of cart items with titles transformed to title case.
  */
-function fetchUrlEndpointConfiguration(req) {
-    return url_endpoint_config.find((endPoint) => endPoint.path === req.url);
-}
-
-// TEXT MANIPULATION
-// /**
-//  * Description: This function returns strings with the first letter capitalized.
-//  * @param {Array.<CartItem>} cartItems
-//  * @returns {Array.<CartItem>}
-//  */
 function transformToTitleCase(cartItems) {
     return cartItems.map(item => {
         const capitalizedTitle = item.title.charAt(0).toUpperCase() + item.title.slice(1);
         return new CartItem(capitalizedTitle, item.type, item.price);
     });
+}
+
+/**
+ * Checks if a given title and format is valid.
+ *
+ * @param {string} title - The title of the product.
+ * @param {string} format - The format of the product.
+ *
+ * @return {boolean} Returns true if both the title and format are valid, false otherwise.
+ */
+function isValidTitleAndType(title, format) {
+    const validTitle = url_product_types.has(title.toLowerCase());
+    const validFormat = url_product_types.has(format.toLowerCase());
+    return validTitle && validFormat;
+}
+
+function validatePaperForm(form) {}
+
+function validatePDFForm(form) {}
+
+/**
+ * Renders a 500 error page.
+ * @param {object} res - The response object.
+ * @return {void}
+ */
+function renderError500Page(res) {
+    res.status(500).render("error_page", { message: `${ INVALID_QUERY }` });
 }

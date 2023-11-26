@@ -685,7 +685,7 @@ dialog#preview {
     left : .5rem;
 }
 
-/* remove preview button for screens narrower than regular paper */
+/* remove findBookPreview button for screens narrower than regular paper */
 @media (max-aspect-ratio : 8.5/11) {
     #preview-button { visibility : hidden; }
 }

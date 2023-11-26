@@ -1,54 +1,49 @@
 /**
- * book_services module
+ * book services module
  * @module services/book_services
  */
 
-// constants
-module.exports = {
-    getBook,
-    getBookFormat,
-};
-// dependencies
+module.exports = { getBook, getBookFormat, getBookPreviewImages };
+
 const { INVALID_QUERY } = require("../constants/messages");
-const { IMAGE_PATH } = require("../constants/links");
+const { WEBP_IMAGE_PATH } = require("../constants/resources");
+const { Book, Workbook, BookFormat, Configuration } = require("../data_models");
+const { isValidQuery, findUrlEndpointConfiguration, isValidPath, isValidTitleAndType } = require("./utility_services");
 const db = require("../db_ops/db");
-const { url_product_types, Book, Workbook, BookFormat, Path } = require("../data_models");
-const { isValidQuery, fetchUrlEndpointConfiguration, isValidPath } = require("./utility_services");
 const fs = require("fs");
 const path = require("node:path");
 
 /**
- * This function returns the book data for the given path.
+ * This function returns the findBook data for the given configuration.
  * @param req
  * @param res
- * @returns {Promise<Book>, Path}
+ * @returns {Promise<Book>, Configuration}
  */
 async function getBook(req, res) {
-    console.log('req.url inside getBook', req.url);
     if (!isValidQuery(req)) {
         res.status(500).send(INVALID_QUERY);
         return;
     }
-    const path = fetchUrlEndpointConfiguration(req);
-    if (!isValidPath(path)) {
+    const configuration = findUrlEndpointConfiguration(req);
+    if (!isValidPath(configuration)) {
         res.status(500).send(INVALID_QUERY);
         return;
     }
     try {
-        const book = await getBookData(path);
-        return { book, path };
+        const book = await getBookData(configuration);
+        return { book, path: configuration };
     } catch (error) {
         res.status(500).send(error.message);
     }
 }
 
 /**
- * This function returns the book data for the given path.
- * @param {Path} path
+ * This function returns the findBook data for the given configuration.
+ * @param {Configuration} configuration
  * @returns {Promise<Book>}
  */
-const getBookData = async(path) => {
-    const book = await fetchBookByTitle(path.title);
+const getBookData = async(configuration) => {
+    const book = await getBookByTitle(configuration.title);
     const [bookFormat, workbooks, bookPreviewImages] = await Promise.all([
         getBookFormat(book.title), handleWorkbooks(book), getBookPreviewImages(book.title),
     ]);
@@ -69,7 +64,7 @@ const getBookData = async(path) => {
 async function getBookFormat(title, format = "pdf") {
     // validate the query parameters
     if (!isValidTitleAndType(title, format)) throw new Error(INVALID_QUERY);
-    // get the book format data
+    // get the findBook format data
     const [[query]] = await db.query(`
         SELECT b.title     AS title,
                bf.pub_date AS date,
@@ -98,21 +93,21 @@ async function getBookFormat(title, format = "pdf") {
  * @returns {Promise<Array.<Workbook>>}
  */
 async function getWorkbooks(title) {
-    // get the workbooks for the book
+    // get the workbooks for the findBook
     const [query] = await db.query(`
-        SELECT wb.title     AS title,
+        SELECT wb.title       AS title,
                wb.description AS description,
-               wb.seq_order AS sequence,
-               wbc.content   AS content,
-               wbc.path      AS path,
-               wbc.level     AS level
+               wb.seq_order   AS sequence,
+               wbc.content    AS content,
+               wbc.path       AS path,
+               wbc.level      AS level
         FROM books b
                  JOIN workbooks wb ON wb.book_id = b.id
                  JOIN workbook_contents wbc ON wb.id = wbc.workbook_id
         WHERE b.title = ?
         ORDER BY b.id, sequence, path + '.';`, [title]);
 
-    // If no workbooks returned for the book, handle accordingly
+    // If no workbooks returned for the findBook, handle accordingly
     if (!query || query.length === 0) {
         // handle this case
     }
@@ -146,37 +141,38 @@ async function getWorkbooks(title) {
 /**
  * This function returns an array of image paths for the given title.
  * @param title
- * @returns {Promise<Array.<Book.preview_images>>}
+ * @returns {Promise<Array.<string>>}
  */
 async function getBookPreviewImages(title) {
-    // generate the absolute path to the directory for the book's images
-    const directoryPath = path.join(__dirname, `../public/${ IMAGE_PATH }/${ title }`);
-    try {
-        return new Promise((resolve, reject) => {
-            // read the directory
-            fs.readdir(directoryPath, (err, files) => {
-                if (err) {
-                    reject(`file not found: ${ err }`);
-                } else {
-                    // filter out non-webp files
-                    files = files.filter((file) => (file.endsWith(".webp")));
-                    // generate the relative path for each image
-                    const images = files.map((file) => `/${ IMAGE_PATH }/${ title }/${ file }`);
-                    resolve(images);
+    // generate the absolute path to the directory for the findBook's images
+    const directoryPath = path.join(__dirname, `../public/${ WEBP_IMAGE_PATH }/${ title }`);
+
+    return new Promise((resolve, reject) => {
+        // read the directory
+        fs.readdir(directoryPath, (err, files) => {
+            if (err) {
+                reject(`Unable to read the directory for book images: ${ err }`);
+            } else {
+                // filter out non-webp files
+                files = files.filter((file) => (file.endsWith(".webp")));
+                // generate the relative configuration for each image
+                const images = files.map((file) => `/${ WEBP_IMAGE_PATH }/${ title }/${ file }`);
+                // if no images found, send back an empty array
+                if (images.length === 0) {
+                    resolve([]);
                 }
-            });
+                resolve(images);
+            }
         });
-    } catch (error) {
-        throw error;
-    }
+    });
 }
 
 /**
- * This function returns the book data for the given title.
+ * This function returns the findBook data for the given title.
  * @param {string} title
  * @returns {Promise<Book>}
  */
-async function fetchBookByTitle(title) {
+async function getBookByTitle(title) {
     try {
         const [[book]] = await db.query("SELECT * FROM books WHERE title = ? ;", [title]);
         return new Book(book.title, book.background, book.border, book.image, book.preview_images, book.description, book.format, book.workbook_desc);
@@ -186,24 +182,10 @@ async function fetchBookByTitle(title) {
 }
 
 /**
- * This function returns the workbooks for the given book.
+ * This function returns the workbooks for the given findBook.
  * @param {Book} book
  * @returns {Promise<Array.<Workbook>> | Array.<>}
  */
 async function handleWorkbooks(book) {
     return book.workbooks = book.workbook_desc ? await getWorkbooks(book.title) : [];
-}
-
-/**
- * Checks if a given title and format is valid.
- *
- * @param {string} title - The title of the product.
- * @param {string} format - The format of the product.
- *
- * @return {boolean} Returns true if both the title and format are valid, false otherwise.
- */
-function isValidTitleAndType(title, format) {
-    const validTitle = url_product_types.has(title.toLowerCase());
-    const validFormat = url_product_types.has(format.toLowerCase());
-    return validTitle && validFormat;
 }

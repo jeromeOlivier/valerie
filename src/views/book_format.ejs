@@ -2,14 +2,14 @@
     <button id="pdf-format-tab"
     <% if (book.format.type.toLowerCase() === "pdf") { %> class="selected"
     <% }
-    else { %> hx-get="/format/<%= book.format.title.toLowerCase(); %>/pdf"%>
+    else { %> hx-get="/manuel/format/<%= book.format.title.toLowerCase(); %>/pdf"%>
             <% } %>
     >Format PDF
     </button>
     <button id="papier-format-tab"
     <% if (book.format.type.toLowerCase() === "papier") { %> class="selected"
     <% }
-    else { %> hx-get="/format/<%= book.format.title.toLowerCase(); %>/papier"%>
+    else { %> hx-get="/manuel/format/<%= book.format.title.toLowerCase(); %>/papier"%>
             <% } %>
     >Format Papier
     </button>
@@ -46,4 +46,3 @@
         <%- include('book_format_add_button.ejs') %>
     </div>
 </div>
-<!-- path: /views/book_format.ejs -->
