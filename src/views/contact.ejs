@@ -1,14 +1,14 @@
 <div class="full_width_container off_white_background">
     <div class="content_container">
         <h1 class="margin_top_5rem center">Contact</h1>
-        <form class="margin_bottom_4rem">
+        <form class="margin_bottom_4rem" hx-post="/message">
             <label for="courriel" class="block margin_top_2rem margin_bottom_1rem">Courriel</label>
             <input id="courriel" type="email" class="white_box" required/>
             <label for="subject" class="block margin_top_2rem margin_bottom_1rem">Sujet</label>
             <input id="subject" type="text" class="white_box" required/>
             <label for="message" class="block margin_top_2rem margin_bottom_1rem">Message</label>
             <textarea id="message" rows="5" class="white_box" required></textarea>
-            <button class="main_button margin_top_2rem">Envoyer</button>
+            <button class="main_button margin_top_2rem" type="submit">Envoyer</button>
         </form>
     </div>
 </div>

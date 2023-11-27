@@ -14,6 +14,6 @@ staticRouter.get("/swap_index", staticPage.render);
 staticRouter.get("/swap_contact", staticPage.render);
 staticRouter.get("/swap_service", staticPage.render);
 
-staticRouter.post("/email", staticPage.sendEmail);
+staticRouter.post("/message", staticPage.message);
 
 module.exports = staticRouter;

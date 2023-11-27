@@ -24,15 +24,15 @@
             rapide des plus satisfaisants.</p>
         <p class="margin_top_2rem">Pour plus d’information ou pour recevoir une
             estimation des coûts, n’hésitez pas à me contacter.</p>
-        <form class="margin_bottom_4rem" hx-post="/email" hx-target="main" hx-swap="innerHTML settle:150ms show:top">
+        <form class="margin_bottom_4rem" hx-post="/message">
             <label for="courriel" class="block margin_top_2rem margin_bottom_1rem">Courriel:</label>
-            <input id="courriel" type="email" class="white_box" required />
+            <input id="courriel" type="email" name="from" class="white_box" required />
             <label for="subject" class="block margin_top_2rem margin_bottom_1rem">Sujet</label>
-            <input id="subject" type="text" class="white_box" required />
+            <input id="subject" type="text" name="subject" class="white_box" required />
             <label for="message" class="block margin_top_2rem margin_bottom_1rem">Message</label>
-            <textarea id="message" rows="10" class="white_box"
+            <textarea id="message" rows="10" name="text" class="white_box"
                       required></textarea>
-            <button class="main_button margin_top_2rem">Envoyer</button>
+            <button class="main_button margin_top_2rem" type="submit">Envoyer</button>
         </form>
     </div>
 </div>

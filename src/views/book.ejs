@@ -55,14 +55,14 @@
         <div id="contact"></div>
         <h2 class="margin_bottom_1rem margin_top_5rem">Contactez-moi</h2>
         <p>Pour plus d’information, je vous invite à utiliser le formulaire suivant</p>
-        <form class="margin_bottom_4rem">
+        <form class="margin_bottom_4rem" hx-post="/message">
             <label for="courriel" class="block margin_top_2rem margin_bottom_1rem">Courriel</label>
             <input id="courriel" type="email" class="white_box" placeholder="mon@couriel.com" />
             <label for="subject" class="block margin_top_2rem margin_bottom_1rem">Sujet</label>
             <input id="subject" type="text" class="white_box" required value="Manuel <%= book.title %>" />
             <label for="message" class="block margin_top_2rem margin_bottom_1rem">Message</label>
             <textarea id="message" rows="10" class="white_box" required></textarea>
-            <button class="main_button margin_top_2rem">Envoyer</button>
+            <button class="main_button margin_top_2rem" type="submit">Envoyer</button>
         </form>
     </div>
 </div>

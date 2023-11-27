@@ -26,34 +26,40 @@ const render = (req, res) => {
     } catch (error) {
         res.render("error_page", { message: error.message });
     }
-}
+};
 
-const sendEmail = (req, res) => {
-    // send email with node mailer
+const message = (req, res) => {
+    const from = req.body.from;
+    const subject = req.body.subject;
+    const text = req.body.text;
 
+    // send email using nodemailer
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: process.env.MAIL_SMTP,
+        port: process.env.MAIL_PORT,
+        secure: false,
+        requireTLS: true,
         auth: {
-            user: 'your_email@gmail.com',
-            pass: 'your_password'
-        }
+            user: process.env.EMAIL,
+            pass: process.env.EMAIL_PASSWORD,
+        },
     });
 
     const mailOptions = {
-        from: 'your_email@gmail.com',
-        to: 'recipient_email@gmail.com',
-        subject: 'Subject of your email',
-        text: 'Body of your email'
+        from: from,
+        to: process.env.EMAIL,
+        subject: subject,
+        text: text,
     };
 
-    transporter.sendMail(mailOptions, function(error, info){
+    transporter.sendMail(mailOptions, function(error, info) {
         if (error) {
-            console.log(error);
+            console.error("Failed to send email:", error);
+            res.status(500).render("error_page", { message: "Une erreur a eu lieu. Essayer à nouveau." });
         } else {
-            console.log('Email sent: ' + info.response);
+            res.render("thank_you_for_message");
         }
     });
-    // upon success, respond with page render
-}
+};
 
-module.exports = { render, sendEmail };
+module.exports = { render, message };
