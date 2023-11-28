@@ -5,6 +5,7 @@
 
 const { isValidQuery, findUrlEndpointConfiguration } = require("../services/utility_services");
 const nodemailer = require("nodemailer");
+const { Message } = require("../data_models/message");
 
 /**
  * Render the appropriate view based on the request.
@@ -13,7 +14,7 @@ const nodemailer = require("nodemailer");
  * @param {Response} res - Response object
  * @returns {void}
  */
-const render = (req, res) => {
+const renderPage = (req, res) => {
     try {
         if (isValidQuery(req)) {
             const page = findUrlEndpointConfiguration(req);
@@ -28,28 +29,37 @@ const render = (req, res) => {
     }
 };
 
-const message = (req, res) => {
-    const from = req.body.from;
-    const subject = req.body.subject;
-    const text = req.body.text;
+/**
+ * Sends an email using nodemailer, with the provided information.
+ *
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const processMessage = (req, res) => {
+    const message = new Message(req.body.from, req.body.subject, req.body.text);
+    if (!message) {
+        throw new Error("Missing required fields");
+    }
 
     // send email using nodemailer
     const transporter = nodemailer.createTransport({
-        host: process.env.MAIL_SMTP,
-        port: process.env.MAIL_PORT,
-        secure: false,
-        requireTLS: true,
+        service: 'gmail',
         auth: {
-            user: process.env.EMAIL,
-            pass: process.env.EMAIL_PASSWORD,
+            user: process.env.ROBOT_SENDER,
+            pass: process.env.ROBOT_PASSWORD.replace(/'+/g, ''),
         },
+        priority: "high"
     });
 
     const mailOptions = {
-        from: from,
-        to: process.env.EMAIL,
-        subject: subject,
-        text: text,
+        from: message.from,
+        to: process.env.EMAIL_RECEIVER,
+        subject: message.subject,
+        text: `
+        Courriel: ${message.from},
+        Sujet: ${message.subject},
+        Message: ${message.text}`,
+
     };
 
     transporter.sendMail(mailOptions, function(error, info) {
@@ -62,4 +72,4 @@ const message = (req, res) => {
     });
 };
 
-module.exports = { render, message };
+module.exports = { renderPage, processMessage };

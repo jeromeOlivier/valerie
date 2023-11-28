@@ -6,14 +6,14 @@
 const staticPage = require("../../controllers/static_controllers");
 const staticRouter = require("express").Router();
 
-staticRouter.get("", staticPage.render);
-staticRouter.get("/contact", staticPage.render);
-staticRouter.get("/service", staticPage.render);
+staticRouter.get("", staticPage.renderPage);
+staticRouter.get("/contact", staticPage.renderPage);
+staticRouter.get("/service", staticPage.renderPage);
 
-staticRouter.get("/swap_index", staticPage.render);
-staticRouter.get("/swap_contact", staticPage.render);
-staticRouter.get("/swap_service", staticPage.render);
+staticRouter.get("/swap_index", staticPage.renderPage);
+staticRouter.get("/swap_contact", staticPage.renderPage);
+staticRouter.get("/swap_service", staticPage.renderPage);
 
-staticRouter.post("/message", staticPage.message);
+staticRouter.post("/processMessage", staticPage.processMessage);
 
 module.exports = staticRouter;

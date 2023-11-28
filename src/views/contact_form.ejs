@@ -1,0 +1,28 @@
+<form class="margin_bottom_4rem" hx-trigger="afterOnLoad:reset()">
+    <label for="courriel" class="block margin_top_2rem margin_bottom_1rem">Courriel</label>
+    <input id="courriel" type="email" name="from" class="white_box" required />
+    <label for="subject" class="block margin_top_2rem margin_bottom_1rem">Sujet</label>
+    <% if (book.title === undefined) { %>
+        <input id="subject"
+               type="text"
+               name="subject"
+               class="white_box"
+               required />
+    <% } else { %>
+        <input id="subject"
+               type="text"
+               name="subject"
+               class="white_box"
+               value="Manuel <%= book.title; %>"
+               required />
+    <% } %>
+    <label for="processMessage" class="block margin_top_2rem margin_bottom_1rem">Message</label>
+    <textarea id="processMessage" rows="5" name="text" class="white_box" required></textarea>
+    <button class="main_button margin_top_2rem"
+            type="submit"
+            hx-post="/processMessage"
+            hx-target="main"
+            hx-swap="innerHTML settle:150ms show:top"
+    >Envoyer
+    </button>
+</form>
