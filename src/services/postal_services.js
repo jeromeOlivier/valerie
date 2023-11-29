@@ -105,12 +105,23 @@ async function confirmCustomerAddress(req, res) {
  * @return {Promise<string>} - A promise that resolves to the total shipping cost.
  */
 async function calculateShippingUsingPostcode(cartItems, postcode) {
+    // special conditions: if only outlook, or powerpoint, it won't be calculated as a parcel
+    const onlyOulook = cartItems.length === 1 && cartItems[0].title === "Outlook";
+    const onlyPowerpoint = cartItems.length === 1 && cartItems[0].title === "Powerpoint";
+
     if (postcode === undefined) {
         return "";
     } else {
         const weightAndItems = await calculateTotalWeightOfItems(cartItems);
         // get the shipping estimate
-        const shippingEstimate = await fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weightAndItems.weight);
+        let shippingEstimate;
+        if (onlyOulook) {
+            shippingEstimate = '5.00';
+        } else if (onlyPowerpoint) {
+            shippingEstimate = '6.50';
+        } else {
+            shippingEstimate = await fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weightAndItems.weight);
+        }
         // calculate total based on canada post estimate plus $3 or $5 envelope
         let totalShipping;
         if (weightAndItems.numberOfItems > 1) {
