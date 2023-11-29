@@ -106,16 +106,15 @@ async function confirmCustomerAddress(req, res) {
  */
 async function calculateShippingUsingPostcode(cartItems, postcode) {
     // special conditions: if only outlook, or powerpoint, it won't be calculated as a parcel
-    const onlyOulook = cartItems.length === 1 && cartItems[0].title === "Outlook";
+    const onlyOutlook = cartItems.length === 1 && cartItems[0].title === "Outlook";
     const onlyPowerpoint = cartItems.length === 1 && cartItems[0].title === "Powerpoint";
-
     if (postcode === undefined) {
         return "";
     } else {
         const weightAndItems = await calculateTotalWeightOfItems(cartItems);
         // get the shipping estimate
         let shippingEstimate;
-        if (onlyOulook) {
+        if (onlyOutlook) {
             shippingEstimate = '5.00';
         } else if (onlyPowerpoint) {
             shippingEstimate = '6.50';

@@ -2,7 +2,7 @@
     <label for="courriel" class="block margin_top_2rem margin_bottom_1rem">Courriel</label>
     <input id="courriel" type="email" name="from" class="white_box" required />
     <label for="subject" class="block margin_top_2rem margin_bottom_1rem">Sujet</label>
-    <% if (book.title === undefined) { %>
+    <% if (typeof book === 'undefined') { %>
         <input id="subject"
                type="text"
                name="subject"
