@@ -3,16 +3,44 @@
  * @module services/checkout_services
  */
 
-module.exports = { processPurchaseTransaction, validatePaperForm, validatePDFForm }
+module.exports = { processPurchaseTransaction, sanitizeShippingAddress, validatePDFForm };
+
+const { Customer } = require("../data_models");
+const fetch = require("node-fetch");
 
 /**
  * Validates a paper form.
  *
- * @param {object} form - The form data to be validated.
- * @returns {boolean} - A boolean value indicating whether the form data complies to the rules.
+ * @param {Customer} form - The address in form data to be validated.
+ * @returns {object} - The validated object.
  */
-function validatePaperForm(form) {
-    // if form data complies to rules, return true or else false
+async function sanitizeShippingAddress(form) {
+    const url = `https://addressvalidation.googleapis.com/v1:validateAddress?key=${ process.env.GOOGLE_MAP_API }`;
+    const data = {
+        "revision": 0,
+        "regionCode": "CA",
+        "postalCode": form.postcode,
+        "administrativeArea": form.province,
+        "locality": form.city,
+        addressLines: [form.address],
+    };
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        // throw an error if API response is not ok
+        throw new Error(
+            `Google API responded with a ${ response.status } status.`
+                `Error message: ${ response.statusText }`,
+        );
+    }
+    return await response.json();
 }
 
 /**

@@ -17,6 +17,7 @@ class Customer {
         this.given_name = given_name;
         this.family_name = family_name;
         this.email = email;
+        this.address = address;
         this.city = city;
         this.province = province;
         this.postcode = postcode;

@@ -1,12 +1,5 @@
 /* TYPEFACES */
 @font-face {
-    font-family : "iLite";
-    src         : url("../font/iLite.woff2") format("woff2");
-    font-weight : 300;
-    font-style  : normal;
-}
-
-@font-face {
     font-family : "iReg";
     src         : url("../font/iReg.woff2") format("woff2");
     font-weight : 400;
@@ -51,7 +44,6 @@
     --drop_shadow               : drop-shadow(5px 5px 3px #0000003F);
     --excel_stroke              : #014328;
     --font_bold                 : iBold, Arial, sans-serif;
-    --font_lite                 : iLite, Arial, sans-serif;
     --font_regular              : iReg, Arial, sans-serif;
     --font_semibold             : iSemi, Arial, sans-serif;
     --grad_excel                : linear-gradient(137.51deg, #237045 0.86%, #17766F 43.85%, #98438A 100%);
@@ -258,15 +250,15 @@ nav > ul > li {
     color           : var(--black);
     font-family     : var(--font_semibold);
     font-style      : normal;
-    font-weight     : 700;
+    font-weight     : 600;
     text-decoration : none;
 }
 
 .cart_title {
-    font-family : var(--font_bold);
+    font-family : var(--font_semibold);
     font-size   : 1.25rem;
     font-style  : normal;
-    font-weight : 700;
+    font-weight : 600;
 }
 
 .no_wrap {
@@ -303,6 +295,14 @@ nav > ul > li {
 .subsection {
     margin-bottom : .125rem;
     padding-left  : 3rem;
+}
+
+.text_right {
+    text-align: right;
+}
+
+.large_text {
+    font-size: 1.25rem;
 }
 
 /* images */
@@ -1008,7 +1008,7 @@ div#format_specs {
     background-color      : var(--white);
     border-radius         : .45rem;
     display               : grid;
-    gap                   : 1rem 2rem;
+    gap                   : .4rem .75rem;
     /*width: 100%;*/
     grid-template-columns : 4fr 5fr;
     max-width             : 25rem;

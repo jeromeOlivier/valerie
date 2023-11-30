@@ -10,10 +10,11 @@ const {
     checkIfSessionIdAlreadyExists,
     updateCookie,
 } = require("../services/cookie_services");
-const { getPostcodeFromRequestBodyOrCookie, sanitizeShippingAddress } = require("../services/postal_services");
+const { getPostcodeFromRequestBodyOrCookie } = require("../services/postal_services");
 const { findCustomer, createCustomer, updateCustomer } = require("../services/customer_services");
 const { collectDataToBuildCart, isAnyCartItemPaperFormat } = require("../services/cart_services");
-const { processPurchaseTransaction } = require("../services/checkout_services");
+const { processPurchaseTransaction, sanitizeShippingAddress } = require("../services/checkout_services");
+const { Customer } = require("../data_models");
 
 /**
  * create a checkout session that returns a form view for the customer to fill out
@@ -50,16 +51,25 @@ const createCheckout = asyncHandler(async(req, res) => {
     }
 });
 
-const updatePaperCheckout = asyncHandler(async(req, res) => {
+const executePaperCheckout = asyncHandler(async(req, res) => {
+    const formData = req.body;
+    const customer = new Customer(
+        formData.first_name,
+        formData.family_name,
+        formData.email,
+        formData.address,
+        formData.city,
+        formData.province,
+        formData.postcode,
+        formData.country);
     try {
-        // validatePaperForm();
-        // sanitizeShippingAddress();
+        await sanitizeShippingAddress(customer);
         // if no errors found...
         // updateCustomer();
-        // processPurchaseTransaction();
+        // processTransaction();
         // if address rejected, render paper form view
     } catch (error) {
-        res.render("error_page", { message: error.message });
+        res.render("error_page", { error });
     }
 
 });
@@ -75,6 +85,6 @@ const updatePDFCheckout = asyncHandler(async(req, res) => {
 
 module.exports = {
     createCheckout,
-    updatePaperCheckout,
+    executePaperCheckout,
     updatePDFCheckout,
 };

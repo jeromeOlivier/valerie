@@ -15,9 +15,9 @@
     </button>
 </div>
 <div id="format_specs" class="padding_2rem">
-    <div class="semi_bold">Titre</div>
-    <div class="bold"><%= book.format.title; %></div>
-    <div class="semi_bold">Date&nbsp;de&nbsp;publication</div>
+    <div class="text_right">Titre:</div>
+    <div class="semi_bold"><%= book.format.title; %></div>
+    <div class="text_right">Date&nbsp;de&nbsp;publication:</div>
     <div>
         <%
         let date = new Date(book.format.date);
@@ -28,20 +28,20 @@
         ];
         %>
         <%= `${ date.getDate() } ${ month_names[date.getMonth()] } ${ date.getFullYear() }`; %></div>
-    <div class="semi_bold">Format</div>
-    <div id="format_type" class="bold">
+    <div class="text_right">Format:</div>
+    <div id="format_type" class="semi_bold">
         <%= book.format.type; %>
     </div>
-    <div class="semi_bold">Taille</div>
-    <div class="bold"><%= book.format.size; %></div>
-    <div class="semi_bold">Nombre&nbsp;de&nbsp;pages</div>
+    <div class="text_right">Taille:</div>
+    <div class="semi_bold"><%= book.format.size; %></div>
+    <div class="text_right">Nombre&nbsp;de&nbsp;pages:</div>
     <div><%= book.format.pages; %></div>
-    <div class="semi_bold">Langue</div>
+    <div class="text_right">Langue:</div>
     <div><%= book.format.language; %></div>
-    <div class="semi_bold">Disponible</div>
-    <div class="bold"><%= book.format.market; %></div>
-    <div class="semi_bold">Prix</div>
-    <div class="bold"><%= book.format.price; %> $ CAD</div>
+    <div class="text_right">Disponible:</div>
+    <div class="semi_bold"><%= book.format.market; %></div>
+    <div class="text_right">Prix:</div>
+    <div class="semi_bold"><%= book.format.price; %> $ CAD</div>
     <div class="center margin_top_1rem double-column">
         <%- include('book_format_add_button.ejs') %>
     </div>

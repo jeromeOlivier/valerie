@@ -8,7 +8,6 @@ module.exports = {
     calculateShippingUsingPostcode,
     checkIfPostcodeIsRequired,
     confirmCustomerAddress,
-    sanitizeShippingAddress,
 };
 
 const fetch = require("node-fetch");
@@ -143,10 +142,10 @@ function checkIfPostcodeIsRequired(cartItems, postcode) {
     return isAnyCartItemPaperFormat(cartItems) && postcode === undefined;
 }
 
-async function sanitizeShippingAddress(customer) {
-    // process address logic here
-    // if address sanitation makes changes, send confirmation to customer
-    // return
-    // else await saveCustomerInfo()
-    // return customer
-}
+// async function sanitizeShippingAddress(customer) {
+//     // process address logic here
+//     // if address sanitation makes changes, send confirmation to customer
+//     // return
+//     // else await saveCustomerInfo()
+//     // return customer
+// }

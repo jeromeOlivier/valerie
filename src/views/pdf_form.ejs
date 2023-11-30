@@ -87,7 +87,11 @@
                             </div>
                         <% } %>
                     </div>
-                    <%- include('pay_now_button.ejs') %>
+                    <button class="orange_button margin_top_2rem"
+                            disabled="disabled"
+                            hx-post="/caisse/pdf">
+                        Payer
+                    </button>
                 </div>
             </div>
         </form>
