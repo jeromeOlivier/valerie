@@ -2,6 +2,7 @@
     <div class="content_container">
         <h1 class="margin_top_5rem center">Caisse</h1>
         <% const amount = cartItems.length; %>
+        <% const issues = errors || false; %>
         <form class="margin_bottom_4rem">
             <label for="given_name" class="block margin_top_2rem margin_bottom_1rem">Votre prénom tel qu'il est spécifié
                 sur votre mode de paiement</label>
@@ -46,16 +47,27 @@
                    value="<%= customer.email || ""; %>"
                    required />
 
-            <label for="address"
-                   class="block margin_top_2rem margin_bottom_1rem">Adresse
+            <label for="address_01"
+                   class="block margin_top_2rem margin_bottom_1rem">Adresse municipale
             </label>
-            <input id="address"
+            <input id="address_01"
                    type="text"
-                   name="address"
+                   name="address_01"
                    class="white_box"
                    autocomplete="address-line1"
-                   value="<%= customer.address || ""; %>"
+                   value="<%= customer.shippingAddress.address_01 || ""; %>"
                    required />
+
+            <label for="address_02"
+                   class="block margin_top_2rem margin_bottom_1rem">
+                Identificateur (numéro d'appartement, route rurale, etc.)
+            </label>
+            <input id="address_02"
+                   type="text"
+                   name="address_02"
+                   class="white_box"
+                   autocomplete="address-line1"
+                   value="<%= customer.shippingAddress.address_02 || ""; %>" />
 
             <label for="city"
                    class="block margin_top_2rem margin_bottom_1rem">Ville ou municipalité
@@ -63,9 +75,9 @@
             <input id="city"
                    type="text"
                    name="city"
-                   class="white_box"
+                   class=<%= issues.has('city') && "red_box" || "white_box" %>
                    autocomplete="address-level2"
-                   value="<%= customer.city || ""; %>"
+                   value="<%= customer.shippingAddress.city || ""; %>"
                    required />
 
             <label for="province"
@@ -98,7 +110,7 @@
                    type="text"
                    name="postcode"
                    class="white_box"
-                   value="<%= customer.postcode || ""; %>"
+                   value="<%= customer.shippingAddress.postcode || ""; %>"
                    required />
 
             <div class="block margin_top_2rem label">Résumé de votre panier
@@ -143,7 +155,7 @@
                     <button class="orange_button margin_top_2rem"
                             disabled="disabled"
                             hx-post="/caisse/papier"
-                            hx-target="html"
+                            hx-target="main"
                     >
                         Payer
                     </button>

@@ -3,8 +3,9 @@ const url_product_types = require("./url_product_types");
 const { Book, Workbook, BookFormat } = require("./book");
 const { Configuration } = require("./configuration");
 const { Cart, CartItem, Total } = require("./cart");
-const { Customer } = require("./customer");
+const { Customer, ShippingAddress } = require("./customer");
 const { Shipping } = require("./shipping");
+const { GoogleAddressValidation, Conclusion, Result } = require("./google_address_validation");
 
 module.exports = {
   url_endpoint_config,
@@ -17,5 +18,9 @@ module.exports = {
   CartItem,
   Total,
   Customer,
+  ShippingAddress,
   Shipping,
+  GoogleAddressValidation,
+  Conclusion,
+  Result,
 };

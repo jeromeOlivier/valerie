@@ -190,11 +190,9 @@ async function calculateTotalWeightOfItems(cartItems) {
 
 /**
  * Collects user postcode (if it already exists),  to build a shopping cart.
- *
- * @param {Array.<CartItem>} items - The request object containing cookies and the request body.
- * @param {Request} req - The request object containing cookies and the request body.
- * @return {Promise<Cart>} - A promise resolving to an
- *     object containing the shopping cart data.
+ * @param {Array.<CartItem>} items - The array of cart items.
+ * @param {Request} req - The request object.
+ * @return {Promise<Cart>} - A promise resolving to an object containing the shopping cart data.
  */
 async function collectDataToBuildCart(items, req) {
     const cartItems = await getCartItems(items);

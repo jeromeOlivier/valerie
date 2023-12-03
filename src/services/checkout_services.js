@@ -3,54 +3,97 @@
  * @module services/checkout_services
  */
 
-module.exports = { processPurchaseTransaction, sanitizeShippingAddress, validatePDFForm };
+module.exports = { processPurchaseTransaction, evaluateShippingAddressQuality, generateShippingAddress };
 
-const { Customer } = require("../data_models");
+const { GoogleAddressValidation, Conclusion, Result, ShippingAddress } = require("../data_models");
 const fetch = require("node-fetch");
+const v8 = require("v8");
 
 /**
- * Validates a paper form.
- *
- * @param {Customer} form - The address in form data to be validated.
- * @returns {object} - The validated object.
+ * Evaluate the shipping address quality, return validated address and conclusion on quality
+ * @param {ShippingAddress} shippingAddress - The address to be validated.
+ * @returns { GoogleAddressValidation, Conclusion } - The processed address and api verdict.
  */
-async function sanitizeShippingAddress(form) {
+async function evaluateShippingAddressQuality(shippingAddress) {
     const url = `https://addressvalidation.googleapis.com/v1:validateAddress?key=${ process.env.GOOGLE_MAP_API }`;
-    const data = {
-        "revision": 0,
-        "regionCode": "CA",
-        "postalCode": form.postcode,
-        "administrativeArea": form.province,
-        "locality": form.city,
-        addressLines: [form.address],
-    };
-
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
+    const customerShippingAddress = {
+        address: {
+            revision: 0,
+            regionCode: "CA",
+            postalCode: shippingAddress.postcode || '',
+            locality: shippingAddress.city || '',
+            administrativeArea: shippingAddress.province || '',
+            addressLines: [shippingAddress.address_01 || '', shippingAddress.address_02 || ''],
         },
-        body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-        // throw an error if API response is not ok
-        throw new Error(
-            `Google API responded with a ${ response.status } status.`
-                `Error message: ${ response.statusText }`,
-        );
+        previousResponseId: "",
+    };
+    try {
+        const fetchResponse = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(customerShippingAddress),
+        });
+        const fetchResponseData = await fetchResponse.json();
+        const result = fetchResponseData.result;
+        console.log('result', result);
+        console.log('result.address', result.address);
+        console.log('result.address.postalAddress', result.address.postalAddress);
+        console.log('result.address.postalAddress.addressLines:', result.address.postalAddress.addressLines);
+        console.log('result.address.addressComponents:', result.address.addressComponents);
+        const conclusion = generateConclusionString(result);
+        return { result, conclusion };
+    } catch (error) {
+        throw new Error(`Impossible de valider votre adresse: ${error}`);
     }
-    return await response.json();
 }
 
 /**
- * Validates a PDF form based on specified rules.
- *
- * @param {Object} form - The PDF form data to be validated.
- * @returns {boolean} - Returns true if the form data complies with the rules, or false otherwise.
+ * Process the API verdict logic and return a conclusion
+ * @param {Result} result - Data containing address quality.
+ * @return {Conclusion} - A string expressing the verdict.
  */
-function validatePDFForm(form) {
-    // if form data complies to rules, return true or else false
+function generateConclusionString(result) {
+    const validationGranularity = result.verdict.validationGranularity;
+    const isComplete = result.verdict.addressComplete;
+    const isUnconfirmed = result.verdict.hasUnconfirmedComponents;
+    const isModified = result.verdict.hasInferredComponents || result.verdict.hasReplacedComponents;
+    const isAddressFinalized = isComplete && !isUnconfirmed && !isModified;
+    const highConfidence = new Set(['PREMISE', 'SUB_PREMISE', 'GRANULARITY_UNSPECIFIED']);
+    if (!isComplete) {
+        return Conclusion.FIX;
+    } else if (isModified) {
+        return Conclusion.SELECT;
+    } else if (highConfidence.has(validationGranularity) && isAddressFinalized) {
+        return Conclusion.ACCEPT;
+    } else {
+        return Conclusion.CONFIRM;
+    }
+}
+
+    /**
+     * Reduces an array of address components into an object, where the component type is the key and the component
+     * name is the value.
+     *
+     * @param {Result} result - The array of address components to be reduced.
+     * @returns {ShippingAddress} - The resulting object with component types as keys and component names as values.
+     */
+function generateShippingAddress(result) {
+    const addressComponents = result.address.addressComponents;
+    const data = addressComponents.reduce((acc, cur) => {
+        acc[cur.componentType] = cur.componentName;
+        return acc;
+    }, {});
+    console.log('generateShippingAddress data', data)
+    return {
+        address_01: `${data.street_number} ${data.route}`,
+        address_02: `${data}` || "",
+        city: data.locality.text,
+        province: data.administrative_area_level_1.text,
+        postcode: data.postal_code,
+        country: data.country.text,
+    };
 }
 
 /**

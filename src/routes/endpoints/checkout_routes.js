@@ -8,7 +8,6 @@ const checkoutRouter = require("express").Router();
 
 checkoutRouter.get('/', checkout.createCheckout);
 checkoutRouter.get("/swap", checkout.createCheckout);
-checkoutRouter.post("/papier", checkout.executePaperCheckout);
-checkoutRouter.post("/pdf", checkout.updatePDFCheckout);
+checkoutRouter.post("/papier", checkout.processPhysicalShippingCheckout);
 
 module.exports = checkoutRouter;

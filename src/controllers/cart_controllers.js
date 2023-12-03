@@ -16,6 +16,7 @@ const { updateCookie, addCartItemToCookie, parseCartItemsFromCookie } = require(
  * @returns {Promise<void>} - A promise that resolves when the rendering is complete.
  */
 const findCartItems = asyncHandler(async(req, res) => {
+    console.log('req.url', req.url);
     try {
         const cartItemsFromCookies = parseCartItemsFromCookie(req.cookies);
         const collectedData = await collectDataToBuildCart(cartItemsFromCookies, req);
@@ -26,7 +27,7 @@ const findCartItems = asyncHandler(async(req, res) => {
             res.render("layout", { main: "cart", ...collectedData });
         }
     } catch (error) {
-        res.render("error_page", { message: error.message });
+        res.render("error_page", { error });
     }
 });
 

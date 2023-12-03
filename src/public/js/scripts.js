@@ -268,14 +268,15 @@ function ifCartIsEmptyDisableButton() {
 // CHECKOUT
 function ifCheckoutFormIsNotCompleteDisableButton() {
     const form = document.querySelector("form");
-    const inputs = Array.from(document.querySelectorAll("input"));
+    const allInputs = Array.from(document.querySelectorAll("input"));
+    const requiredInputs = allInputs.filter(input => input.required);
     const checkoutButton = document.querySelector("button");
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const email = document.querySelector("#email");
     const confirmEmail = document.querySelector("#confirm_email");
 
     form.addEventListener("input", (event) => {
-        const isFormFilled = inputs.every(input => input.value.trim() !== "");
+        const isFormFilled = requiredInputs.every(input => input.value.trim() !== "");
         const isEmailsValid = emailRegex.test(email.value.trim())
             && emailRegex.test(confirmEmail.value.trim())
             && (confirmEmail.value.trim() === email.value.trim());

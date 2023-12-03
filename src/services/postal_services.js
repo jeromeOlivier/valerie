@@ -80,6 +80,7 @@ async function fetchShippingEstimateBasedOnPostCodeAndWeight(postcode, weight) {
         const [shippingPrice] = regularParcel["price-details"][0]["due"];
         return shippingPrice;
     } else if(response.status >= 500 && response.status < 600) {
+        console.log('Canada Post Response', response);
         throw new Error(`Le service de Postes Canada est actuellement indisponible. Veuillez réessayer plus tard.`);
     } else {
         throw new Error(`Échec de récupération du coût de livraison.: HTTP ${response.status}`);
@@ -142,7 +143,7 @@ function checkIfPostcodeIsRequired(cartItems, postcode) {
     return isAnyCartItemPaperFormat(cartItems) && postcode === undefined;
 }
 
-// async function sanitizeShippingAddress(customer) {
+// async function evaluateShippingAddressQuality(customer) {
 //     // process address logic here
 //     // if address sanitation makes changes, send confirmation to customer
 //     // return

@@ -7,9 +7,11 @@ module.exports = {
     findCustomer,
     createCustomer,
     updateCustomer,
+    makeCustomerObject,
 };
 const db = require("../db_ops/db");
-const { Customer } = require("../data_models/customer");
+const { Customer, ShippingAddress } = require("../data_models/");
+const { query } = require("express");
 
 /**
  * Creates a new customer in the database and associates it with the provided session ID.
@@ -27,7 +29,7 @@ async function createCustomer(sessionId, postcode = "") {
 
         // Save the result of the INSERT operation.
         await conn.query(`
-            INSERT INTO customers (postcode)
+            INSERT INTO shipping_addresses (postcode)
             VALUES (?)
         `, [postcode ? postcode.match(/[A-Z0-9]{6}/) : ""]);
 
@@ -36,8 +38,22 @@ async function createCustomer(sessionId, postcode = "") {
             SELECT LAST_INSERT_ID() AS customerId;
         `);
 
+        // Extract the addressId from lastIdResult
+        const { addressId } = lastIdResult[0];
+
+        // INSERT customer with given shipping_address_id
+        await conn.query(`
+            INSERT INTO customers (shipping_address_id)
+            VALUES (?)
+        `, [addressId]);
+
+        // Retrieve the ID of the customer inserted above
+        const [customerIdResult] = await conn.query(`
+            SELECT LAST_INSERT_ID() AS customerId;
+        `);
+
         // Extract the customerId from lastIdResult
-        const { customerId } = lastIdResult[0];
+        const { customerId } = customerIdResult[0];
 
         await conn.query(`
             INSERT INTO sessions (id, customer_id)
@@ -51,7 +67,20 @@ async function createCustomer(sessionId, postcode = "") {
         `, [customerId]);
 
         const data = query[0][0];
-        return new Customer(data.given_name, data.family_name, data.email, data.address, data.city, data.province, data.postcode, data.country);
+        const shippingAddress = new ShippingAddress(
+            data.address_01,
+            data.address_02,
+            data.city,
+            data.province,
+            data.postcode,
+            data.country,
+        );
+        return new Customer(
+            data.given_name,
+            data.family_name,
+            data.email,
+            shippingAddress,
+        );
 
     } catch (error) {
         await conn.query("ROLLBACK");
@@ -64,30 +93,46 @@ async function createCustomer(sessionId, postcode = "") {
 /**
  * Finds a customer based on the given session ID.
  *
- * @param {number} sessionId - The ID of the session to search for.
- * @return {Promise<Customer>} - A Promise that resolves to an object representing the found customer, or undefined if no
- * customer was found.
+ * @param {string} sessionId - The ID of the session to search for.
+ * @return {Promise<Customer>} - A Promise that resolves to an object representing the found customer, or undefined if
+ *     no customer was found.
  */
 async function findCustomer(sessionId) {
     const query = await db.query(`
-        SELECT sessions.id,
-               customers.given_name,
-               customers.family_name,
-               customers.email,
-               customers.address,
-               customers.city,
-               customers.province,
-               customers.postcode,
-               customers.country
-        FROM sessions
-                 JOIN customers ON sessions.customer_id = customers.id
-        WHERE sessions.id = ?
+        SELECT IFNULL(c.given_name, '')  AS 'given_name',
+               IFNULL(c.family_name, '') AS 'family_name',
+               IFNULL(c.email, '')       AS 'email',
+               IFNULL(sa.address_01, '') AS 'address_01',
+               IFNULL(sa.address_02, '') AS 'address_02',
+               IFNULL(sa.city, '')       AS 'city',
+               IFNULL(sa.province, '')   AS 'province',
+               IFNULL(sa.postcode, '')   AS 'postcode',
+               IFNULL(sa.country, '')    AS 'country'
+        FROM sessions ses
+                 JOIN customers c ON ses.customer_id = c.id
+                 JOIN shipping_addresses sa ON c.shipping_address_id = sa.id
+        WHERE ses.id = ?
     `, [sessionId]);
-    return query[0][0];
-    // return a customer object instead of an anonymous object
+    return makeCustomerObject(query[0][0]);
 }
-
 
 async function updateCustomer(customer) {
     // save customer to the database
+}
+
+function makeCustomerObject(data) {
+    const address = new ShippingAddress(
+        data.address_01 || '',
+        data.address_02 || '',
+        data.city || '',
+        data.province || '',
+        data.postcode || '',
+        data.country || 'Canada',
+    );
+    return new Customer(
+        data.given_name || '',
+        data.family_name || '',
+        data.email || '',
+        address,
+    );
 }

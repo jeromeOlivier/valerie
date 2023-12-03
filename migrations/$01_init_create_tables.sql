@@ -69,21 +69,31 @@ CREATE TABLE workbooks
     FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE
 );
 
+# SHIPPING ADDRESS
+# only used for orders that require items to be physically shipped
+CREATE TABLE shipping_addresses
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    address_01 VARCHAR(255) COMMENT 'address of customer',
+    address_02 VARCHAR(255) COMMENT 'apartment number',
+    city       VARCHAR(255) COMMENT 'city of customer',
+    province   VARCHAR(255) COMMENT 'province of customer',
+    postcode   VARCHAR(255) COMMENT 'getShippingEstimate of customer',
+    country    VARCHAR(255) COMMENT 'country of customer'
+);
+
 # CUSTOMERS
 # customers never register on the site, so there are no passwords
 # pdf orders are sent to the customer's email address, so only the email is required
-# physical orders require a full address
+# physical orders require a shipping address
 CREATE TABLE customers
 (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    email       VARCHAR(255) COMMENT 'email address of customer does not need to be unique',
-    given_name  VARCHAR(255) COMMENT 'given name of customer',
-    family_name VARCHAR(255) COMMENT 'family name of customer',
-    address     VARCHAR(255) COMMENT 'address of customer',
-    city        VARCHAR(255) COMMENT 'city of customer',
-    province    VARCHAR(255) COMMENT 'province of customer',
-    postcode    VARCHAR(255) COMMENT 'getShippingEstimate of customer',
-    country     VARCHAR(255) COMMENT 'country of customer'
+    id                  INT AUTO_INCREMENT PRIMARY KEY,
+    given_name          VARCHAR(255) COMMENT 'given name of customer',
+    family_name         VARCHAR(255) COMMENT 'family name of customer',
+    email               VARCHAR(255) COMMENT 'email address of customer does not need to be unique',
+    shipping_address_id INT COMMENT 'shipping address id',
+    FOREIGN KEY (shipping_address_id) REFERENCES shipping_addresses (id) ON DELETE CASCADE
 );
 
 # ORDERING
