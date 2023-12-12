@@ -11,7 +11,6 @@ module.exports = {
 };
 const db = require("../db_ops/db");
 const { Customer, ShippingAddress } = require("../data_models/");
-const { query } = require("express");
 
 /**
  * Creates a new customer in the database and associates it with the provided session ID.
@@ -116,8 +115,19 @@ async function findCustomer(sessionId) {
     return makeCustomerObject(query[0][0]);
 }
 
-async function updateCustomer(customer) {
-    // save customer to the database
+/**
+ * Updates the customer's information.
+ * @param {Object} customer - The customer object containing the updated information.
+ * @param {Object} req - The request object containing the session information.
+ * @return {Promise<void>} - A promise that resolves once the customer's information is updated.
+ */
+async function updateCustomer(customer, req) {
+    const sessionId = req.cookies.find(cookie => {
+        return cookie.name === "sessionId";
+    })
+    // find the customer id based on the session id
+    const customerId = await db.query(`SELECT s.customer_id WHERE s.id = ?`, [sessionId]);
+
 }
 
 function makeCustomerObject(data) {

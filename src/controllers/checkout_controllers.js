@@ -62,27 +62,30 @@ const processPhysicalShippingCheckout = asyncHandler(async(req, res) => {
         return;
     }
     try {
-        const addressValidation = await evaluateShippingAddressQuality(customer.shippingAddress);
-        const shippingAddress = generateShippingAddress(addressValidation.result);
+        const validatedAddress = await evaluateShippingAddressQuality(customer.shippingAddress);
+        const shippingAddress = generateShippingAddress(validatedAddress.result);
         console.log('processPhysicalShippingCheckout shippingAddress', shippingAddress);
-        if (addressValidation.conclusion === Conclusion.ACCEPT) {
+        if (validatedAddress.conclusion === Conclusion.ACCEPT) {
             console.log("ACCEPT!");
             // save to database and open a stripe session
             return;
         }
-        if (addressValidation.conclusion === Conclusion.CONFIRM) {
+        if (validatedAddress.conclusion === Conclusion.CONFIRM) {
             console.log("CONFIRM!");
-            // confirm between the original and updated versions
+            // confirm the original address
             // res.render("confirm_address", { shippingAddress });
             return;
         }
-        if (addressValidation.conclusion === Conclusion.FIX) {
+        if (validatedAddress.conclusion === Conclusion.FIX) {
             console.log("FIX!");
             // send the form back
             return;
         }
+        if (validatedAddress.conclusion === Conclusion.SELECT) {
+            // confirm between original and updated addresses
+        }
 
-        return addressValidation;
+        return validatedAddress;
         // updateCustomer(validatedCustomer);
         // processTransaction();
         // if address rejected, render paper form view

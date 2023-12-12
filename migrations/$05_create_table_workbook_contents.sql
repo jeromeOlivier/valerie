@@ -25,13 +25,13 @@ CREATE TABLE workbook_contents
     id          INT AUTO_INCREMENT PRIMARY KEY COMMENT 'primary key',
     workbook_id INT        NOT NULL COMMENT 'foreign key to workbook',
     content     TEXT       NOT NULL COMMENT 'web book content description of the findBook',
-    configuration        VARCHAR(8) NOT NULL COMMENT 'the hierarchy of sections and subsections',
+    path        VARCHAR(8) NOT NULL COMMENT 'the hierarchy of sections and subsections',
     level       INT        NOT NULL COMMENT 'the level of the section or subsection',
     FOREIGN KEY (workbook_id) REFERENCES workbooks (id)
 );
 
 # populate the workbook_contents table
-INSERT INTO workbook_contents(workbook_id, content, configuration, level)
+INSERT INTO workbook_contents(workbook_id, content, path, level)
 VALUES (@word_base_id, 'Le contrôle de l’environnement de travail', '1', 1),
        (@word_base_id, 'Le ruban et les barres d’outils', '2', 1),
        (@word_base_id, 'Les modes d’affichage', '3', 1),
@@ -48,7 +48,7 @@ VALUES (@word_base_id, 'Le contrôle de l’environnement de travail', '1', 1),
        (@word_base_id, 'L’envoi d’un document', '11', 1),
        (@word_base_id, 'Les fonctions auxiliaires', '12', 1);
 
-INSERT INTO workbook_contents(workbook_id, content, configuration, level)
+INSERT INTO workbook_contents(workbook_id, content, path, level)
 VALUES (@word_inter_id, 'Les tableaux', '1', 1),
        (@word_inter_id, 'La structure d’un tableau', '1.1', 2),
        (@word_inter_id, 'Les styles prédéfinis', '1.2', 2),
@@ -71,7 +71,7 @@ VALUES (@word_inter_id, 'Les tableaux', '1', 1),
        (@word_inter_id, 'Les en-têtes et le pieds de book simples et élaborés', '8', 1),
        (@word_inter_id, 'Les bordures de book', '9', 1);
 
-INSERT INTO workbook_contents(workbook_id, content, configuration, level)
+INSERT INTO workbook_contents(workbook_id, content, path, level)
 VALUES (@word_adv_id, 'Les signets, les notes de bas de book, les renvois, les hyperliens', '1', 1),
        (@word_adv_id, 'Les légendes, la table des illustrations', '2', 1),
        (@word_adv_id, 'La création d’un index', '3', 1),
@@ -96,7 +96,7 @@ VALUES (@word_adv_id, 'Les signets, les notes de bas de book, les renvois, les h
        (@word_adv_id, 'La conversion d’un fichier PDF en document Word', '16', 1),
        (@word_adv_id, 'Le partage d’un document', '17', 1);
 
-INSERT INTO workbook_contents(workbook_id, content, configuration, level)
+INSERT INTO workbook_contents(workbook_id, content, path, level)
 VALUES (@excel_base_id, 'Le contrôle de l’environnement de travail', '1', 1),
        (@excel_base_id, 'La barre d’État', '1.1', 2),
        (@excel_base_id, 'Le ruban et les barres d’outils', '1.2', 2),
@@ -124,7 +124,7 @@ VALUES (@excel_base_id, 'Le contrôle de l’environnement de travail', '1', 1),
        (@excel_base_id, 'La protection d’un classeur / des feuilles d’un classeur', '19', 1),
        (@excel_base_id, 'Les illustrations', '20', 1);
 
-INSERT INTO workbook_contents(workbook_id, content, configuration, level)
+INSERT INTO workbook_contents(workbook_id, content, path, level)
 VALUES (@excel_inter_id, 'Les fonctions prédéfinies', '1', 1),
        (@excel_inter_id, 'Les fonctions statistiques', '2', 1),
        (@excel_inter_id, 'Les fonctions mathématiques', '3', 1),
@@ -149,7 +149,7 @@ VALUES (@excel_inter_id, 'Les fonctions prédéfinies', '1', 1),
        (@excel_inter_id, 'Les filtres automatiques', '22', 1),
        (@excel_inter_id, 'Les sous-totaux', '23', 1);
 
-INSERT INTO workbook_contents(workbook_id, content, configuration, level)
+INSERT INTO workbook_contents(workbook_id, content, path, level)
 VALUES (@excel_adv_id, 'Les tableaux croisés dynamiques', '1', 1),
        (@excel_adv_id, 'Les graphiques croisés dynamiques', '2', 1),
        (@excel_adv_id, 'Les segments', '3', 1),

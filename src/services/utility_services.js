@@ -4,7 +4,7 @@
  */
 
 module.exports = {
-    isValidPath: isValidConfiguration,
+    isValidConfiguration,
     isValidQuery,
     isValidTerm,
     findUrlEndpointConfiguration,
@@ -16,6 +16,7 @@ module.exports = {
 };
 
 const { url_endpoint_config, url_product_types, Configuration, CartItem } = require("../data_models");
+const { INVALID_QUERY } = require("../constants/messages");
 
 /**
  * This function returns the configuration if it is valid.
@@ -50,6 +51,7 @@ function isValidTerm(term) {
  * @returns {Configuration | null}
  */
 function findUrlEndpointConfiguration(req) {
+    console.log('findUrlEndpointConfiguration req.url', req.url);
     return url_endpoint_config.find((endPoint) => endPoint.path === req.url) || null;
 }
 

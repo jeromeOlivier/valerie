@@ -7,7 +7,6 @@ module.exports = { processPurchaseTransaction, evaluateShippingAddressQuality, g
 
 const { GoogleAddressValidation, Conclusion, Result, ShippingAddress } = require("../data_models");
 const fetch = require("node-fetch");
-const v8 = require("v8");
 
 /**
  * Evaluate the shipping address quality, return validated address and conclusion on quality
@@ -37,11 +36,6 @@ async function evaluateShippingAddressQuality(shippingAddress) {
         });
         const fetchResponseData = await fetchResponse.json();
         const result = fetchResponseData.result;
-        console.log('result', result);
-        console.log('result.address', result.address);
-        console.log('result.address.postalAddress', result.address.postalAddress);
-        console.log('result.address.postalAddress.addressLines:', result.address.postalAddress.addressLines);
-        console.log('result.address.addressComponents:', result.address.addressComponents);
         const conclusion = generateConclusionString(result);
         return { result, conclusion };
     } catch (error) {

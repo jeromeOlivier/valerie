@@ -8,7 +8,7 @@ module.exports = { getBook, getBookFormat, getBookPreviewImages };
 const { INVALID_QUERY } = require("../constants/messages");
 const { WEBP_IMAGE_PATH } = require("../constants/resources");
 const { Book, Workbook, BookFormat, Configuration } = require("../data_models");
-const { isValidQuery, findUrlEndpointConfiguration, isValidPath, isValidTitleAndType } = require("./utility_services");
+const { isValidQuery, findUrlEndpointConfiguration, isValidConfiguration, isValidTitleAndType } = require("./utility_services");
 const db = require("../db_ops/db");
 const fs = require("fs");
 const path = require("node:path");
@@ -17,7 +17,7 @@ const path = require("node:path");
  * This function returns the findBook data for the given configuration.
  * @param req
  * @param res
- * @returns {Promise<Book>, Configuration}
+ * @returns {Promise<Book>, boolean}
  */
 async function getBook(req, res) {
     if (!isValidQuery(req)) {
@@ -25,14 +25,16 @@ async function getBook(req, res) {
         return;
     }
     const configuration = findUrlEndpointConfiguration(req);
-    if (!isValidPath(configuration)) {
+    console.log('getBook configuration', configuration);
+    if (!isValidConfiguration(configuration)) {
         res.status(500).send(INVALID_QUERY);
         return;
     }
     try {
         const book = await getBookData(configuration);
-        return { book, path: configuration };
+        return { book, full: configuration.full };
     } catch (error) {
+        console.log('getBook error', error);
         res.status(500).send(error.message);
     }
 }

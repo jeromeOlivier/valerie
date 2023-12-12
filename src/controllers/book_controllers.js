@@ -15,15 +15,17 @@ const { isValidQuery, renderError500Page } = require("../services/utility_servic
  * @param {Response} res - The response object
  */
 const findBook = asyncHandler(async(req, res) => {
+    console.log('findBook req.url', req.url);
     if (!isValidQuery(req)) {
         renderError500Page(res);
         return;
     }
     try {
-        const { book, path } = await getBook(req, res);
+        const { book, full } = await getBook(req, res);
         const cartItems = parseCartItemsFromCookie(req.cookies);
         const isInCart = confirmItemIsInCart(cartItems, book.title, "pdf");
-        res.render(path.full ? "layout" : "book", { main: "book", book, isInCart });
+
+        res.render(full ? "layout" : "book", { main: "book", book, isInCart });
     } catch (error) {
         res.status(error.status).render("error_page", { message: error.message });
     }

@@ -1,25 +1,3 @@
-/* TYPEFACES */
-@font-face {
-    font-family : "iReg";
-    src         : url("../font/iReg.woff2") format("woff2");
-    font-weight : 400;
-    font-style  : normal;
-}
-
-@font-face {
-    font-family : "iSemi";
-    src         : url("../font/iSemi.woff2") format("woff2");
-    font-weight : 600;
-    font-style  : normal;
-}
-
-@font-face {
-    font-family : "iBold";
-    src         : url("../font/iBold.woff2") format("woff2");
-    font-weight : 700;
-    font-style  : normal;
-}
-
 /* VARIABLES */
 :root {
     --black                     : #000000;
@@ -43,9 +21,6 @@
     --btn_red_stoke             : #331A1A;
     --drop_shadow               : drop-shadow(5px 5px 3px #0000003F);
     --excel_stroke              : #014328;
-    --font_bold                 : iBold, Arial, sans-serif;
-    --font_regular              : iReg, Arial, sans-serif;
-    --font_semibold             : iSemi, Arial, sans-serif;
     --grad_excel                : linear-gradient(137.51deg, #237045 0.86%, #17766F 43.85%, #98438A 100%);
     --grad_main                 : linear-gradient(137.51deg, #262C4A 0%, #134E6B 50%, #148572 100%);
     --grad_outlook              : linear-gradient(137.51deg, #987A3C 0%, #218567 70.8%, #21689E 100%);
@@ -62,6 +37,7 @@
     --powerpoint_stroke         : #793C27;
     --stroke                    : 0.0625rem;
     --stroke_double             : 0.125rem;
+    --system_font               : system_ui, sans-serif;
     --txt                       : #505050;
     --white                     : #FFFFFF;
     --word_stroke               : #1D1F3E;
@@ -175,7 +151,7 @@
 * {
     box-sizing  : border-box;
     color       : var(--txt);
-    font-family : var(--font_regular);
+    font-family : var(--system_font);
     font-size   : 1rem;
     font-style  : normal;
     line-height : 1.5;
@@ -206,10 +182,9 @@ main {
 
 /* typography */
 h1, h2, h3, h4, h5, h6 {
-    font-family    : var(--font_semibold);
+    font-family    : var(--system_font);
     font-weight    : 400;
     text-transform : uppercase;
-    /*transition     : 1s ease;*/
 }
 
 h1 {
@@ -237,25 +212,18 @@ p {
     margin-bottom : 1rem;
 }
 
-label, .label {
-    font-family : var(--font_semibold);
-}
-
 cite {
-    font-family : var(--font_semibold);
     margin-top  : 1rem;
 }
 
 nav > ul > li {
     color           : var(--black);
-    font-family     : var(--font_semibold);
     font-style      : normal;
     font-weight     : 600;
     text-decoration : none;
 }
 
 .cart_title {
-    font-family : var(--font_semibold);
     font-size   : 1.25rem;
     font-style  : normal;
     font-weight : 600;
@@ -277,12 +245,10 @@ nav > ul > li {
 }
 
 .bold {
-    font-family : var(--font_bold);
     font-weight : 700;
 }
 
 .semi_bold {
-    font-family : var(--font_regular);
     font-weight : 600;
 }
 
@@ -298,11 +264,11 @@ nav > ul > li {
 }
 
 .text_right {
-    text-align: right;
+    text-align : right;
 }
 
 .large_text {
-    font-size: 1.25rem;
+    font-size : 1.25rem;
 }
 
 /* images */
@@ -701,9 +667,7 @@ button {
     color               : var(--white);
     cursor              : pointer;
     display             : flex;
-    font-family         : var(--font_regular);
     font-size           : 1.05rem;
-    /*padding             : .33rem 1rem;*/
     height              : fit-content;
     justify-content     : center;
 
@@ -786,7 +750,6 @@ button > svg { margin-left : .5rem; }
     border-radius   : .45rem;
     color           : var(--white);
     display         : inline-flex;
-    font-family     : var(--font_semibold);
     font-size       : 1.05rem;
     height          : 2rem;
     justify-content : center;
@@ -1102,11 +1065,9 @@ h1 > span.hero-h1, h1 > span.hero-h1 > *, h2 > span.hero-h2 {
 
 h1 > span.hero-h1, h1 > span.hero-h1 > * {
     display      : inline;
-    font-family  : var(--font_semibold);
     font-size    : clamp(1.5rem, 4vw, 2.25rem);
     font-weight  : 700;
     margin-block : 0;
-    /*transition   : 1s ease;*/
 }
 
 .hero-h2 {
@@ -1141,7 +1102,6 @@ h1 > span.hero-h1, h1 > span.hero-h1 > * {
 }
 
 .head-shot-caption > p:first-of-type {
-    font-family : var(--font_regular);
     font-size   : clamp(1rem, 3vw, 1.25rem);
     margin-top  : .5rem;
     opacity     : 1;
